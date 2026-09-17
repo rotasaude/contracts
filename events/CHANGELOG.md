@@ -3,6 +3,28 @@
 Formato: cada entrada tem versão, data, categoria (MAJOR/MINOR/PATCH) e o quê mudou.
 Sem entrada, não há tag (ADR 0015).
 
+## events-v2.1.0 — 2026-09-17 — MINOR
+
+Acrescenta `operator.impersonated` (platform-scope), emitido pelo atalho de
+manutenção que abre sessão de operador sem senha e sem TOTP. Payload
+`operator_id`, `operator_session_id`.
+
+**Só ocorre em development:** a rota que o emite não é desenhada fora dela. Entra
+no contrato porque é gravado em `platform_events` como qualquer outro evento, e
+quem inspecionar a tabela num ambiente de desenvolvimento vai encontrá-lo — um
+evento que existe e não está documentado é o mesmo problema que a v2.0.0
+corrigiu, invertido.
+
+Vem sempre acompanhado de um `operator.login` para a mesma sessão, na mesma
+transação. Nenhum dos dois sozinho seria honesto: sem o `login` haveria sessão de
+operador sem o evento que toda sessão tem; sem o `impersonated` a trilha afirmaria
+um login com segundo fator que não aconteceu.
+
+MINOR e não MAJOR: nada foi removido nem renomeado, e pela invariante de
+tolerância do README todo consumidor ignora evento desconhecido. Sem issue de
+migração coordenada — não há forma antiga a contratar, e nenhum consumidor
+precisa mudar.
+
 ## events-v2.0.0 — 2026-09-16 — MAJOR
 
 Issue de migração coordenada: rotasaude/contracts#1

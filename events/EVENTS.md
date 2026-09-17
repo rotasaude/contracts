@@ -61,6 +61,21 @@ com `email` no payload seria **recusado** pela validação de `platform_events`.
 | `channel.unknown_seen` | `phone_number_id`, `hits` |
 | `operator.login` | `operator_id`, `operator_session_id` |
 | `operator.city_access` | `city_id`, `operator_id` |
+| `operator.impersonated` † | `operator_id`, `operator_session_id` |
+
+† **Só em development.** É emitido pelo atalho de manutenção que abre uma sessão
+de operador sem senha e sem TOTP, numa rota que **não existe** fora de
+development — em produção este evento nunca ocorre. Está documentado porque é
+gravado em `platform_events` como qualquer outro, e quem ler a tabela num
+ambiente de desenvolvimento vai encontrá-lo.
+
+Ele vem **acompanhado de um `operator.login`** para a mesma sessão, e os dois são
+gravados na mesma transação que marca a sessão como verificada. A razão é que
+nenhum dos dois sozinho diz a verdade: sem o `operator.login`, existiria sessão de
+operador sem o evento que toda sessão tem; sem o `operator.impersonated`, a trilha
+afirmaria um login com segundo fator que não houve. Um consumidor que precise
+distinguir login real de atalho deve procurar o `operator.impersonated` com o
+mesmo `operator_session_id`.
 
 **`operator.city_access` é emitido nos DOIS escopos**, e é de propósito: a
 plataforma registra que um operador entrou numa cidade (`city_id`, `operator_id`) e
