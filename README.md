@@ -1,36 +1,108 @@
 # contracts — contratos compartilhados do Rota Saúde
 
-Contrato neutro consumido por `api` e pelos frontends (`admin-console`, `dashboard`,
-`wpda`). Princípio (ADR 0002): **as aplicações compartilham contrato, não código.**
-Quatro domínios, **versionados independentemente** (ADR 0015):
+Contrato neutro entre o `api` e os frontends (`admin`, `dashboard`, `wpda`,
+`maintenance`). Princípio do ADR 0002: **as aplicações compartilham contrato,
+não código.** Não deploya e não tem código executável; é dado e documentação
+versionados.
 
-| Domínio | O que é | Estado |
-|---|---|---|
-| [`events/`](events/EVENTS.md) | Formato dos domain events (nome, escopo, payload) | **materializado** (do código real) |
-| [`protocols/`](protocols/schema.json) | JSON Schema da definição de protocolo (ADR 0009) | **materializado** |
-| `types/` | Contrato de tipos da API (Ruby ↔ TS) | **scaffold** — extração da API pendente |
-| `design-tokens/` | Cores, espaçamento, tipografia como dado | **scaffold** — precisa de input de design |
+## Papel no ecossistema
+
+| Repo | Papel |
+|---|---|
+| `api` | Backend único (Rails 8). Emite os eventos e valida protocolos |
+| `wpda`, `dashboard`, `admin`, `maintenance` | Frontends: cidadão, prefeitura, plataforma e manutenção |
+| **`contracts`** (este) | O que mais de um repo precisa concordar: eventos, schema de protocolo, tipos, tokens |
+| `docs` | ADRs, specs e planos. O ADR 0015 governa este repo |
+
+## Domínios
+
+Quatro domínios, **versionados de forma independente** (ADR 0015):
+
+| Domínio | O que é | Versão | Estado |
+|---|---|---|---|
+| [`events/`](events/EVENTS.md) | Catálogo dos eventos: nome, escopo, payload | `events-v2.1.0` | Materializado, reconciliado com o código |
+| [`protocols/`](protocols/README.md) | JSON Schema da definição de protocolo (ADR 0009) | `protocols-v1.1.0` (no CHANGELOG, sem tag) | Materializado |
+| [`types/`](types/README.md) | Contrato de tipos da API (Ruby ↔ TS) | — | Scaffold: extração pendente |
+| [`design-tokens/`](design-tokens/README.md) | Cores, espaçamento e tipografia como dado | — | Scaffold: precisa de input de design |
+
+### events
+
+Os eventos têm dois escopos, que seguem o banco por cidade
+([ADR 0020](https://github.com/rotasaude/docs/blob/main/adr/0020.md)):
+
+- **Tenant-scoped:** `DomainEvents.publish`, gravado no `domain_events` do
+  **banco da cidade**. O evento não carrega `municipality_id`: a cidade é o
+  banco.
+- **Platform-scope:** `Platform.audit`, gravado em `platform_events` no
+  **banco de plataforma**. Referencia a cidade por `city_id` e tem garantia de
+  ausência de dado pessoal.
+
+`events-v2.0.0` (2026-09-16, MAJOR) removeu `municipality_id` e reconciliou o
+catálogo com o código. A migração coordenada foi a issue
+[rotasaude/contracts#1](https://github.com/rotasaude/contracts/issues/1).
+`events-v2.1.0` (MINOR) acrescentou `operator.impersonated`, que só ocorre em
+development.
+
+No `api`, um evento de plataforma com nome novo quebra a suíte até ser
+declarado na lista de nomes permitidos (`R18_PLATFORM_EVENT_NAMES`, em
+`spec/events/platform_event_payload_guard_spec.rb`). Declare o
+evento lá **e** aqui, no mesmo ciclo.
+
+### protocols
+
+`schema.json` é o contrato único da definição de protocolo, consumido pelo
+validador do motor Ruby. O editor do `dashboard` não importa o arquivo: salva
+pelo `api`, que valida contra ele. `v1.1.0`
+acrescentou `recommendations`, `priority_when` e a gramática de condições
+(`$defs/condition`), sem remover nada.
+
+O `api` usa uma **cópia** em `config/protocols/schema.json`, não uma
+dependência. Hoje as duas estão idênticas. Mudou o schema? Atualize os dois
+lugares no mesmo ciclo, com entrada no CHANGELOG daqui.
+
+### Fora deste repo, por enquanto
+
+- **SDL GraphQL da API de manutenção:** vive em `maintenance/schema.graphql`,
+  extraído do `api` por `npm run schema:pull`. A spec prevê publicá-lo aqui
+  quando houver um domínio para ele.
+- **Tokens de tema:** cada frontend tem o próprio `src/theme/tokens.ts`, até
+  `design-tokens/` ser materializado.
 
 ## Versionamento (ADR 0015)
 
-- **SemVer 2.0.0 por domínio**, com tag prefixada (`events-vX.Y.Z`, `protocols-vX.Y.Z`,
-  `types-vX.Y.Z`, `tokens-vX.Y.Z`). Cada app fixa a versão **do domínio que consome**.
+- **SemVer 2.0.0 por domínio**, com tag prefixada (`events-vX.Y.Z`,
+  `protocols-vX.Y.Z`, `types-vX.Y.Z`, `tokens-vX.Y.Z`). Cada app fixa a versão
+  **do domínio que consome**.
 - **Classificação de mudança:**
-  - **MAJOR** — quebra consumidores (remove/renomeia campo, muda tipo, renomeia evento,
-    torna obrigatório um opcional). Nunca entra sozinho — usa **expand/contract**
-    (suportar a forma antiga E a nova num MINOR; migrar cada app; remover a antiga num
-    MAJOR só quando todos migraram).
-  - **MINOR** — adiciona sem quebrar (campo opcional, evento novo, valor de enum novo).
-  - **PATCH** — corrige sem mudar forma.
-- **Invariante de tolerância do consumidor** (pré-condição de MINOR seguro): todo
-  consumidor **tolera** campo desconhecido (ignora), valor de enum desconhecido
-  (fallback) e evento desconhecido (ignora). Verificável em teste.
-- **CHANGELOG obrigatório** por domínio (`<dominio>/CHANGELOG.md`): sem entrada, não há
-  tag. MAJOR linka a issue de migração coordenada.
+  - **MAJOR:** quebra consumidores (remove ou renomeia campo, muda tipo,
+    renomeia evento, torna obrigatório um campo opcional). Nunca entra sozinho;
+    usa **expand/contract**: suporta a forma antiga e a nova num MINOR, migra
+    cada app e remove a antiga num MAJOR só quando todos migraram.
+  - **MINOR:** adiciona sem quebrar (campo opcional, evento novo, valor de enum
+    novo).
+  - **PATCH:** corrige sem mudar a forma.
+- **Invariante de tolerância do consumidor** (pré-condição de um MINOR seguro):
+  todo consumidor **tolera** campo desconhecido (ignora), valor de enum
+  desconhecido (usa fallback) e evento desconhecido (ignora). Verificável em
+  teste.
+- **CHANGELOG obrigatório** por domínio (`<dominio>/CHANGELOG.md`): sem
+  entrada, não há tag. Um MAJOR aponta a issue de migração coordenada.
+- **Commits** seguem Conventional Commits em inglês, como nos outros repos.
+  Os commits de release de domínio podem começar pela tag (`events-v2.1.0: …`).
 
-## Nota de proveniência
+## Em aberto (ADR 0015)
 
-Materializado na Etapa 10 da refundação. Substitui o `packages/` do monorepo
-(`packages/protocols` → `contracts/protocols`; `packages/types` → `contracts/types`;
-`packages/ui` **dissolvido** → `contracts/design-tokens`). O `packages/` antigo
-permanece até a migração de topologia (multi-repo) removê-lo.
+- **Mecanismo de distribuição:** hoje é cópia manual (o `schema.json` no
+  `api`). Pacote, submódulo ou download por tag ainda não foi decidido.
+- **Tag de `protocols-v1.1.0`:** a versão está no CHANGELOG, mas a tag não foi
+  criada; só `events-v2.0.0` e `events-v2.1.0` existem no remoto.
+- **Validação automática** da categoria da mudança e compatibilidade de eventos
+  já persistidos.
+
+## Proveniência
+
+Materializado na Etapa 10 da refundação. Substituiu o `packages/` do monorepo:
+`packages/protocols` virou `contracts/protocols`, `packages/types` virou
+`contracts/types` e `packages/ui` foi **dissolvido** em
+`contracts/design-tokens`. O `packages/` antigo ainda existe na raiz do
+monorepo, fora do git.
