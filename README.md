@@ -21,7 +21,7 @@ Quatro domínios, **versionados de forma independente** (ADR 0015):
 | Domínio | O que é | Versão | Estado |
 |---|---|---|---|
 | [`events/`](events/EVENTS.md) | Catálogo dos eventos: nome, escopo, payload | `events-v2.1.0` | Materializado, reconciliado com o código |
-| [`protocols/`](protocols/README.md) | JSON Schema da definição de protocolo (ADR 0009) | `protocols-v1.1.0` (no CHANGELOG, sem tag) | Materializado |
+| [`protocols/`](protocols/README.md) | JSON Schema da definição de protocolo (ADR 0009) | `protocols-v1.1.0` | Materializado |
 | [`types/`](types/README.md) | Contrato de tipos da API (Ruby ↔ TS) | — | Scaffold: extração pendente |
 | [`design-tokens/`](design-tokens/README.md) | Cores, espaçamento e tipografia como dado | — | Scaffold: precisa de input de design |
 
@@ -94,8 +94,6 @@ lugares no mesmo ciclo, com entrada no CHANGELOG daqui.
 
 - **Mecanismo de distribuição:** hoje é cópia manual (o `schema.json` no
   `api`). Pacote, submódulo ou download por tag ainda não foi decidido.
-- **Tag de `protocols-v1.1.0`:** a versão está no CHANGELOG, mas a tag não foi
-  criada; só `events-v2.0.0` e `events-v2.1.0` existem no remoto.
 - **Validação automática** da categoria da mudança e compatibilidade de eventos
   já persistidos.
 
