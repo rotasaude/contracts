@@ -1,5 +1,15 @@
 # Changelog — protocols
 
+## protocols-v1.2.0 — 2026-09-30 — MINOR
+- `analytic` (opcional, boolean) na pergunta (`$defs/step`): marca a pergunta para o Analytics
+  (ADR 0025) — as respostas dela aparecem agregadas por bairro, nunca por pessoa. Só vale `true`
+  com `answer_type` `boolean` ou `enum` (`if`/`then` no passo); `integer` e `text` com
+  `analytic: true` são recusados. Ausente equivale a `false`.
+- A marca é parte da versão do protocolo e passa pelo ciclo assinado (ADR 0016).
+- Expand: nada vira obrigatório e nada foi removido — toda definição válida em `v1.1.0` continua
+  válida, por isso MINOR. O `api` atualiza a cópia (`config/protocols/schema.json`) no mesmo ciclo,
+  antes do `dashboard` passar a gravar a marca.
+
 ## protocols-v1.1.0 — 2026-09-16 — MINOR
 - `recommendations` (opcional): mapa `tier -> { title, body }` com a orientação clínica por
   faixa. É o que o relatório do cidadão exibe.

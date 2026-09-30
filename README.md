@@ -21,7 +21,7 @@ Quatro domínios, **versionados de forma independente** (ADR 0015):
 | Domínio | O que é | Versão | Estado |
 |---|---|---|---|
 | [`events/`](events/EVENTS.md) | Catálogo dos eventos: nome, escopo, payload | `events-v2.1.0` | Materializado, reconciliado com o código |
-| [`protocols/`](protocols/README.md) | JSON Schema da definição de protocolo (ADR 0009) | `protocols-v1.1.0` | Materializado |
+| [`protocols/`](protocols/README.md) | JSON Schema da definição de protocolo (ADR 0009) | `protocols-v1.2.0` | Materializado |
 | [`types/`](types/README.md) | Contrato de tipos da API (Ruby ↔ TS) | — | Scaffold: extração pendente |
 | [`design-tokens/`](design-tokens/README.md) | Cores, espaçamento e tipografia como dado | — | Scaffold: precisa de input de design |
 
@@ -54,7 +54,8 @@ evento lá **e** aqui, no mesmo ciclo.
 validador do motor Ruby. O editor do `dashboard` não importa o arquivo: salva
 pelo `api`, que valida contra ele. `v1.1.0`
 acrescentou `recommendations`, `priority_when` e a gramática de condições
-(`$defs/condition`), sem remover nada.
+(`$defs/condition`), sem remover nada. `v1.2.0` acrescentou `analytic` na
+pergunta (Analytics, ADR 0025), válido só em `boolean` e `enum`.
 
 O `api` usa uma **cópia** em `config/protocols/schema.json`, não uma
 dependência. Hoje as duas estão idênticas. Mudou o schema? Atualize os dois
