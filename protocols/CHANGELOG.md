@@ -1,5 +1,16 @@
 # Changelog — protocols
 
+## protocols-v1.3.0 — 2026-09-30 — MINOR
+- `answer_type: "enum"` passa a exigir `options` com ao menos 1 item (`if`/`then` em
+  `$defs/step`, ao lado do `if`/`then` do `analytic`, agora em `allOf`). A regra já estava
+  escrita na descrição de `options` ("Obrigatório quando answer_type=enum"), mas o schema não a
+  aplicava: uma pergunta `enum` sem opções era aceita e não tinha resposta possível.
+- Classificação (ADR 0015): MINOR. Nenhum campo foi removido, renomeado ou mudou de tipo, e
+  nenhum protocolo publicado tem `enum` sem `options` — toda definição real válida em `v1.2.0`
+  continua válida. É um endurecimento que só recusa definições que já eram inutilizáveis; o
+  `api` recusa o rascunho no envio/publicação com o erro do schema.
+- O `api` atualiza a cópia (`config/protocols/schema.json`) no mesmo ciclo.
+
 ## protocols-v1.2.0 — 2026-09-30 — MINOR
 - `analytic` (opcional, boolean) na pergunta (`$defs/step`): marca a pergunta para o Analytics
   (ADR 0025) — as respostas dela aparecem agregadas por bairro, nunca por pessoa. Só vale `true`
