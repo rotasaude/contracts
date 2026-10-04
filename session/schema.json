@@ -1,0 +1,83 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://rota-saude/schemas/session.json",
+  "title": "Session",
+  "description": "Contrato de sessão do api: corpo de GET /session e de POST /session (e POST /session/grant), e o escopo do envelope de /admin/api. A cidade é a do host (banco por cidade, ADR 0020).",
+  "$defs": {
+    "membership": {
+      "type": "object",
+      "required": ["city_slug", "city_name", "city_uf", "role"],
+      "additionalProperties": true,
+      "properties": {
+        "city_slug": { "type": "string", "description": "Slug da cidade do host." },
+        "city_name": { "type": "string" },
+        "city_uf": { "type": ["string", "null"], "maxLength": 2, "description": "Sigla da UF; null enquanto a cidade não a tem." },
+        "role": {
+          "type": "string",
+          "description": "Papel do vínculo ativo. Consumidor usa fallback para valor desconhecido.",
+          "examples": ["analyst", "campaign_manager", "citizen_verifier", "health_professional", "municipal_admin", "protocol_author", "protocol_publisher", "protocol_reviewer", "viewer"]
+        }
+      }
+    },
+    "session_user": {
+      "type": "object",
+      "description": "Corpo de GET /session e de POST /session (201). Para operador que entrou por grant, operator=true, memberships=[] e mfa_verified_at=null.",
+      "required": ["id", "email_address", "mfa_enrolled", "operator", "mfa_verified_at", "memberships"],
+      "additionalProperties": true,
+      "properties": {
+        "id": { "type": "string" },
+        "email_address": { "type": "string" },
+        "mfa_enrolled": { "type": "boolean" },
+        "operator": { "type": "boolean", "description": "false para usuário da cidade; true para operador de plataforma dentro da cidade (grant)." },
+        "mfa_verified_at": { "type": ["string", "null"], "format": "date-time", "description": "ISO 8601; null se a sessão ainda não passou pelo segundo fator (e sempre null em sessão de operador por grant)." },
+        "memberships": { "type": "array", "items": { "$ref": "#/$defs/membership" } },
+        "time_zone": { "type": "string", "description": "Fuso IANA da cidade do host; as telas formatam hora nele. Ausente na sessão aberta no console de plataforma (Operators::SessionsController)." }
+      }
+    },
+    "admin_scope": {
+      "type": "object",
+      "description": "data.scope do envelope de /admin/api.",
+      "required": ["city", "period", "tz"],
+      "additionalProperties": true,
+      "properties": {
+        "city": {
+          "type": "object",
+          "required": ["slug", "name", "uf"],
+          "additionalProperties": true,
+          "properties": {
+            "slug": { "type": "string" },
+            "name": { "type": "string" },
+            "uf": { "type": ["string", "null"], "maxLength": 2 }
+          }
+        },
+        "period": {
+          "type": "object",
+          "required": ["key", "label", "axis"],
+          "additionalProperties": true,
+          "properties": {
+            "key": { "type": "string", "description": "today, 7d, 30d ou custom." },
+            "label": { "type": "string" },
+            "axis": { "enum": ["hora", "dia"] }
+          }
+        },
+        "tz": { "type": "string", "description": "Fuso IANA usado na agregação (o da cidade)." }
+      }
+    },
+    "admin_envelope": {
+      "type": "object",
+      "description": "Envelope universal de /admin/api: { data: { ..., scope }, as_of }. Os demais campos de data variam por painel.",
+      "required": ["data", "as_of"],
+      "additionalProperties": true,
+      "properties": {
+        "data": {
+          "type": "object",
+          "required": ["scope"],
+          "additionalProperties": true,
+          "properties": { "scope": { "$ref": "#/$defs/admin_scope" } }
+        },
+        "as_of": { "type": "string", "format": "date-time" }
+      }
+    }
+  },
+  "$ref": "#/$defs/session_user"
+}

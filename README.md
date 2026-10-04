@@ -16,12 +16,13 @@ versionados.
 
 ## Domínios
 
-Quatro domínios, **versionados de forma independente** (ADR 0015):
+Cinco domínios, **versionados de forma independente** (ADR 0015):
 
 | Domínio | O que é | Versão | Estado |
 |---|---|---|---|
 | [`events/`](events/EVENTS.md) | Catálogo dos eventos: nome, escopo, payload | `events-v2.1.0` | Materializado, reconciliado com o código |
 | [`protocols/`](protocols/README.md) | JSON Schema da definição de protocolo (ADR 0009) | `protocols-v1.3.0` | Materializado |
+| [`session/`](session/CHANGELOG.md) | Corpo da sessão (`GET /session`) e escopo do envelope de `/admin/api` | `session-v1.0.0` | Materializado |
 | [`types/`](types/README.md) | Contrato de tipos da API (Ruby ↔ TS) | — | Scaffold: extração pendente |
 | [`design-tokens/`](design-tokens/README.md) | Cores, espaçamento e tipografia como dado | — | Scaffold: precisa de input de design |
 
@@ -73,7 +74,7 @@ lugares no mesmo ciclo, com entrada no CHANGELOG daqui.
 ## Versionamento (ADR 0015)
 
 - **SemVer 2.0.0 por domínio**, com tag prefixada (`events-vX.Y.Z`,
-  `protocols-vX.Y.Z`, `types-vX.Y.Z`, `tokens-vX.Y.Z`). Cada app fixa a versão
+  `protocols-vX.Y.Z`, `session-vX.Y.Z`, `types-vX.Y.Z`, `tokens-vX.Y.Z`). Cada app fixa a versão
   **do domínio que consome**.
 - **Classificação de mudança:**
   - **MAJOR:** quebra consumidores (remove ou renomeia campo, muda tipo,
