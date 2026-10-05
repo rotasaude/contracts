@@ -31,7 +31,14 @@
         "operator": { "type": "boolean", "description": "false para usuário da cidade; true para operador de plataforma dentro da cidade (grant)." },
         "mfa_verified_at": { "type": ["string", "null"], "format": "date-time", "description": "ISO 8601; null se a sessão ainda não passou pelo segundo fator (e sempre null em sessão de operador por grant)." },
         "memberships": { "type": "array", "items": { "$ref": "#/$defs/membership" } },
-        "time_zone": { "type": "string", "description": "Fuso IANA da cidade do host; as telas formatam hora nele. Ausente na sessão aberta no console de plataforma (Operators::SessionsController)." }
+        "time_zone": { "type": "string", "description": "Fuso IANA da cidade do host; as telas formatam hora nele. Ausente na sessão aberta no console de plataforma (Operators::SessionsController)." },
+        "features": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": { "type": "string", "pattern": "^[a-z][a-z0-9_]*$" },
+          "description": "Chaves de interruptor de funcionalidade LIGADAS para a cidade do host (ADR 0028); ligada não quer dizer utilizável — o que falta vem da rota da funcionalidade. Ausente na sessão aberta no console de plataforma. Consumidor trata ausente como [] e ignora chave desconhecida.",
+          "examples": [["ledi_export", "cadsus_lookup"]]
+        }
       }
     },
     "admin_scope": {

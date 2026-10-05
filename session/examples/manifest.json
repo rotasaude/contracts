@@ -1,0 +1,14 @@
+{
+  "cases": [
+    { "file": "city-user-without-features.json", "expect": "valid" },
+    { "file": "city-user-features-empty.json", "expect": "valid" },
+    { "file": "city-user-features.json", "expect": "valid" },
+    { "file": "city-user-unknown-feature.json", "expect": "valid" },
+    { "file": "operator-grant-features.json", "expect": "valid" },
+    { "file": "platform-console-without-features.json", "expect": "valid" },
+    { "file": "invalid-features-not-array.json", "expect": "/features array" },
+    { "file": "invalid-features-object-items.json", "expect": "/features/0 string" },
+    { "file": "invalid-features-duplicate.json", "expect": "/features uniqueItems" },
+    { "file": "invalid-features-bad-key.json", "expect": "/features/0 pattern" }
+  ]
+}

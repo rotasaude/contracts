@@ -22,7 +22,7 @@ Cinco domínios, **versionados de forma independente** (ADR 0015):
 |---|---|---|---|
 | [`events/`](events/EVENTS.md) | Catálogo dos eventos: nome, escopo, payload | `events-v2.1.0` | Materializado, reconciliado com o código |
 | [`protocols/`](protocols/README.md) | JSON Schema da definição de protocolo (ADR 0009) | `protocols-v1.4.0` | Materializado |
-| [`session/`](session/CHANGELOG.md) | Corpo da sessão (`GET /session`) e escopo do envelope de `/admin/api` | `session-v1.0.0` | Materializado |
+| [`session/`](session/CHANGELOG.md) | Corpo da sessão (`GET /session`) e escopo do envelope de `/admin/api` | `session-v1.1.0` | Materializado |
 | [`types/`](types/README.md) | Contrato de tipos da API (Ruby ↔ TS) | — | Scaffold: extração pendente |
 | [`design-tokens/`](design-tokens/README.md) | Cores, espaçamento e tipografia como dado | — | Scaffold: precisa de input de design |
 
@@ -65,6 +65,38 @@ válidos e inválidos ficam em `protocols/examples/`.
 O `api` usa uma **cópia** em `config/protocols/schema.json`, não uma
 dependência. Hoje as duas estão idênticas. Mudou o schema? Atualize os dois
 lugares no mesmo ciclo, com entrada no CHANGELOG daqui.
+
+### session
+
+`schema.json` descreve o corpo de `GET /session` (e de `POST /session` e
+`POST /session/grant`) e o `data.scope` do envelope de `/admin/api`. `v1.1.0`
+acrescentou `features` (chaves de interruptor ligadas na cidade do host, ADR
+0028). O `api` não tem cópia deste schema. Exemplos válidos e inválidos ficam
+em `session/examples/`, com o mesmo formato de manifesto de
+`protocols/examples/`; verifique, a partir da raiz do monorepo e com o compose
+de pé:
+
+```bash
+python3 -c '
+import json, os, sys
+schema_path, manifest_path, extras = sys.argv[1], sys.argv[2], sys.argv[3:]
+base = os.path.dirname(manifest_path)
+cases = [dict(c, doc=json.load(open(os.path.join(base, c["file"])))) for c in json.load(open(manifest_path))["cases"]]
+cases += [{"file": p, "expect": "valid", "doc": json.load(open(p))} for p in extras]
+print(json.dumps({"schema": json.load(open(schema_path)), "cases": cases}))
+' contracts/session/schema.json contracts/session/examples/manifest.json \
+| docker compose exec -T -w /rails api bundle exec ruby -rjson -rjson_schemer -e '
+input = JSON.parse(STDIN.read)
+schemer = JSONSchemer.schema(input["schema"])
+passed = input["cases"].count do |c|
+  errors = schemer.validate(c["doc"]).map { |e| p = e["data_pointer"]; "#{p.empty? ? "(root)" : p} #{e["type"]}" }.uniq
+  ok = c["expect"] == "valid" ? errors.empty? : errors.include?(c["expect"])
+  puts "#{ok ? "ok  " : "FAIL"} #{c["file"]} — esperado: #{c["expect"]}; obtido: #{errors.empty? ? "valid" : errors.join(" | ")}"
+  ok
+end
+puts "#{passed}/#{input["cases"].size} casos"
+exit(passed == input["cases"].size ? 0 : 1)'
+```
 
 ### Fora deste repo, por enquanto
 

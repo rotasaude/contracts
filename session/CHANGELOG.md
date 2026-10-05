@@ -1,5 +1,26 @@
 # Changelog — session
 
+## session-v1.1.0 — 2026-10-05 — MINOR
+
+`session_user` ganha `features` (opcional): array com as chaves de interruptor
+de funcionalidade **ligadas** para a cidade do host (ADR 0028, módulo 16). Hoje
+as chaves do catálogo do `api` são `ledi_export` e `cadsus_lookup`.
+
+- **Ligada não quer dizer utilizável.** O que falta (modo de prontuário,
+  endereço do PEC, código IBGE, credencial) o consumidor pergunta à rota da
+  funcionalidade; a sessão não carrega pré-requisito.
+- **Ausente** na sessão aberta no console de plataforma
+  (`Operators::SessionsController`). A sessão de operador por grant, dentro da
+  cidade, traz `features` como a de usuário.
+- **Tolerância do consumidor:** ausente vale `[]`; chave desconhecida é
+  ignorada. O schema confere a forma (string snake_case, sem repetição), não a
+  lista de chaves: chave nova do catálogo não pede versão nova deste contrato.
+- **Recusa** de rota de funcionalidade desligada:
+  `403 { "error": "feature_disabled", "feature": "<key>" }`.
+
+Nada removido, nada passou a obrigatório: toda sessão válida em `v1.0.0`
+continua válida. Exemplos válidos e inválidos em `session/examples/`.
+
 ## session-v1.0.0 — 2026-10-04 — MAJOR
 
 Issue de migração coordenada: rotasaude/api#35
