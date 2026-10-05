@@ -1,0 +1,137 @@
+{
+  "name": "saude-do-idoso",
+  "version": 1,
+  "start_step_id": "quedas",
+  "steps": [
+    {
+      "id": "quedas",
+      "prompt": "Teve alguma queda nos últimos 12 meses?",
+      "answer_type": "boolean",
+      "branches": {
+        "true": "medicamentos",
+        "false": "medicamentos"
+      },
+      "weights": {
+        "true": 5,
+        "false": 0
+      }
+    },
+    {
+      "id": "medicamentos",
+      "prompt": "Quantos medicamentos diferentes você toma por dia?",
+      "answer_type": "integer"
+    }
+  ],
+  "scoring": {
+    "type": "weighted",
+    "thresholds": {
+      "baixa": 0,
+      "alta": 5
+    },
+    "priority_map": {
+      "baixa": 9,
+      "alta": 5
+    }
+  },
+  "suggestions": [
+    {
+      "protocol": "protocolo-00",
+      "when": {
+        "gte": [
+          "outcome.score",
+          0
+        ]
+      }
+    },
+    {
+      "protocol": "protocolo-01",
+      "when": {
+        "gte": [
+          "outcome.score",
+          1
+        ]
+      }
+    },
+    {
+      "protocol": "protocolo-02",
+      "when": {
+        "gte": [
+          "outcome.score",
+          2
+        ]
+      }
+    },
+    {
+      "protocol": "protocolo-03",
+      "when": {
+        "gte": [
+          "outcome.score",
+          3
+        ]
+      }
+    },
+    {
+      "protocol": "protocolo-04",
+      "when": {
+        "gte": [
+          "outcome.score",
+          4
+        ]
+      }
+    },
+    {
+      "protocol": "protocolo-05",
+      "when": {
+        "gte": [
+          "outcome.score",
+          5
+        ]
+      }
+    },
+    {
+      "protocol": "protocolo-06",
+      "when": {
+        "gte": [
+          "outcome.score",
+          6
+        ]
+      }
+    },
+    {
+      "protocol": "protocolo-07",
+      "when": {
+        "gte": [
+          "outcome.score",
+          7
+        ]
+      }
+    },
+    {
+      "protocol": "protocolo-08",
+      "when": {
+        "gte": [
+          "outcome.score",
+          8
+        ]
+      }
+    },
+    {
+      "protocol": "protocolo-09",
+      "when": {
+        "gte": [
+          "outcome.score",
+          9
+        ]
+      }
+    },
+    {
+      "protocol": "protocolo-10",
+      "when": {
+        "gte": [
+          "outcome.score",
+          10
+        ]
+      }
+    }
+  ]
+}

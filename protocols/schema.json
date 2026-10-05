@@ -55,6 +55,29 @@
           "priority": { "type": "integer", "minimum": 1, "maximum": 9 }
         }
       }
+    },
+    "offer": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "title":             { "type": "string", "minLength": 1, "maxLength": 60 },
+        "summary":           { "type": "string", "minLength": 1, "maxLength": 200 },
+        "eligibility":       { "$ref": "#/$defs/condition" },
+        "retake_after_days": { "type": "integer", "minimum": 1, "maximum": 3650 }
+      }
+    },
+    "suggestions": {
+      "type": "array",
+      "maxItems": 10,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["protocol", "when"],
+        "properties": {
+          "protocol": { "type": "string", "pattern": "^[a-z][a-z0-9-]+$" },
+          "when":     { "$ref": "#/$defs/condition" }
+        }
+      }
     }
   },
   "$defs": {

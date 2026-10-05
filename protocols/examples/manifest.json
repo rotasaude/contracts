@@ -3,6 +3,21 @@
     { "file": "no-offer.json", "expect": "valid" },
     { "file": "condition-gte-lte.json", "expect": "valid" },
     { "file": "invalid-gte-three-items.json", "expect": "/priority_when/0/when/gte maxItems" },
-    { "file": "invalid-condition-two-operators.json", "expect": "/priority_when/0/when maxProperties" }
+    { "file": "invalid-condition-two-operators.json", "expect": "/priority_when/0/when maxProperties" },
+    { "file": "offer-full.json", "expect": "valid" },
+    { "file": "offer-empty.json", "expect": "valid" },
+    { "file": "suggestions-gte-lte.json", "expect": "valid" },
+    { "file": "reserved-variables.json", "expect": "valid" },
+    { "file": "invalid-offer-title-too-long.json", "expect": "/offer/title maxLength" },
+    { "file": "invalid-offer-title-empty.json", "expect": "/offer/title minLength" },
+    { "file": "invalid-offer-summary-too-long.json", "expect": "/offer/summary maxLength" },
+    { "file": "invalid-offer-retake-zero.json", "expect": "/offer/retake_after_days minimum" },
+    { "file": "invalid-offer-retake-too-big.json", "expect": "/offer/retake_after_days maximum" },
+    { "file": "invalid-offer-extra-property.json", "expect": "/offer/audience schema" },
+    { "file": "invalid-eligibility-unknown-operator.json", "expect": "/offer/eligibility required" },
+    { "file": "invalid-suggestion-without-when.json", "expect": "/suggestions/0 required" },
+    { "file": "invalid-suggestion-protocol-uppercase.json", "expect": "/suggestions/0/protocol pattern" },
+    { "file": "invalid-suggestion-protocol-leading-digit.json", "expect": "/suggestions/0/protocol pattern" },
+    { "file": "invalid-suggestions-too-many.json", "expect": "/suggestions maxItems" }
   ]
 }

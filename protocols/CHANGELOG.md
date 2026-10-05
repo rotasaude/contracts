@@ -1,5 +1,24 @@
 # Changelog — protocols
 
+## protocols-v1.4.0 — 2026-10-05 — MINOR
+- `$defs/condition` ganha `gte` e `lte`, com o mesmo operando de `gt`/`lt`
+  (`[operando, valor]`). Valem em todo lugar que usa a condição (`offer`, `suggestions`,
+  `priority_when`, regras de `decision_table`): o `api` avalia os dois antes de adotar esta
+  versão do schema. "60 anos ou mais" passa a ser `gte`, não `gt 59` (ADR 0027).
+- `offer` (opcional, na raiz): o que o catálogo do cidadão mostra e a quem. `title` (1..60),
+  `summary` (1..200), `eligibility` (condição) e `retake_after_days` (1..3650), todos
+  opcionais; `offer: {}` equivale a não ter o bloco. Parte do conteúdo assinado (ADR 0016).
+- `suggestions` (opcional, na raiz, até 10): `{ protocol, when }`, ambos obrigatórios — o
+  protocolo que a conclusão desta triagem pode sugerir (`pattern` igual ao do `name`) e a condição para isso.
+- O schema não distingue variáveis por lugar: `profile.*` em `offer.eligibility`;
+  `profile.*`, `outcome.*` e ids de passo em `suggestions[].when` — quem confere é o gate do
+  `api`, assim como "sugestão para o próprio protocolo" e "protocolo inexistente na cidade".
+- `examples/` + `examples/manifest.json`: definições válidas e inválidas com o erro esperado,
+  verificadas com o `json_schemer` do `api` (comando em `protocols/README.md`).
+- Expand: nada vira obrigatório e nada foi removido — toda definição válida em `v1.3.0`
+  continua válida, por isso MINOR. O `api` atualiza a cópia (`config/protocols/schema.json`)
+  no mesmo ciclo, antes do `dashboard` passar a gravar `offer`/`suggestions`.
+
 ## protocols-v1.3.0 — 2026-09-30 — MINOR
 - `answer_type: "enum"` passa a exigir `options` com ao menos 1 item (`if`/`then` em
   `$defs/step`, ao lado do `if`/`then` do `analytic`, agora em `allOf`). A regra já estava
