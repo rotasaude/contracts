@@ -1,0 +1,8 @@
+{
+  "cases": [
+    { "file": "no-offer.json", "expect": "valid" },
+    { "file": "condition-gte-lte.json", "expect": "valid" },
+    { "file": "invalid-gte-three-items.json", "expect": "/priority_when/0/when/gte maxItems" },
+    { "file": "invalid-condition-two-operators.json", "expect": "/priority_when/0/when maxProperties" }
+  ]
+}
