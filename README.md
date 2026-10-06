@@ -21,7 +21,7 @@ Cinco domínios, **versionados de forma independente** (ADR 0015):
 | Domínio | O que é | Versão | Estado |
 |---|---|---|---|
 | [`events/`](events/EVENTS.md) | Catálogo dos eventos: nome, escopo, payload | `events-v2.1.0` | Materializado, reconciliado com o código |
-| [`protocols/`](protocols/README.md) | JSON Schema da definição de protocolo (ADR 0009) | `protocols-v1.4.0` | Materializado |
+| [`protocols/`](protocols/README.md) | JSON Schema da definição de protocolo (ADR 0009) | `protocols-v1.5.0` | Materializado |
 | [`session/`](session/CHANGELOG.md) | Corpo da sessão (`GET /session`) e escopo do envelope de `/admin/api` | `session-v1.1.0` | Materializado |
 | [`types/`](types/README.md) | Contrato de tipos da API (Ruby ↔ TS) | — | Scaffold: extração pendente |
 | [`design-tokens/`](design-tokens/README.md) | Cores, espaçamento e tipografia como dado | — | Scaffold: precisa de input de design |
@@ -59,8 +59,10 @@ acrescentou `recommendations`, `priority_when` e a gramática de condições
 pergunta (Analytics, ADR 0025), válido só em `boolean` e `enum`. `v1.3.0` faz o schema exigir `options`
 (não vazio) em pergunta `enum`, regra que já constava na descrição. `v1.4.0`
 acrescentou `offer` (título, resumo, elegibilidade e intervalo de repetição do
-catálogo), `suggestions` e os operadores `gte`/`lte` (ADR 0027). Exemplos
-válidos e inválidos ficam em `protocols/examples/`.
+catálogo), `suggestions` e os operadores `gte`/`lte` (ADR 0027). `v1.5.0`
+acrescentou `scheduling`, as regras que geram pedido de agendamento na
+conclusão da triagem (ADR 0029). Exemplos válidos e inválidos ficam em
+`protocols/examples/`.
 
 O `api` usa uma **cópia** em `config/protocols/schema.json`, não uma
 dependência. Hoje as duas estão idênticas. Mudou o schema? Atualize os dois

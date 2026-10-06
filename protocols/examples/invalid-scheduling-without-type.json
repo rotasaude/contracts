@@ -1,0 +1,48 @@
+{
+  "name": "saude-do-idoso",
+  "version": 1,
+  "start_step_id": "quedas",
+  "steps": [
+    {
+      "id": "quedas",
+      "prompt": "Teve alguma queda nos últimos 12 meses?",
+      "answer_type": "boolean",
+      "branches": {
+        "true": "medicamentos",
+        "false": "medicamentos"
+      },
+      "weights": {
+        "true": 5,
+        "false": 0
+      }
+    },
+    {
+      "id": "medicamentos",
+      "prompt": "Quantos medicamentos diferentes você toma por dia?",
+      "answer_type": "integer"
+    }
+  ],
+  "scoring": {
+    "type": "weighted",
+    "thresholds": {
+      "baixa": 0,
+      "alta": 5
+    },
+    "priority_map": {
+      "baixa": 9,
+      "alta": 5
+    }
+  },
+  "scheduling": [
+    {
+      "when": {
+        "eq": [
+          "outcome.tier",
+          "alta"
+        ]
+      },
+      "priority": "priority",
+      "due_in_days": 7
+    }
+  ]
+}

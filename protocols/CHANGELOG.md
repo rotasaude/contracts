@@ -1,5 +1,25 @@
 # Changelog — protocols
 
+## protocols-v1.5.0 — 2026-10-06 — MINOR
+- `scheduling` (opcional, na raiz, até 10 regras): o que a conclusão da triagem
+  faz com a agenda (ADR 0029). Cada regra é `{ when, appointment_type, priority,
+  due_in_days }`, todos obrigatórios: `when` é a condição estruturada
+  (`$defs/condition`; a forma antiga de mapa simples não vale aqui),
+  `appointment_type` é a `key` do tipo de atendimento da cidade
+  (`^[a-z][a-z0-9_]{1,40}$`, sublinhado, nunca hífen), `priority` é `routine` ou
+  `priority`, e `due_in_days` (1..365) é o prazo previsto do pedido. Vale a
+  primeira regra que casar; nenhuma regra (ou `scheduling: []`) = só orientação.
+  Resultado urgente nunca gera pedido (regra do `api`, não do schema). Parte do
+  conteúdo assinado (ADR 0016).
+- O schema não confere as variáveis do `when` (`outcome.*`, `profile.*`, ids de
+  passo) nem se o tipo existe na cidade: quem confere é o gate do `api` — tipo
+  inexistente é aviso, não bloqueio.
+- `examples/`: 22 exemplos novos (5 válidos, 17 inválidos) no mesmo manifesto.
+- Expand: nada vira obrigatório e nada foi removido — toda definição válida em
+  `v1.4.0` continua válida, por isso MINOR. O `api` atualiza a cópia
+  (`config/protocols/schema.json`) no mesmo ciclo, antes do `dashboard` passar a
+  gravar `scheduling`.
+
 ## protocols-v1.4.0 — 2026-10-05 — MINOR
 - `$defs/condition` ganha `gte` e `lte`, com o mesmo operando de `gt`/`lt`
   (`[operando, valor]`). Valem em todo lugar que usa a condição (`offer`, `suggestions`,

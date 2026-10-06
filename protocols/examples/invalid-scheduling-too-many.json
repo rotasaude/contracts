@@ -1,0 +1,159 @@
+{
+  "name": "saude-do-idoso",
+  "version": 1,
+  "start_step_id": "quedas",
+  "steps": [
+    {
+      "id": "quedas",
+      "prompt": "Teve alguma queda nos últimos 12 meses?",
+      "answer_type": "boolean",
+      "branches": {
+        "true": "medicamentos",
+        "false": "medicamentos"
+      },
+      "weights": {
+        "true": 5,
+        "false": 0
+      }
+    },
+    {
+      "id": "medicamentos",
+      "prompt": "Quantos medicamentos diferentes você toma por dia?",
+      "answer_type": "integer"
+    }
+  ],
+  "scoring": {
+    "type": "weighted",
+    "thresholds": {
+      "baixa": 0,
+      "alta": 5
+    },
+    "priority_map": {
+      "baixa": 9,
+      "alta": 5
+    }
+  },
+  "scheduling": [
+    {
+      "when": {
+        "eq": [
+          "outcome.tier",
+          "alta"
+        ]
+      },
+      "appointment_type": "consulta_medica",
+      "priority": "priority",
+      "due_in_days": 1
+    },
+    {
+      "when": {
+        "eq": [
+          "outcome.tier",
+          "alta"
+        ]
+      },
+      "appointment_type": "consulta_medica",
+      "priority": "priority",
+      "due_in_days": 2
+    },
+    {
+      "when": {
+        "eq": [
+          "outcome.tier",
+          "alta"
+        ]
+      },
+      "appointment_type": "consulta_medica",
+      "priority": "priority",
+      "due_in_days": 3
+    },
+    {
+      "when": {
+        "eq": [
+          "outcome.tier",
+          "alta"
+        ]
+      },
+      "appointment_type": "consulta_medica",
+      "priority": "priority",
+      "due_in_days": 4
+    },
+    {
+      "when": {
+        "eq": [
+          "outcome.tier",
+          "alta"
+        ]
+      },
+      "appointment_type": "consulta_medica",
+      "priority": "priority",
+      "due_in_days": 5
+    },
+    {
+      "when": {
+        "eq": [
+          "outcome.tier",
+          "alta"
+        ]
+      },
+      "appointment_type": "consulta_medica",
+      "priority": "priority",
+      "due_in_days": 6
+    },
+    {
+      "when": {
+        "eq": [
+          "outcome.tier",
+          "alta"
+        ]
+      },
+      "appointment_type": "consulta_medica",
+      "priority": "priority",
+      "due_in_days": 7
+    },
+    {
+      "when": {
+        "eq": [
+          "outcome.tier",
+          "alta"
+        ]
+      },
+      "appointment_type": "consulta_medica",
+      "priority": "priority",
+      "due_in_days": 8
+    },
+    {
+      "when": {
+        "eq": [
+          "outcome.tier",
+          "alta"
+        ]
+      },
+      "appointment_type": "consulta_medica",
+      "priority": "priority",
+      "due_in_days": 9
+    },
+    {
+      "when": {
+        "eq": [
+          "outcome.tier",
+          "alta"
+        ]
+      },
+      "appointment_type": "consulta_medica",
+      "priority": "priority",
+      "due_in_days": 10
+    },
+    {
+      "when": {
+        "eq": [
+          "outcome.tier",
+          "alta"
+        ]
+      },
+      "appointment_type": "consulta_medica",
+      "priority": "priority",
+      "due_in_days": 11
+    }
+  ]
+}
