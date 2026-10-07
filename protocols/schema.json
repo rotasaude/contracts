@@ -5,10 +5,9 @@
   "description": "Contrato compartilhado por motor Ruby (ADR-0013) e preview TS (ADR-0016).",
   "type": "object",
   "additionalProperties": false,
-  "oneOf": [
-    { "$ref": "#/$defs/triage" },
-    { "$ref": "#/$defs/screening" }
-  ],
+  "if": { "required": ["kind"] },
+  "then": { "$ref": "#/$defs/screening" },
+  "else": { "$ref": "#/$defs/triage" },
   "properties": {
     "name": {
       "type": "string",

@@ -10,13 +10,15 @@
   `recommendations`, `priority_when`, `offer`, `suggestions` nem `scheduling`.
   Parte do conteúdo assinado (ADR 0016).
 - `kind` ausente continua sendo triagem, com os mesmos campos obrigatórios; a
-  triagem não aceita `risk_rules` nem `kind`. A raiz passa a ter `oneOf` entre
-  `$defs/triage` e `$defs/screening`; as propriedades continuam na raiz, então
-  os erros de uma triagem inválida são os mesmos de `v1.5.0`.
+  triagem não aceita `risk_rules` nem `kind`. A raiz escolhe a forma pelo
+  `kind` (`if`/`then`/`else`: com `kind`, `$defs/screening`; sem `kind`,
+  `$defs/triage`), então só a forma escolhida reporta erros; as propriedades
+  continuam na raiz, e os erros de uma triagem inválida são os mesmos de
+  `v1.5.0`.
 - O schema não confere as variáveis do `when` (`vitals.*`, `complaint.ciap2`,
   `profile.*`), o nome reservado `acolhimento` nem "uma versão ativa por nome":
   quem confere é o gate do `api`.
-- `examples/`: 26 exemplos novos (4 válidos, 22 inválidos) no mesmo manifesto.
+- `examples/`: 27 exemplos novos (4 válidos, 23 inválidos) no mesmo manifesto.
 - Expand: nada vira obrigatório para a triagem e nada foi removido — toda
   definição válida em `v1.5.0` continua válida, por isso MINOR. O `api`
   atualiza a cópia (`config/protocols/schema.json`) no mesmo ciclo, antes do

@@ -66,6 +66,7 @@
     { "file": "invalid-screening-with-suggestions.json", "expect": "/suggestions schema" },
     { "file": "invalid-screening-with-scheduling.json", "expect": "/scheduling schema" },
     { "file": "invalid-triage-with-risk-rules.json", "expect": "/risk_rules schema" },
-    { "file": "invalid-triage-kind-triage.json", "expect": "/kind const" }
+    { "file": "invalid-triage-kind-triage.json", "expect": "/kind const" },
+    { "file": "invalid-triage-without-steps.json", "expect": "(root) required" }
   ]
 }
