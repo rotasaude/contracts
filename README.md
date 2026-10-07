@@ -21,7 +21,7 @@ Cinco domínios, **versionados de forma independente** (ADR 0015):
 | Domínio | O que é | Versão | Estado |
 |---|---|---|---|
 | [`events/`](events/EVENTS.md) | Catálogo dos eventos: nome, escopo, payload | `events-v2.1.0` | Materializado, reconciliado com o código |
-| [`protocols/`](protocols/README.md) | JSON Schema da definição de protocolo (ADR 0009) | `protocols-v1.5.0` | Materializado |
+| [`protocols/`](protocols/README.md) | JSON Schema da definição de protocolo (ADR 0009) | `protocols-v1.6.0` | Materializado |
 | [`session/`](session/CHANGELOG.md) | Corpo da sessão (`GET /session`) e escopo do envelope de `/admin/api` | `session-v1.1.0` | Materializado |
 | [`types/`](types/README.md) | Contrato de tipos da API (Ruby ↔ TS) | — | Scaffold: extração pendente |
 | [`design-tokens/`](design-tokens/README.md) | Cores, espaçamento e tipografia como dado | — | Scaffold: precisa de input de design |
@@ -61,7 +61,9 @@ pergunta (Analytics, ADR 0025), válido só em `boolean` e `enum`. `v1.3.0` faz 
 acrescentou `offer` (título, resumo, elegibilidade e intervalo de repetição do
 catálogo), `suggestions` e os operadores `gte`/`lte` (ADR 0027). `v1.5.0`
 acrescentou `scheduling`, as regras que geram pedido de agendamento na
-conclusão da triagem (ADR 0029). Exemplos válidos e inválidos ficam em
+conclusão da triagem (ADR 0029). `v1.6.0` acrescentou a variante de
+acolhimento (`kind: "screening"`, ADR 0030): só `risk_rules`, as regras que
+sugerem a cor da escuta inicial. Exemplos válidos e inválidos ficam em
 `protocols/examples/`.
 
 O `api` usa uma **cópia** em `config/protocols/schema.json`, não uma

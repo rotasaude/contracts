@@ -1,0 +1,22 @@
+{
+  "name": "acolhimento",
+  "version": 1,
+  "kind": "screening",
+  "risk_rules": [
+    {
+      "when": {
+        "gte": [
+          "vitals.systolic",
+          180
+        ]
+      },
+      "color": "red"
+    }
+  ],
+  "scoring": {
+    "type": "weighted",
+    "thresholds": {
+      "baixa": 0
+    }
+  }
+}

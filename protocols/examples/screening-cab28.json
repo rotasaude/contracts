@@ -1,0 +1,111 @@
+{
+  "name": "acolhimento",
+  "version": 1,
+  "kind": "screening",
+  "risk_rules": [
+    {
+      "when": {
+        "any": [
+          {
+            "gte": [
+              "vitals.systolic",
+              180
+            ]
+          },
+          {
+            "lt": [
+              "vitals.spo2",
+              90
+            ]
+          }
+        ]
+      },
+      "color": "red"
+    },
+    {
+      "when": {
+        "any": [
+          {
+            "gte": [
+              "vitals.temperature_c",
+              39
+            ]
+          },
+          {
+            "gte": [
+              "vitals.capillary_glucose",
+              300
+            ]
+          }
+        ]
+      },
+      "color": "yellow"
+    },
+    {
+      "when": {
+        "all": [
+          {
+            "gte": [
+              "profile.age",
+              60
+            ]
+          },
+          {
+            "eq": [
+              "profile.sex",
+              "female"
+            ]
+          },
+          {
+            "gte": [
+              "vitals.pain_score",
+              8
+            ]
+          }
+        ]
+      },
+      "color": "yellow"
+    },
+    {
+      "when": {
+        "all": [
+          {
+            "eq": [
+              "vitals.glucose_moment",
+              "fasting"
+            ]
+          },
+          {
+            "gte": [
+              "vitals.capillary_glucose",
+              126
+            ]
+          }
+        ]
+      },
+      "color": "green"
+    },
+    {
+      "when": {
+        "gte": [
+          "vitals.temperature_c",
+          37.8
+        ]
+      },
+      "color": "green"
+    },
+    {
+      "when": {
+        "in": [
+          "complaint.ciap2",
+          [
+            "A98",
+            "A97"
+          ]
+        ]
+      },
+      "color": "blue"
+    }
+  ],
+  "schema_version": 1
+}

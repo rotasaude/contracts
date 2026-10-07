@@ -1,0 +1,29 @@
+{
+  "name": "acolhimento",
+  "version": 1,
+  "kind": "screening",
+  "risk_rules": [
+    {
+      "when": {
+        "gte": [
+          "vitals.systolic",
+          180
+        ]
+      },
+      "color": "red"
+    }
+  ],
+  "scheduling": [
+    {
+      "when": {
+        "gte": [
+          "vitals.systolic",
+          140
+        ]
+      },
+      "appointment_type": "consulta_medica",
+      "priority": "routine",
+      "due_in_days": 7
+    }
+  ]
+}

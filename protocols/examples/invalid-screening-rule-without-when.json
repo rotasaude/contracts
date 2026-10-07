@@ -1,0 +1,10 @@
+{
+  "name": "acolhimento",
+  "version": 1,
+  "kind": "screening",
+  "risk_rules": [
+    {
+      "color": "red"
+    }
+  ]
+}

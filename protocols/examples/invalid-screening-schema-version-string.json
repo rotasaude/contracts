@@ -1,0 +1,17 @@
+{
+  "name": "acolhimento",
+  "version": 1,
+  "kind": "screening",
+  "risk_rules": [
+    {
+      "when": {
+        "gte": [
+          "vitals.systolic",
+          180
+        ]
+      },
+      "color": "red"
+    }
+  ],
+  "schema_version": "1.6.0"
+}

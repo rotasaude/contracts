@@ -1,0 +1,457 @@
+{
+  "name": "acolhimento",
+  "version": 1,
+  "kind": "screening",
+  "risk_rules": [
+    {
+      "when": {
+        "gte": [
+          "vitals.heart_rate",
+          100
+        ]
+      },
+      "color": "red"
+    },
+    {
+      "when": {
+        "gte": [
+          "vitals.heart_rate",
+          101
+        ]
+      },
+      "color": "red"
+    },
+    {
+      "when": {
+        "gte": [
+          "vitals.heart_rate",
+          102
+        ]
+      },
+      "color": "red"
+    },
+    {
+      "when": {
+        "gte": [
+          "vitals.heart_rate",
+          103
+        ]
+      },
+      "color": "red"
+    },
+    {
+      "when": {
+        "gte": [
+          "vitals.heart_rate",
+          104
+        ]
+      },
+      "color": "red"
+    },
+    {
+      "when": {
+        "gte": [
+          "vitals.heart_rate",
+          105
+        ]
+      },
+      "color": "red"
+    },
+    {
+      "when": {
+        "gte": [
+          "vitals.heart_rate",
+          106
+        ]
+      },
+      "color": "red"
+    },
+    {
+      "when": {
+        "gte": [
+          "vitals.heart_rate",
+          107
+        ]
+      },
+      "color": "red"
+    },
+    {
+      "when": {
+        "gte": [
+          "vitals.heart_rate",
+          108
+        ]
+      },
+      "color": "red"
+    },
+    {
+      "when": {
+        "gte": [
+          "vitals.heart_rate",
+          109
+        ]
+      },
+      "color": "red"
+    },
+    {
+      "when": {
+        "gte": [
+          "vitals.heart_rate",
+          110
+        ]
+      },
+      "color": "red"
+    },
+    {
+      "when": {
+        "gte": [
+          "vitals.heart_rate",
+          111
+        ]
+      },
+      "color": "red"
+    },
+    {
+      "when": {
+        "gte": [
+          "vitals.heart_rate",
+          112
+        ]
+      },
+      "color": "red"
+    },
+    {
+      "when": {
+        "gte": [
+          "vitals.heart_rate",
+          113
+        ]
+      },
+      "color": "red"
+    },
+    {
+      "when": {
+        "gte": [
+          "vitals.heart_rate",
+          114
+        ]
+      },
+      "color": "red"
+    },
+    {
+      "when": {
+        "gte": [
+          "vitals.heart_rate",
+          115
+        ]
+      },
+      "color": "red"
+    },
+    {
+      "when": {
+        "gte": [
+          "vitals.heart_rate",
+          116
+        ]
+      },
+      "color": "red"
+    },
+    {
+      "when": {
+        "gte": [
+          "vitals.heart_rate",
+          117
+        ]
+      },
+      "color": "red"
+    },
+    {
+      "when": {
+        "gte": [
+          "vitals.heart_rate",
+          118
+        ]
+      },
+      "color": "red"
+    },
+    {
+      "when": {
+        "gte": [
+          "vitals.heart_rate",
+          119
+        ]
+      },
+      "color": "red"
+    },
+    {
+      "when": {
+        "gte": [
+          "vitals.heart_rate",
+          120
+        ]
+      },
+      "color": "red"
+    },
+    {
+      "when": {
+        "gte": [
+          "vitals.heart_rate",
+          121
+        ]
+      },
+      "color": "red"
+    },
+    {
+      "when": {
+        "gte": [
+          "vitals.heart_rate",
+          122
+        ]
+      },
+      "color": "red"
+    },
+    {
+      "when": {
+        "gte": [
+          "vitals.heart_rate",
+          123
+        ]
+      },
+      "color": "red"
+    },
+    {
+      "when": {
+        "gte": [
+          "vitals.heart_rate",
+          124
+        ]
+      },
+      "color": "red"
+    },
+    {
+      "when": {
+        "gte": [
+          "vitals.heart_rate",
+          125
+        ]
+      },
+      "color": "red"
+    },
+    {
+      "when": {
+        "gte": [
+          "vitals.heart_rate",
+          126
+        ]
+      },
+      "color": "red"
+    },
+    {
+      "when": {
+        "gte": [
+          "vitals.heart_rate",
+          127
+        ]
+      },
+      "color": "red"
+    },
+    {
+      "when": {
+        "gte": [
+          "vitals.heart_rate",
+          128
+        ]
+      },
+      "color": "red"
+    },
+    {
+      "when": {
+        "gte": [
+          "vitals.heart_rate",
+          129
+        ]
+      },
+      "color": "red"
+    },
+    {
+      "when": {
+        "gte": [
+          "vitals.heart_rate",
+          130
+        ]
+      },
+      "color": "red"
+    },
+    {
+      "when": {
+        "gte": [
+          "vitals.heart_rate",
+          131
+        ]
+      },
+      "color": "red"
+    },
+    {
+      "when": {
+        "gte": [
+          "vitals.heart_rate",
+          132
+        ]
+      },
+      "color": "red"
+    },
+    {
+      "when": {
+        "gte": [
+          "vitals.heart_rate",
+          133
+        ]
+      },
+      "color": "red"
+    },
+    {
+      "when": {
+        "gte": [
+          "vitals.heart_rate",
+          134
+        ]
+      },
+      "color": "red"
+    },
+    {
+      "when": {
+        "gte": [
+          "vitals.heart_rate",
+          135
+        ]
+      },
+      "color": "red"
+    },
+    {
+      "when": {
+        "gte": [
+          "vitals.heart_rate",
+          136
+        ]
+      },
+      "color": "red"
+    },
+    {
+      "when": {
+        "gte": [
+          "vitals.heart_rate",
+          137
+        ]
+      },
+      "color": "red"
+    },
+    {
+      "when": {
+        "gte": [
+          "vitals.heart_rate",
+          138
+        ]
+      },
+      "color": "red"
+    },
+    {
+      "when": {
+        "gte": [
+          "vitals.heart_rate",
+          139
+        ]
+      },
+      "color": "red"
+    },
+    {
+      "when": {
+        "gte": [
+          "vitals.heart_rate",
+          140
+        ]
+      },
+      "color": "red"
+    },
+    {
+      "when": {
+        "gte": [
+          "vitals.heart_rate",
+          141
+        ]
+      },
+      "color": "red"
+    },
+    {
+      "when": {
+        "gte": [
+          "vitals.heart_rate",
+          142
+        ]
+      },
+      "color": "red"
+    },
+    {
+      "when": {
+        "gte": [
+          "vitals.heart_rate",
+          143
+        ]
+      },
+      "color": "red"
+    },
+    {
+      "when": {
+        "gte": [
+          "vitals.heart_rate",
+          144
+        ]
+      },
+      "color": "red"
+    },
+    {
+      "when": {
+        "gte": [
+          "vitals.heart_rate",
+          145
+        ]
+      },
+      "color": "red"
+    },
+    {
+      "when": {
+        "gte": [
+          "vitals.heart_rate",
+          146
+        ]
+      },
+      "color": "red"
+    },
+    {
+      "when": {
+        "gte": [
+          "vitals.heart_rate",
+          147
+        ]
+      },
+      "color": "red"
+    },
+    {
+      "when": {
+        "gte": [
+          "vitals.heart_rate",
+          148
+        ]
+      },
+      "color": "red"
+    },
+    {
+      "when": {
+        "gte": [
+          "vitals.heart_rate",
+          149
+        ]
+      },
+      "color": "red"
+    }
+  ]
+}

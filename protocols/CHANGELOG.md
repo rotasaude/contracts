@@ -1,5 +1,27 @@
 # Changelog — protocols
 
+## protocols-v1.6.0 — 2026-10-07 — MINOR
+- Variante de acolhimento (ADR 0030): `kind: "screening"` com `risk_rules` —
+  de 1 a 50 regras `{ when, color }`, as duas obrigatórias; `when` é a condição
+  estruturada (`$defs/condition`; o mapa simples não vale) e `color` é
+  `red`, `yellow`, `green` ou `blue` (escala do Caderno de Atenção Básica nº 28,
+  nessa ordem de gravidade). Vale a cor mais grave entre as regras que casarem
+  (regra do `api`). A variante não tem `start_step_id`, `steps`, `scoring`,
+  `recommendations`, `priority_when`, `offer`, `suggestions` nem `scheduling`.
+  Parte do conteúdo assinado (ADR 0016).
+- `kind` ausente continua sendo triagem, com os mesmos campos obrigatórios; a
+  triagem não aceita `risk_rules` nem `kind`. A raiz passa a ter `oneOf` entre
+  `$defs/triage` e `$defs/screening`; as propriedades continuam na raiz, então
+  os erros de uma triagem inválida são os mesmos de `v1.5.0`.
+- O schema não confere as variáveis do `when` (`vitals.*`, `complaint.ciap2`,
+  `profile.*`), o nome reservado `acolhimento` nem "uma versão ativa por nome":
+  quem confere é o gate do `api`.
+- `examples/`: 26 exemplos novos (4 válidos, 22 inválidos) no mesmo manifesto.
+- Expand: nada vira obrigatório para a triagem e nada foi removido — toda
+  definição válida em `v1.5.0` continua válida, por isso MINOR. O `api`
+  atualiza a cópia (`config/protocols/schema.json`) no mesmo ciclo, antes do
+  `dashboard` passar a gravar protocolos de acolhimento.
+
 ## protocols-v1.5.0 — 2026-10-06 — MINOR
 - `scheduling` (opcional, na raiz, até 10 regras): o que a conclusão da triagem
   faz com a agenda (ADR 0029). Cada regra é `{ when, appointment_type, priority,

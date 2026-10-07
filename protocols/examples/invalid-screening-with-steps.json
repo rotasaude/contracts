@@ -1,0 +1,24 @@
+{
+  "name": "acolhimento",
+  "version": 1,
+  "kind": "screening",
+  "risk_rules": [
+    {
+      "when": {
+        "gte": [
+          "vitals.systolic",
+          180
+        ]
+      },
+      "color": "red"
+    }
+  ],
+  "start_step_id": "q",
+  "steps": [
+    {
+      "id": "q",
+      "prompt": "Tem febre?",
+      "answer_type": "boolean"
+    }
+  ]
+}

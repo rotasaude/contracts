@@ -1,0 +1,27 @@
+{
+  "name": "acolhimento",
+  "version": 1,
+  "kind": "screening",
+  "risk_rules": [
+    {
+      "when": {
+        "gte": [
+          "vitals.systolic",
+          180
+        ]
+      },
+      "color": "red"
+    }
+  ],
+  "suggestions": [
+    {
+      "protocol": "saude-do-idoso",
+      "when": {
+        "lt": [
+          "vitals.spo2",
+          90
+        ]
+      }
+    }
+  ]
+}
