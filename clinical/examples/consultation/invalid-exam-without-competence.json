@@ -1,5 +1,5 @@
 {
-  "schema": "rotasaude.consultation.v2",
+  "schema": "rotasaude.consultation.v1",
   "city": {
     "ibge_code": "4106902",
     "name": "Curitiba"
@@ -71,7 +71,6 @@
     "exam_requests": [
       {
         "sigtap_code": "0202010503",
-        "competence": "202609",
         "label": "Dosagem de hemoglobina glicosilada",
         "cid10_justification": "E119"
       },

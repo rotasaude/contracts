@@ -134,9 +134,10 @@
       "items": {
         "type": "object",
         "additionalProperties": false,
-        "required": ["sigtap_code", "label"],
+        "required": ["sigtap_code", "competence", "label"],
         "properties": {
           "sigtap_code": { "type": "string", "pattern": "^02[0-9]{8}$" },
+          "competence": { "type": "string", "pattern": "^[0-9]{4}(0[1-9]|1[0-2])$", "description": "Competência SIGTAP (AAAAMM) da tabela de onde saiu o rótulo, vigente no ato." },
           "label": { "type": "string", "minLength": 1 },
           "cid10_justification": { "type": "string", "minLength": 1, "maxLength": 8 }
         }

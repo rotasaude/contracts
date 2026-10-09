@@ -25,6 +25,9 @@
     {"file": "invalid-conduct-string.json", "expect": "/consultation/conducts/0 enum"},
     {"file": "invalid-conduct-duplicate.json", "expect": "/consultation/conducts uniqueItems"},
     {"file": "invalid-exam-group-03.json", "expect": "/consultation/exam_requests/0/sigtap_code pattern"},
+    {"file": "invalid-exam-without-competence.json", "expect": "/consultation/exam_requests/0 required"},
+    {"file": "invalid-exam-competence-month-13.json", "expect": "/consultation/exam_requests/0/competence pattern"},
+    {"file": "invalid-exam-competence-separator.json", "expect": "/consultation/exam_requests/0/competence pattern"},
     {"file": "invalid-outcome-left.json", "expect": "/consultation/outcome/code enum"},
     {"file": "invalid-vitals-unknown-key.json", "expect": "/consultation/vitals/mood schema"},
     {"file": "invalid-vitals-systolic-string.json", "expect": "/consultation/vitals/systolic integer"}

@@ -66,11 +66,13 @@
     "exam_requests": [
       {
         "sigtap_code": "0202010503",
+        "competence": "202609",
         "label": "Dosagem de hemoglobina glicosilada",
         "cid10_justification": "E119"
       },
       {
         "sigtap_code": "0202010317",
+        "competence": "202609",
         "label": "Dosagem de creatinina"
       }
     ],

@@ -24,6 +24,9 @@ juntos são validáveis no validar.iti.gov.br.
 - **Adendo só da autora** (19a): o `professional` do adendo é sempre a autora
   da consulta. Os exemplos são fixtures do esquema, que não confere autoria;
   por isso `addendum-structured.json` traz outra profissional.
+- **Versão da tabela no ato**: cada problema avaliado traz `release` e cada
+  exame traz `competence` (competência SIGTAP `AAAAMM`) da tabela de onde saiu
+  o rótulo, vigente quando o profissional assinou.
 - **Cadeia**: `addendum.previous_sha256` é o SHA-256 (hex minúsculo) do JCS do
   documento assinado anterior da mesma consulta; sem nenhum assinado ainda, o
   do JCS da consulta como montado no momento em que o adendo é assinado, que
