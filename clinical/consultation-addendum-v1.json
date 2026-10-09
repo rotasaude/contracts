@@ -25,14 +25,14 @@
         "changes": {
           "type": "object",
           "additionalProperties": false,
-          "description": "Contrato do 19a §9: evaluated_problems = eventos novos; conducts e exam_requests = listas finais, só quando mudaram. Objeto vazio quando o adendo é só texto.",
+          "description": "Contrato do 19a §9. Chave ausente = sem mudança. evaluated_problems = só os eventos novos. conducts = sempre a lista final, não vazia, quando mudou. exam_requests = a lista final quando mudou; [] significa que todos os exames foram cancelados (lista final vazia). Objeto vazio quando o adendo é só texto.",
           "properties": {
             "evaluated_problems": { "type": "array", "minItems": 1, "maxItems": 50, "items": { "$ref": "#/$defs/evaluated_problem" } },
             "conducts": { "$ref": "#/$defs/conducts" },
             "exam_requests": { "$ref": "#/$defs/exam_requests" }
           }
         },
-        "previous_sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$", "description": "canonical_sha256 do documento assinado anterior da mesma consulta (consulta ou adendo); sem nenhum assinado, o SHA-256 do JSON canônico da consulta." }
+        "previous_sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$", "description": "canonical_sha256 do documento assinado anterior da mesma consulta (consulta ou adendo); sem nenhum assinado ainda, o SHA-256 do JCS da consulta como montado no momento em que o adendo é assinado, que não precisa coincidir com uma assinatura posterior da consulta." }
       }
     }
   },

@@ -21,12 +21,20 @@ juntos são validáveis no validar.iti.gov.br.
 - **Cabeçalho comum**: `city`, `unit`, `professional` (quem assina: o autor da
   consulta ou do adendo, com o CPF que tem de ser o do certificado), `patient`.
   O `$defs` é idêntico nos dois arquivos.
-- **Adendo só da autora** (19a): o `professional` do adendo é sempre a autora da consulta. Os exemplos são fixtures do esquema, que não confere autoria; por isso `addendum-structured.json` traz outra profissional.
+- **Adendo só da autora** (19a): o `professional` do adendo é sempre a autora
+  da consulta. Os exemplos são fixtures do esquema, que não confere autoria;
+  por isso `addendum-structured.json` traz outra profissional.
 - **Cadeia**: `addendum.previous_sha256` é o SHA-256 (hex minúsculo) do JCS do
-  documento assinado anterior da mesma consulta; sem nenhum assinado, o do JCS
-  da consulta.
+  documento assinado anterior da mesma consulta; sem nenhum assinado ainda, o
+  do JCS da consulta como montado no momento em que o adendo é assinado, que
+  não precisa coincidir com uma assinatura posterior da consulta.
+- **`changes` do adendo**: chave ausente = sem mudança; `evaluated_problems`
+  traz só os eventos novos; `conducts` é sempre a lista final, não vazia;
+  `exam_requests: []` = todos os exames cancelados (lista final vazia).
 - O esquema não confere plausibilidade de sinais vitais, CID-10 por CBO nem
-  relações entre campos: isso é do `api`.
+  relações entre campos, texto só de espaços em branco, normalização Unicode
+  nem datas impossíveis (ex.: `2026-13-45`): isso é do `api`. As listas
+  mantêm a ordem de registro (não são ordenadas).
 
 ## Exemplos e verificação
 

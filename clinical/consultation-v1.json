@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://rota-saude/schemas/clinical/consultation-v1.json",
   "title": "rotasaude.consultation.v1",
-  "description": "JSON canônico da consulta finalizada (ADR 0032; módulo 19b). É o conteúdo assinado em CAdES destacado AD-RB, serializado em RFC 8785 (JCS): o api gera, o signer assina o hash dos bytes JCS. Só datas UTC com segundos e 'Z'; números sem zero à direita. Fechado (additionalProperties: false) porque o que não está no esquema não pode entrar no que se assina.",
+  "description": "JSON canônico da consulta finalizada (ADR 0032; módulo 19b). É o conteúdo assinado em CAdES destacado AD-RB, serializado em RFC 8785 (JCS): o api gera, o signer assina o hash dos bytes JCS. Só datas UTC com segundos e 'Z'; o JCS escreve os números na forma mais curta (o esquema não a impõe). Fechado (additionalProperties: false) porque o que não está no esquema não pode entrar no que se assina.",
   "type": "object",
   "additionalProperties": false,
   "required": ["schema", "city", "unit", "professional", "patient", "consultation"],
