@@ -16,13 +16,14 @@ versionados.
 
 ## Domínios
 
-Cinco domínios, **versionados de forma independente** (ADR 0015):
+Seis domínios, **versionados de forma independente** (ADR 0015):
 
 | Domínio | O que é | Versão | Estado |
 |---|---|---|---|
 | [`events/`](events/EVENTS.md) | Catálogo dos eventos: nome, escopo, payload | `events-v2.1.0` | Materializado, reconciliado com o código |
 | [`protocols/`](protocols/README.md) | JSON Schema da definição de protocolo (ADR 0009) | `protocols-v1.6.0` | Materializado |
 | [`session/`](session/CHANGELOG.md) | Corpo da sessão (`GET /session`) e escopo do envelope de `/admin/api` | `session-v1.1.0` | Materializado |
+| [`clinical/`](clinical/README.md) | JSON canônico assinado da consulta e do adendo (ADR 0032) | `clinical-v1.0.0` | Materializado |
 | [`types/`](types/README.md) | Contrato de tipos da API (Ruby ↔ TS) | — | Scaffold: extração pendente |
 | [`design-tokens/`](design-tokens/README.md) | Cores, espaçamento e tipografia como dado | — | Scaffold: precisa de input de design |
 
@@ -102,6 +103,17 @@ puts "#{passed}/#{input["cases"].size} casos"
 exit(passed == input["cases"].size ? 0 : 1)'
 ```
 
+### clinical
+
+`consultation-v1.json` e `consultation-addendum-v1.json` (JSON Schema 2020-12)
+descrevem o documento que o profissional assina no prontuário (módulo 19b,
+ADR 0032): o `api` gera o JSON, serializa em RFC 8785 (JCS) e o `signer` monta
+o CAdES destacado sobre esses bytes. Os dois esquemas são fechados e têm o
+mesmo `$defs`. Exemplos e o vetor de canonicalização ficam em
+`clinical/examples/`; regras e verificação em [`clinical/README.md`](clinical/README.md).
+Documento assinado nunca muda: esquema novo é versão nova (`v2`), nunca edição
+de `v1`.
+
 ### Fora deste repo, por enquanto
 
 - **SDL GraphQL da API de manutenção:** vive em `maintenance/schema.graphql`,
@@ -113,7 +125,7 @@ exit(passed == input["cases"].size ? 0 : 1)'
 ## Versionamento (ADR 0015)
 
 - **SemVer 2.0.0 por domínio**, com tag prefixada (`events-vX.Y.Z`,
-  `protocols-vX.Y.Z`, `session-vX.Y.Z`, `types-vX.Y.Z`, `tokens-vX.Y.Z`). Cada app fixa a versão
+  `protocols-vX.Y.Z`, `session-vX.Y.Z`, `clinical-vX.Y.Z`, `types-vX.Y.Z`, `tokens-vX.Y.Z`). Cada app fixa a versão
   **do domínio que consome**.
 - **Classificação de mudança:**
   - **MAJOR:** quebra consumidores (remove ou renomeia campo, muda tipo,
