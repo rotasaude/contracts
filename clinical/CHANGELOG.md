@@ -1,6 +1,6 @@
 # Changelog — clinical
 
-## clinical-v1.1.0 — 2026-10-09 — MINOR
+## clinical-v1.1.0 — 2026-10-10 — MINOR
 
 Documento clínico emitido na consulta (ADR 0033, módulo 19c). Nada do
 `v1.0.0` muda.
@@ -16,7 +16,7 @@ Documento clínico emitido na consulta (ADR 0033, módulo 19c). Nada do
   comuns idênticos aos de `consultation-v1.json`.
 - `catalog_item.dosage_form` aceita `null` (a chave continua obrigatória) quando
   o CATMAT não traz a forma farmacêutica (decisão de 2026-10-10).
-- `examples/clinical-document/`: 47 exemplos (11 válidos, 36 inválidos).
+- `examples/clinical-document/`: 51 exemplos (12 válidos, 39 inválidos).
 - Vetor de canonicalização: `prescription-doctor.jcs`, `sick-note-leave.jcs` e
   `prescription-dosage-form-null.jcs` em `examples/canonical/`, com as linhas
   novas no `SHA256SUMS`.

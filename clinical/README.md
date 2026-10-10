@@ -36,8 +36,9 @@ juntos são validáveis no validar.iti.gov.br.
 - **`changes` do adendo**: chave ausente = sem mudança; `evaluated_problems`
   traz só os eventos novos; `conducts` é sempre a lista final, não vazia;
   `exam_requests: []` = todos os exames cancelados (lista final vazia).
-- O esquema não confere plausibilidade de sinais vitais, CID-10 por CBO nem
-  relações entre campos, texto só de espaços em branco, normalização Unicode
+- Os esquemas da consulta não conferem plausibilidade de sinais vitais, CID-10
+  por CBO nem relações entre campos (o do documento clínico confere as da sua
+  seção), texto só de espaços em branco, normalização Unicode
   nem datas impossíveis (ex.: `2026-13-45`): isso é do `api`. As listas
   mantêm a ordem de registro (não são ordenadas).
 
@@ -69,7 +70,10 @@ juntos são validáveis no validar.iti.gov.br.
 - **Requisição de exames**: os exames da consulta, cada um com a competência
   SIGTAP gravada no ato (mesmo item de `consultation-v1`).
 - O esquema não confere CBO por tipo de documento, protocolo vigente, dose
-  máxima, item controlado nem o dígito verificador do CNPJ: isso é do `api`.
+  máxima, item controlado nem o dígito verificador do CNPJ, nem a coerência
+  entre `catalog_release` e os itens (`null` só se todos são texto livre),
+  `city_cnpj` em receita que não é de enfermagem ou `antimicrobial` da receita
+  frente ao dos itens: isso é do `api`.
 
 ## Exemplos e verificação
 

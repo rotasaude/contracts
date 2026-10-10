@@ -110,8 +110,9 @@ ADR 0032) e `clinical-document-v1.json` (ADR 0033, `clinical-v1.1.0`) descrevem 
 que o profissional assina no prontuário — a consulta, o adendo e o documento
 clínico emitido na consulta (atestado, declaração, receita, requisição de
 exames): o `api` gera o JSON, serializa em RFC 8785 (JCS) e o `signer` monta
-o CAdES destacado sobre esses bytes. Os dois esquemas são fechados e têm o
-mesmo `$defs`. Exemplos e o vetor de canonicalização ficam em
+o CAdES destacado sobre esses bytes. Os três esquemas são fechados; os dois da
+consulta têm o mesmo `$defs` e `clinical-document-v1.json` repete, sem mudança,
+os que tem em comum com eles. Exemplos e o vetor de canonicalização ficam em
 `clinical/examples/`; regras e verificação em [`clinical/README.md`](clinical/README.md).
 Documento assinado nunca muda: esquema novo é versão nova (`v2`), nunca edição
 de `v1`.

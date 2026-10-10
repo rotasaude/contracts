@@ -150,7 +150,7 @@
           "if": { "properties": { "type": { "const": "companion" } } },
           "then": {
             "required": ["companion_name", "companion_kinship", "companion_reason"],
-            "properties": { "cid10": false }
+            "properties": { "cid10": false, "days": false }
           }
         },
         {
