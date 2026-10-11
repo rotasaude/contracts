@@ -23,7 +23,7 @@ Seis domínios, **versionados de forma independente** (ADR 0015):
 | [`events/`](events/EVENTS.md) | Catálogo dos eventos: nome, escopo, payload | `events-v2.1.0` | Materializado, reconciliado com o código |
 | [`protocols/`](protocols/README.md) | JSON Schema da definição de protocolo (ADR 0009) | `protocols-v1.6.0` | Materializado |
 | [`session/`](session/CHANGELOG.md) | Corpo da sessão (`GET /session`) e escopo do envelope de `/admin/api` | `session-v1.1.0` | Materializado |
-| [`clinical/`](clinical/README.md) | JSON canônico assinado da consulta, do adendo e dos documentos clínicos (ADRs 0032 e 0033) | `clinical-v1.1.0` | Materializado |
+| [`clinical/`](clinical/README.md) | JSON canônico assinado da consulta, do adendo e dos documentos clínicos (ADRs 0032, 0033 e 0034) | `clinical-v1.2.0` | Materializado |
 | [`types/`](types/README.md) | Contrato de tipos da API (Ruby ↔ TS) | — | Scaffold: extração pendente |
 | [`design-tokens/`](design-tokens/README.md) | Cores, espaçamento e tipografia como dado | — | Scaffold: precisa de input de design |
 
@@ -106,16 +106,16 @@ exit(passed == input["cases"].size ? 0 : 1)'
 ### clinical
 
 `consultation-v1.json`, `consultation-addendum-v1.json` (JSON Schema 2020-12,
-ADR 0032) e `clinical-document-v1.json` (ADR 0033, `clinical-v1.1.0`) descrevem o
+ADR 0032) e `clinical-document-v1.json` (ADRs 0033 e 0034, `clinical-v1.2.0`) descrevem o
 que o profissional assina no prontuário — a consulta, o adendo e o documento
-clínico emitido na consulta (atestado, declaração, receita, requisição de
+clínico emitido na consulta (atestado, declaração, receita comum, de controle especial ou de antimicrobiano, requisição de
 exames): o `api` gera o JSON, serializa em RFC 8785 (JCS) e o `signer` monta
 o CAdES destacado sobre esses bytes. Os três esquemas são fechados; os dois da
 consulta têm o mesmo `$defs` e `clinical-document-v1.json` repete, sem mudança,
 os que tem em comum com eles. Exemplos e o vetor de canonicalização ficam em
 `clinical/examples/`; regras e verificação em [`clinical/README.md`](clinical/README.md).
-Documento assinado nunca muda: esquema novo é versão nova (`v2`), nunca edição
-de `v1`.
+Documento assinado nunca muda: acrescentar campo opcional compatível é MINOR
+na mesma versão; só mudança incompatível pede versão nova (`v2`).
 
 ### Fora deste repo, por enquanto
 

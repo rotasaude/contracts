@@ -1,4 +1,4 @@
-# clinical — JSON canônico assinado (ADRs 0032 e 0033)
+# clinical — JSON canônico assinado (ADRs 0032, 0033 e 0034)
 
 O documento que o profissional assina no prontuário. O `api` monta o JSON a partir
 da consulta finalizada, do adendo ou do documento clínico emitido na consulta, serializa em **RFC 8785 (JCS)** e o `signer`
@@ -9,12 +9,16 @@ juntos são validáveis no validar.iti.gov.br.
 |---|---|---|
 | `consultation-v1.json` | `rotasaude.consultation.v1` | Consulta finalizada |
 | `consultation-addendum-v1.json` | `rotasaude.consultation_addendum.v1` | Adendo (assinado pelo autor do adendo) |
-| `clinical-document-v1.json` | `rotasaude.clinical_document.v1` | Documento clínico da consulta: atestado, declaração de comparecimento, receita comum, requisição de exames (ADR 0033) |
+| `clinical-document-v1.json` | `rotasaude.clinical_document.v1` | Documento clínico da consulta: atestado, declaração de comparecimento, receita (comum, de controle especial e de antimicrobiano), requisição de exames (ADRs 0033 e 0034) |
 
 ## Regras
 
 - **Fechado em todo nível** (`additionalProperties: false`): o que não está no
-  esquema não entra no que se assina. Campo novo = esquema novo (`v2`).
+  esquema não entra no que se assina. **Evolução**: acrescentar campo opcional
+  compatível (todo documento já assinado continua válido, com os mesmos bytes)
+  é MINOR, no mesmo esquema — foi o caso da categoria e do SNCR na receita,
+  `clinical-v1.2.0`; só mudança incompatível (campo novo obrigatório, campo
+  removido, significado mudado) pede esquema novo (`v2`).
 - **Uma representação por valor**, para o JCS dar um só hash:
   - instantes em UTC, com segundos, sem fração: `2026-10-08T13:41:37Z`;
   - datas `AAAA-MM-DD`; CPF, CNES, IBGE e CBO só com dígitos;
@@ -67,6 +71,22 @@ juntos são validáveis no validar.iti.gov.br.
   o protocolo (com a versão) e o CNPJ da cidade (alfanumérico da IN RFB
   2.229/2024, sem máscara), e só itens do catálogo. Antimicrobiano: 2 vias e
   `valid_until`; comum: 1 via.
+- **Categoria e SNCR (ADR 0034, `clinical-v1.2.0`)**: a receita assinada desde o
+  19d traz `category`, calculada pelo `api` a partir dos itens, só quando não é
+  comum (a receita comum, antes ou depois do 19d, não tem `category`: uma só
+  representação). `special_control` (receita de controle especial, listas C1/C5): o número
+  SNCR do tipo `rce` consumido na emissão (`sncr`, com `simulated: true` quando
+  veio do SNCR simulado, fora de produção), a identificação do paciente (o CPF
+  do cadastro, sempre, e o endereço completo), o endereço e o
+  telefone do prescritor, 2 vias e `valid_until`. `antimicrobial`: o número do
+  tipo `ret` e o contato do prescritor (identificação do paciente opcional), 2
+  vias e `valid_until`. Número no formato do SNCR `AAMM.T-UF.NNNNNNN`. Endereço:
+  CEP com 8 dígitos, UF maiúscula, complemento ausente quando não há; telefone
+  só com dígitos (DDD + número). A receita em papel não tem JSON canônico, então
+  `sncr` nunca aparece nulo aqui; o registro da Notificação de papel
+  (`controlled_notification_record`) não é assinado e não tem esquema. O esquema
+  não confere a lista da Portaria 344 de cada item, o número de substâncias C1,
+  a duração, a validade nem que o CPF é o do cabeçalho: isso é do `api`.
 - **Requisição de exames**: os exames da consulta, cada um com a competência
   SIGTAP gravada no ato (mesmo item de `consultation-v1`).
 - O esquema não confere CBO por tipo de documento, protocolo vigente, dose
@@ -94,9 +114,10 @@ de `protocols/examples/` (`valid` ou o erro `<data_pointer> <type>` do
 ## Vetor de canonicalização
 
 `examples/canonical/` tem o JCS de `consultation-full.json`,
-`addendum-structured.json`, `prescription-doctor.json`, `sick-note-leave.json` e
-`prescription-dosage-form-null.json` e o `SHA256SUMS`. Todo gerador do JSON
+`addendum-structured.json`, `prescription-doctor.json`, `sick-note-leave.json`,
+`prescription-dosage-form-null.json`, `prescription-special-control.json` e
+`prescription-ret.json` e o `SHA256SUMS`. Todo gerador do JSON
 canônico tem de produzir exatamente esses bytes a partir desses documentos
 (`shasum -a 256 -c SHA256SUMS` dentro da pasta). O vetor cobre acento, cedilha e
 emoji em UTF-8 cru, decimais (`36.7`, `81.5`, `31.1`), `null` e chave ausente
-(`note`, `duration_days`) e `dosage_form: null`.
+(`note`, `duration_days`, `complement`, `patient_identification`), `dosage_form: null` e o número SNCR com ponto e hífen.

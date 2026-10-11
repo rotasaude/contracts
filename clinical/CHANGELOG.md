@@ -1,5 +1,27 @@
 # Changelog — clinical
 
+## clinical-v1.2.0 — 2026-10-10 — MINOR
+
+Receita de controle especial e de antimicrobiano com número SNCR (ADR 0034,
+módulo 19d). Nada do `v1.1.0` muda: toda receita assinada sem `category`
+continua válida, com os mesmos bytes.
+
+- `clinical-document-v1.json`, receita: `category` (`special_control`,
+  `antimicrobial`; ausente na receita comum), `sncr` (`kind` `rce`/`ret`, `number`,
+  `simulated`), `patient_identification` (CPF do cadastro e
+  endereço) e `prescriber_contact` (endereço e telefone), todos opcionais,
+  com as regras de cada categoria; `$defs` novos `address`, `sncr`,
+  `patient_identification`, `prescriber_contact`.
+- Regra de vias: antimicrobiano ou controle especial = 2 vias e validade;
+  senão 1 via.
+- `examples/clinical-document/`: 31 exemplos novos (3 válidos, 28 inválidos);
+  82 no total (15 válidos, 67 inválidos).
+- Vetor de canonicalização: `prescription-special-control.jcs` e
+  `prescription-ret.jcs` em `examples/canonical/`, com as linhas novas no
+  `SHA256SUMS`.
+- README: acrescentar campo opcional compatível é MINOR; só mudança
+  incompatível pede `v2`.
+
 ## clinical-v1.1.0 — 2026-10-10 — MINOR
 
 Documento clínico emitido na consulta (ADR 0033, módulo 19c). Nada do
