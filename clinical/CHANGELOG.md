@@ -14,8 +14,10 @@ continua válida, com os mesmos bytes.
   `patient_identification`, `prescriber_contact`.
 - Regra de vias: antimicrobiano ou controle especial = 2 vias e validade;
   senão 1 via.
-- `examples/clinical-document/`: 31 exemplos novos (3 válidos, 28 inválidos);
-  82 no total (15 válidos, 67 inválidos).
+- Apertos: na RCE os itens são só do catálogo (`catalog_item`) e com
+  `duration_days`; na RET todo item é antimicrobiano (`antimicrobial: true`).
+- `examples/clinical-document/`: 34 exemplos novos (3 válidos, 31 inválidos);
+  85 no total (15 válidos, 70 inválidos).
 - Vetor de canonicalização: `prescription-special-control.jcs` e
   `prescription-ret.jcs` em `examples/canonical/`, com as linhas novas no
   `SHA256SUMS`.

@@ -81,6 +81,9 @@
     {"file": "invalid-address-uf-lowercase.json", "expect": "/content/patient_identification/address/uf pattern"},
     {"file": "invalid-address-complement-empty.json", "expect": "/content/patient_identification/address/complement minLength"},
     {"file": "invalid-address-without-district.json", "expect": "/content/prescriber_contact/address required"},
-    {"file": "invalid-prescriber-phone-masked.json", "expect": "/content/prescriber_contact/phone pattern"}
+    {"file": "invalid-prescriber-phone-masked.json", "expect": "/content/prescriber_contact/phone pattern"},
+    {"file": "invalid-special-control-free-text-item.json", "expect": "/content/items/0 required"},
+    {"file": "invalid-special-control-item-without-duration.json", "expect": "/content/items/0 required"},
+    {"file": "invalid-ret-item-not-antimicrobial.json", "expect": "/content/items/0/antimicrobial const"}
   ]
 }

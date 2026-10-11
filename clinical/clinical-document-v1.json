@@ -216,7 +216,7 @@
     "prescription": {
       "type": "object",
       "additionalProperties": false,
-      "description": "Receita. catalog_release é a versão do catálogo de medicamentos vigente na emissão (null quando todos os itens são texto livre). Receita de enfermagem (nursing_protocol) leva o CNPJ da cidade e só itens do catálogo. Antimicrobiano: 2 vias e validade; senão 1 via. Desde clinical-v1.2.0 (ADR 0034): category, calculada pelos itens, só na receita de controle especial (special_control, listas C1/C5: número SNCR rce, identificação do paciente, contato do prescritor, 2 vias e validade) e na de antimicrobiano digital (antimicrobial: número SNCR ret e contato do prescritor). Sem category = receita comum, antes ou depois do 19d (forma da clinical-v1.1.0, uma só representação).",
+      "description": "Receita. catalog_release é a versão do catálogo de medicamentos vigente na emissão (null quando todos os itens são texto livre). Receita de enfermagem (nursing_protocol) leva o CNPJ da cidade e só itens do catálogo. Antimicrobiano ou controle especial: 2 vias e validade; senão 1 via. Desde clinical-v1.2.0 (ADR 0034): category, calculada pelos itens, só na receita de controle especial (special_control, listas C1/C5: número SNCR rce, identificação do paciente, contato do prescritor, 2 vias e validade) e na de antimicrobiano digital (antimicrobial: número SNCR ret e contato do prescritor). Sem category = receita comum, antes ou depois do 19d (forma da clinical-v1.1.0, uma só representação).",
       "required": ["items", "catalog_release", "antimicrobial", "copies"],
       "properties": {
         "items": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/prescription_item" } },
@@ -272,7 +272,7 @@
               "antimicrobial": { "const": false },
               "nursing_protocol": false,
               "sncr": { "properties": { "kind": { "const": "rce" } } },
-              "items": { "items": { "properties": { "antimicrobial": { "const": false } } } }
+              "items": { "items": { "required": ["catalog_item", "duration_days"], "properties": { "antimicrobial": { "const": false } } } }
             }
           }
         },
@@ -283,7 +283,8 @@
             "properties": {
               "antimicrobial": { "const": true },
               "nursing_protocol": false,
-              "sncr": { "properties": { "kind": { "const": "ret" } } }
+              "sncr": { "properties": { "kind": { "const": "ret" } } },
+              "items": { "items": { "properties": { "antimicrobial": { "const": true } } } }
             }
           }
         }
@@ -292,7 +293,7 @@
     "address": {
       "type": "object",
       "additionalProperties": false,
-      "description": "Endereço completo (Lei 5.991/1973, art. 35; RDC 1.000/2025): logradouro, número (texto: aceita 's/n'), complemento (ausente quando não há), bairro, cidade, UF e CEP só com dígitos.",
+      "description": "Endereço completo (Lei 5.991/1973, art. 35; RDC 1.000/2025): logradouro, número (texto; quando não há número, grafia fixa 's/n', minúsculas, com barra), complemento (ausente quando não há), bairro, cidade, UF e CEP só com dígitos.",
       "required": ["street", "number", "district", "city", "uf", "zip"],
       "properties": {
         "street": { "type": "string", "minLength": 1, "maxLength": 120 },
@@ -307,7 +308,7 @@
     "sncr": {
       "type": "object",
       "additionalProperties": false,
-      "description": "Número do SNCR (Anvisa) consumido na emissão: rce na receita de controle especial, ret na de antimicrobiano. number no formato do SNCR AAMM.T-UF.NNNNNNN (ano e mês, 1 RCE ou 2 RET, código IBGE da UF, sequência; ex.: 2610.1-41.0001234). simulated: true quando veio do SNCR simulado (fora de produção, sem validade).",
+      "description": "Número do SNCR (Anvisa) consumido na emissão: rce na receita de controle especial, ret na de antimicrobiano. number no formato do SNCR AAMM.T-UF.NNNNNNN (ano e mês, tipo, código IBGE da UF, sequência; ex.: 2610.1-41.0001234). simulated: true quando veio do SNCR simulado (fora de produção, sem validade).",
       "required": ["kind", "number", "simulated"],
       "properties": {
         "kind": { "enum": ["rce", "ret"] },

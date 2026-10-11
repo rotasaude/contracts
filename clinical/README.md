@@ -69,8 +69,8 @@ juntos são validáveis no validar.iti.gov.br.
   está sempre presente e é `null` quando o CATMAT não traz a forma farmacêutica
   (o impresso usa a descrição original). Receita de enfermagem leva
   o protocolo (com a versão) e o CNPJ da cidade (alfanumérico da IN RFB
-  2.229/2024, sem máscara), e só itens do catálogo. Antimicrobiano: 2 vias e
-  `valid_until`; comum: 1 via.
+  2.229/2024, sem máscara), e só itens do catálogo. Antimicrobiano ou controle
+  especial: 2 vias e `valid_until`; senão 1 via.
 - **Categoria e SNCR (ADR 0034, `clinical-v1.2.0`)**: a receita assinada desde o
   19d traz `category`, calculada pelo `api` a partir dos itens, só quando não é
   comum (a receita comum, antes ou depois do 19d, não tem `category`: uma só
@@ -80,20 +80,26 @@ juntos são validáveis no validar.iti.gov.br.
   do cadastro, sempre, e o endereço completo), o endereço e o
   telefone do prescritor, 2 vias e `valid_until`. `antimicrobial`: o número do
   tipo `ret` e o contato do prescritor (identificação do paciente opcional), 2
-  vias e `valid_until`. Número no formato do SNCR `AAMM.T-UF.NNNNNNN`. Endereço:
-  CEP com 8 dígitos, UF maiúscula, complemento ausente quando não há; telefone
+  vias e `valid_until`. Na RCE os itens são só do catálogo e com `duration_days`
+  (e nenhum antimicrobiano); na RET todo item é antimicrobiano. Número no
+  formato do SNCR `AAMM.T-UF.NNNNNNN`. Endereço: CEP com 8 dígitos, UF
+  maiúscula, número `s/n` (minúsculas, com barra) quando não há, complemento
+  ausente quando não há; telefone
   só com dígitos (DDD + número). A receita em papel não tem JSON canônico, então
   `sncr` nunca aparece nulo aqui; o registro da Notificação de papel
   (`controlled_notification_record`) não é assinado e não tem esquema. O esquema
   não confere a lista da Portaria 344 de cada item, o número de substâncias C1,
-  a duração, a validade nem que o CPF é o do cabeçalho: isso é do `api`.
+  o limite de duração, a validade nem que o CPF é o do cabeçalho: isso é do `api`. O esquema aceita
+  receita sem `category` por compatibilidade; garantir a `category` em toda
+  receita controlada ou antimicrobiana digital emitida desde o 19d é do `api`.
 - **Requisição de exames**: os exames da consulta, cada um com a competência
   SIGTAP gravada no ato (mesmo item de `consultation-v1`).
 - O esquema não confere CBO por tipo de documento, protocolo vigente, dose
   máxima, item controlado nem o dígito verificador do CNPJ, nem a coerência
   entre `catalog_release` e os itens (`null` só se todos são texto livre),
   `city_cnpj` em receita que não é de enfermagem ou `antimicrobial` da receita
-  frente ao dos itens: isso é do `api`.
+  comum frente ao dos itens: isso é do `api` (na RCE e na RET o esquema confere
+  o `antimicrobial` dos itens).
 
 ## Exemplos e verificação
 
