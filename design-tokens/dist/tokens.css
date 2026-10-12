@@ -1,5 +1,29 @@
 /* Gerado por design-tokens/build.mjs a partir de src/. Não edite. */
 
+@font-face {
+  font-family: "Rawline";
+  src: url("./fonts/rawline-400.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Rawline";
+  src: url("./fonts/rawline-600.woff2") format("woff2");
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Rawline";
+  src: url("./fonts/rawline-700.woff2") format("woff2");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
 :root {
   --radius-chip: 6px;
   --radius-panel: 10px;

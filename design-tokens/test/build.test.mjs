@@ -2,7 +2,7 @@
 // dist/ versionado é exatamente a saída do gerador (ninguém edita o dist à mão).
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { readFileSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 import { build, loadRoles, loadThemes, resolveThemes } from "../build.mjs";
@@ -41,4 +41,13 @@ test("dist/ versionado é igual à saída do gerador", () => {
   const { css, ts } = build();
   assert.equal(readFileSync(join(root, "dist/tokens.css"), "utf8"), css);
   assert.equal(readFileSync(join(root, "dist/tokens.ts"), "utf8"), ts);
+});
+
+test("cada @font-face aponta para um arquivo que existe em dist/fonts", () => {
+  const { fontFaces } = loadRoles();
+  assert.ok(fontFaces.length >= 3, "faces da fonte do govbr declaradas");
+  for (const f of fontFaces) {
+    assert.ok(existsSync(join(root, "dist/fonts", f.file)), f.file);
+  }
+  assert.ok(existsSync(join(root, "dist/fonts/OFL.txt")), "licença junto da fonte");
 });

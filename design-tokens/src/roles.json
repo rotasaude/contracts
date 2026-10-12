@@ -14,7 +14,11 @@
     "shadow-dropdown": "0 8px 28px -8px rgba(20,20,40,.22), 0 2px 6px rgba(20,20,40,.06)",
     "shadow-notif": "0 14px 40px -10px rgba(20,20,40,.26), 0 3px 8px rgba(20,20,40,.07)"
   },
-  "fontFaces": [],
+  "fontFaces": [
+    { "family": "Rawline", "weight": 400, "file": "rawline-400.woff2" },
+    { "family": "Rawline", "weight": 600, "file": "rawline-600.woff2" },
+    { "family": "Rawline", "weight": 700, "file": "rawline-700.woff2" }
+  ],
   "pairs": {
     "text": [
       ["ink", "bg"], ["ink", "panel"], ["ink", "sunken"],

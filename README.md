@@ -25,7 +25,7 @@ Seis domínios, **versionados de forma independente** (ADR 0015):
 | [`session/`](session/CHANGELOG.md) | Corpo da sessão (`GET /session`) e escopo do envelope de `/admin/api` | `session-v1.1.0` | Materializado |
 | [`clinical/`](clinical/README.md) | JSON canônico assinado da consulta, do adendo e dos documentos clínicos (ADRs 0032, 0033 e 0034) | `clinical-v1.2.0` | Materializado |
 | [`types/`](types/README.md) | Contrato de tipos da API (Ruby ↔ TS) | — | Scaffold: extração pendente |
-| [`design-tokens/`](design-tokens/README.md) | Cores, espaçamento e tipografia como dado | — | Scaffold: precisa de input de design |
+| [`design-tokens/`](design-tokens/README.md) | Cores, espaçamento e tipografia como dado (4 temas, contraste validado) | `tokens-v1.0.0` | Materializado |
 
 ### events
 
@@ -122,8 +122,9 @@ na mesma versão; só mudança incompatível pede versão nova (`v2`).
 - **SDL GraphQL da API de manutenção:** vive em `maintenance/schema.graphql`,
   extraído do `api` por `npm run schema:pull`. A spec prevê publicá-lo aqui
   quando houver um domínio para ele.
-- **Tokens de tema:** cada frontend tem o próprio `src/theme/tokens.ts`, até
-  `design-tokens/` ser materializado.
+- **Tokens de tema no wpda e no maintenance:** seguem com o próprio
+  `src/theme/` até os subprojetos 4 e 5 do ciclo de interface; dashboard e
+  admin já copiam `design-tokens` (`tokens-v1.0.0`).
 
 ## Versionamento (ADR 0015)
 
