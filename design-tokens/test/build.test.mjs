@@ -51,3 +51,20 @@ test("cada @font-face aponta para um arquivo que existe em dist/fonts", () => {
   }
   assert.ok(existsSync(join(root, "dist/fonts/OFL.txt")), "licença junto da fonte");
 });
+
+test("faces declaradas para Rawline e Figtree, cada uma com 400, 600 e 700", () => {
+  const { fontFaces } = loadRoles();
+  for (const family of ["Rawline", "Figtree"]) {
+    const weights = fontFaces.filter((f) => f.family === family).map((f) => f.weight).sort();
+    assert.deepEqual(weights, [400, 600, 700], family);
+  }
+  assert.ok(existsSync(join(root, "dist/fonts/figtree-OFL.txt")), "licença da Figtree junto da fonte");
+});
+
+test("on-tone é papel de cor e tem par de contraste sobre cada tom", () => {
+  const { colors, pairs } = loadRoles();
+  assert.ok(colors.includes("on-tone"));
+  for (const tone of ["down", "warn", "info", "accent"]) {
+    assert.ok(pairs.text.some(([fg, bg]) => fg === "on-tone" && bg === tone), tone);
+  }
+});

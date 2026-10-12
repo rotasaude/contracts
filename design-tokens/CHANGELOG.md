@@ -1,5 +1,10 @@
 # Changelog — design-tokens
 
+## tokens-v1.1.0 — 2026-10-12
+
+- Papel `--on-tone`: texto sobre preenchimento de `--down`/`--warn`/`--info`/`--accent` (selos), com contraste testado nos quatro temas.
+- Fonte Figtree 400/600/700 (OFL 1.1) para o tema `rota`.
+
 ## tokens-v1.0.0 — 2026-10-12
 
 - Primeira versão: camadas `base`/`roles`/`themes`, gerador e teste de contraste.

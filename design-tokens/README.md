@@ -5,7 +5,7 @@ O design system do Rota Saúde é compartilhado **como tokens**, não como compo
 ## Camadas (`src/`)
 
 - `base.json` — paleta crua (nome → hex) e pilhas de fonte.
-- `roles.json` — papéis que os componentes leem (`--bg`, `--ink`, `--accent`, `--ok`…), apelidos (`--line`, `--danger`, `--surface`), constantes (espaço, raio, sombra), faces de fonte e os pares de contraste.
+- `roles.json` — papéis que os componentes leem (`--bg`, `--ink`, `--accent`, `--ok`…), `--on-tone` (texto sobre preenchimento de tom: selos de contagem), apelidos (`--line`, `--danger`, `--surface`), constantes (espaço, raio, sombra), faces de fonte e os pares de contraste.
 - `themes/*.json` — cada tema liga cada papel a um nome da paleta.
 
 Temas: `govbr` (padrão: painéis e wpda), `rota` (identidade própria; maintenance e opcional nos painéis), `alto-contraste` (eMAG) e `govbr-escuro` (só wpda).
@@ -24,7 +24,7 @@ Cada app roda `node scripts/tokens-sync.mjs <tag> --contracts <caminho do clone>
 
 ## Fonte
 
-Rawline (SIL OFL 1.1, derivada da Raleway), em `dist/fonts/` com a licença ao lado (`OFL.txt`, que registra a origem: o CDN do Design System gov.br, que não publica arquivo de licença; a OFL foi confirmada por fontes de terceiros). Reserva da pilha: Verdana (recomendação do manual da marca gov.br), depois a fonte do sistema. A Figtree do tema `rota` ainda não é embarcada: entra quando um app consumir esse tema.
+Rawline (SIL OFL 1.1, derivada da Raleway), em `dist/fonts/` com a licença ao lado (`OFL.txt`, que registra a origem: o CDN do Design System gov.br, que não publica arquivo de licença; a OFL foi confirmada por fontes de terceiros). Reserva da pilha: Verdana (recomendação do manual da marca gov.br), depois a fonte do sistema. A Figtree (SIL OFL 1.1, de @fontsource/figtree) é a fonte do tema `rota`, em `dist/fonts/` com `figtree-OFL.txt`.
 
 ## Componentes que divergiam entre dashboard e admin
 

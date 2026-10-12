@@ -3,7 +3,7 @@
   "colors": {
     "bg": "sand-2", "panel": "white", "sunken": "sand-5", "sunken2": "sand-10", "rule": "sand-15", "rule2": "sand-50",
     "ink": "petrol-ink-90", "ink2": "petrol-ink-80", "ink3": "petrol-ink-60", "ink4": "sand-50",
-    "accent": "petrol-70", "accent-bg": "petrol-10", "on-accent": "white",
+    "accent": "petrol-70", "accent-bg": "petrol-10", "on-accent": "white", "on-tone": "white",
     "ok": "rota-green-70", "ok-bg": "rota-green-5", "warn": "gov-yellow-80", "warn-bg": "rota-yellow-5",
     "down": "rota-red-70", "down-bg": "rota-red-5", "info": "rota-blue-70", "info-bg": "rota-blue-10",
     "focus": "focus-orange"

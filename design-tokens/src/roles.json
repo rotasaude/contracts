@@ -2,7 +2,7 @@
   "colors": [
     "bg", "panel", "sunken", "sunken2", "rule", "rule2",
     "ink", "ink2", "ink3", "ink4",
-    "accent", "accent-bg", "on-accent",
+    "accent", "accent-bg", "on-accent", "on-tone",
     "ok", "ok-bg", "warn", "warn-bg", "down", "down-bg", "info", "info-bg",
     "focus"
   ],
@@ -17,7 +17,10 @@
   "fontFaces": [
     { "family": "Rawline", "weight": 400, "file": "rawline-400.woff2" },
     { "family": "Rawline", "weight": 600, "file": "rawline-600.woff2" },
-    { "family": "Rawline", "weight": 700, "file": "rawline-700.woff2" }
+    { "family": "Rawline", "weight": 700, "file": "rawline-700.woff2" },
+    { "family": "Figtree", "weight": 400, "file": "figtree-400.woff2" },
+    { "family": "Figtree", "weight": 600, "file": "figtree-600.woff2" },
+    { "family": "Figtree", "weight": 700, "file": "figtree-700.woff2" }
   ],
   "pairs": {
     "text": [
@@ -25,7 +28,8 @@
       ["ink2", "bg"], ["ink2", "panel"], ["ink2", "sunken"],
       ["ink3", "bg"], ["ink3", "panel"], ["ink3", "sunken"],
       ["ok", "ok-bg"], ["warn", "warn-bg"], ["down", "down-bg"], ["info", "info-bg"],
-      ["accent", "accent-bg"], ["on-accent", "accent"]
+      ["accent", "accent-bg"], ["on-accent", "accent"],
+      ["on-tone", "down"], ["on-tone", "warn"], ["on-tone", "info"], ["on-tone", "accent"]
     ],
     "nonText": [
       ["rule2", "bg"], ["rule2", "panel"], ["rule2", "sunken"],
