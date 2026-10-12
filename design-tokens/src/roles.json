@@ -1,0 +1,31 @@
+{
+  "colors": [
+    "bg", "panel", "sunken", "sunken2", "rule", "rule2",
+    "ink", "ink2", "ink3", "ink4",
+    "accent", "accent-bg", "on-accent",
+    "ok", "ok-bg", "warn", "warn-bg", "down", "down-bg", "info", "info-bg",
+    "focus"
+  ],
+  "aliases": { "line": "rule2", "danger": "down", "surface": "sunken" },
+  "constants": {
+    "radius-chip": "6px", "radius-panel": "10px", "radius-menu": "12px",
+    "space-1": "4px", "space-2": "8px", "space-3": "12px", "space-4": "16px",
+    "space-5": "20px", "space-6": "24px", "space-7": "32px", "space-8": "48px",
+    "shadow-dropdown": "0 8px 28px -8px rgba(20,20,40,.22), 0 2px 6px rgba(20,20,40,.06)",
+    "shadow-notif": "0 14px 40px -10px rgba(20,20,40,.26), 0 3px 8px rgba(20,20,40,.07)"
+  },
+  "fontFaces": [],
+  "pairs": {
+    "text": [
+      ["ink", "bg"], ["ink", "panel"], ["ink", "sunken"],
+      ["ink2", "bg"], ["ink2", "panel"], ["ink2", "sunken"],
+      ["ink3", "bg"], ["ink3", "panel"], ["ink3", "sunken"],
+      ["ok", "ok-bg"], ["warn", "warn-bg"], ["down", "down-bg"], ["info", "info-bg"],
+      ["accent", "accent-bg"], ["on-accent", "accent"]
+    ],
+    "nonText": [
+      ["rule2", "bg"], ["rule2", "panel"], ["rule2", "sunken"],
+      ["focus", "bg"], ["focus", "panel"], ["focus", "sunken"]
+    ]
+  }
+}

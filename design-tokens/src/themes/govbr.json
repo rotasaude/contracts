@@ -1,0 +1,12 @@
+{
+  "name": "govbr",
+  "colors": {
+    "bg": "gray-2", "panel": "white", "sunken": "gray-5", "sunken2": "gray-10", "rule": "gray-15", "rule2": "gray-50",
+    "ink": "gray-90", "ink2": "gray-80", "ink3": "gray-60", "ink4": "gray-50",
+    "accent": "gov-blue-70", "accent-bg": "gov-blue-10", "on-accent": "white",
+    "ok": "gov-green-70", "ok-bg": "gov-green-5", "warn": "gov-yellow-80", "warn-bg": "gov-yellow-5",
+    "down": "gov-red-70", "down-bg": "gov-red-5", "info": "gov-info-80", "info-bg": "gov-info-10",
+    "focus": "focus-orange"
+  },
+  "fonts": { "font-sans": "rawline", "font-mono": "mono" }
+}

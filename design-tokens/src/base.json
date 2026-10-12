@@ -1,0 +1,34 @@
+{
+  "colors": {
+    "white": "#ffffff", "black": "#000000",
+    "gray-2": "#f8f8f8", "gray-5": "#f0f0f0", "gray-10": "#e6e6e6", "gray-15": "#dcdcdc",
+    "gray-50": "#888888", "gray-60": "#555555", "gray-80": "#333333", "gray-90": "#1b1b1b",
+    "gov-blue-70": "#1351b4", "gov-blue-10": "#dbe8fb",
+    "gov-green-70": "#0f6b1d", "gov-green-5": "#e3f5e1",
+    "gov-yellow-80": "#7a4b00", "gov-yellow-5": "#fff5c2",
+    "gov-red-70": "#b31800", "gov-red-5": "#fde0db",
+    "gov-info-80": "#0c4ca3", "gov-info-10": "#d4e5ff",
+    "focus-orange": "#b35c00",
+    "sand-2": "#f6f4ef", "sand-5": "#eeeae1", "sand-10": "#e4ded2", "sand-15": "#ddd7cc", "sand-50": "#857b6c",
+    "petrol-ink-90": "#1d2a2a", "petrol-ink-80": "#2f3d3d", "petrol-ink-60": "#4c5a59",
+    "petrol-70": "#0d6363", "petrol-10": "#d7ecea",
+    "rota-green-70": "#1f6b35", "rota-green-5": "#e1f2e5",
+    "rota-yellow-5": "#fbefd2",
+    "rota-red-70": "#a8321c", "rota-red-5": "#fbe1d8",
+    "rota-blue-70": "#1d5486", "rota-blue-10": "#dce9f5",
+    "hc-gray-95": "#111111", "hc-gray-20": "#cccccc",
+    "hc-yellow": "#ffff00", "hc-green": "#66ff99", "hc-amber": "#ffd400", "hc-red": "#ff8080", "hc-blue": "#80bfff",
+    "dk-0": "#121212", "dk-1": "#1b1b1b", "dk-2": "#242424", "dk-3": "#2e2e2e", "dk-4": "#3a3a3a",
+    "dk-50": "#8a8a8a", "dk-70": "#b8b8b8", "dk-85": "#d6d6d6", "dk-95": "#f2f2f2",
+    "dk-blue": "#8ab4ff", "dk-blue-bg": "#0c326f",
+    "dk-green": "#6fdc8c", "dk-green-bg": "#0f2e18",
+    "dk-yellow": "#ffcd07", "dk-yellow-bg": "#3a2d00",
+    "dk-red": "#ff8a75", "dk-red-bg": "#3d0d06",
+    "dk-info-bg": "#0c2650", "dk-orange": "#ffb54d"
+  },
+  "fonts": {
+    "rawline": "\"Rawline\", Verdana, system-ui, sans-serif",
+    "figtree": "\"Figtree\", system-ui, sans-serif",
+    "mono": "ui-monospace, \"SF Mono\", Menlo, Consolas, monospace"
+  }
+}

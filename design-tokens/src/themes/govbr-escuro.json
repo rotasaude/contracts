@@ -1,0 +1,12 @@
+{
+  "name": "govbr-escuro",
+  "colors": {
+    "bg": "dk-0", "panel": "dk-1", "sunken": "dk-2", "sunken2": "dk-3", "rule": "dk-4", "rule2": "dk-50",
+    "ink": "dk-95", "ink2": "dk-85", "ink3": "dk-70", "ink4": "dk-50",
+    "accent": "dk-blue", "accent-bg": "dk-blue-bg", "on-accent": "black",
+    "ok": "dk-green", "ok-bg": "dk-green-bg", "warn": "dk-yellow", "warn-bg": "dk-yellow-bg",
+    "down": "dk-red", "down-bg": "dk-red-bg", "info": "dk-blue", "info-bg": "dk-info-bg",
+    "focus": "dk-orange"
+  },
+  "fonts": { "font-sans": "rawline", "font-mono": "mono" }
+}

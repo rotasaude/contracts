@@ -1,0 +1,13 @@
+{
+  "name": "alto-contraste",
+  "minContrast": 7,
+  "colors": {
+    "bg": "black", "panel": "black", "sunken": "black", "sunken2": "hc-gray-95", "rule": "white", "rule2": "white",
+    "ink": "white", "ink2": "white", "ink3": "white", "ink4": "hc-gray-20",
+    "accent": "hc-yellow", "accent-bg": "black", "on-accent": "black",
+    "ok": "hc-green", "ok-bg": "black", "warn": "hc-amber", "warn-bg": "black",
+    "down": "hc-red", "down-bg": "black", "info": "hc-blue", "info-bg": "black",
+    "focus": "hc-yellow"
+  },
+  "fonts": { "font-sans": "rawline", "font-mono": "mono" }
+}
