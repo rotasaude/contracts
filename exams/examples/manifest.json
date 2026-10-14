@@ -35,6 +35,10 @@
         {
           "file": "exam-order-administrative.json",
           "valid": true
+        },
+        {
+          "file": "exam-order-administrative-regulator.json",
+          "valid": true
         }
       ]
     }

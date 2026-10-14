@@ -1,5 +1,11 @@
 # Changelog — exams
 
+## Não publicado (antes da tag exams-v1.0.0)
+
+- A42: a visão administrativa do regulador traz `cid10_justification` (o esquema
+  já aceitava `string|null`; só a descrição mudou). `requester.cns` segue nulo.
+  Novo exemplo `exam-order-administrative-regulator.json`.
+
 ## exams-v1.0.0 — 2026-10-13
 
 Primeira versão do domínio (ADR 0036, módulo 21a, rastreamento de exames).

@@ -15,8 +15,10 @@ Contratos do módulo 21a (rastreamento de exames, ADR 0036). JSON Schema 2020-12
   devolve é fechado.
 - **Duas visões do `result`.** Clínica (valores, `critical`, `pdf_url`,
   `acknowledged_at`) e administrativa (reduzida: `id`, `origin`, `source`,
-  `released_on`, `laboratory_name`). Na administrativa, `cid10_justification` e
-  `requester.cns` vão nulos e não há `events`.
+  `released_on`, `laboratory_name`). Na administrativa, `requester.cns` vai
+  nulo e `cid10_justification` também, exceto para o regulador (`exam_regulator`,
+  ou `municipal_admin` na fila de regulação), que o recebe na fila e no detalhe
+  (A42). Recepção, unidade e prestador não veem CID nem CNS.
 - **dom-3 fica no `api`.** O esquema não prova que cada `contained[].id` aparece
   em `result`. O `api` recusa com `invalid_resource` (`details: ["/result"]`). O
   exemplo `invalid-diagnostic-report-uncontained-observation.json` é válido
@@ -53,6 +55,6 @@ m["suites"].each do |s|
 end'
 ```
 
-Esperado: os dois pedidos e o hemograma `valid`; `without-pdf` com `required`
+Esperado: os três pedidos e o hemograma `valid`; `without-pdf` com `required`
 `["presentedForm"]` na raiz; `preliminary` com `/status`; `uncontained-observation`
 `valid` (o `api` recusa).
