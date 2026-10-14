@@ -12,6 +12,7 @@
   "cid10_justification": "D649",
   "origin": "consultation",
   "consultation_id": "00000003-0000-4000-8000-000000000003",
+  "consultation_exam_request_id": "00000004-0000-4000-8000-000000000004",
   "result_fields": [
     {
       "key": "hb",

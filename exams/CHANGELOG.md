@@ -2,6 +2,11 @@
 
 ## Não publicado (antes da tag exams-v1.0.0)
 
+- A45: `consultation_exam_request_id` (uuid | null; preenchido quando
+  `origin: consultation`) em `exam-order-v1.json`, obrigatório, nas duas
+  visões. O dashboard liga pedido e exame por esse id. Os três exemplos de
+  pedido ganharam a chave.
+
 - A42: a visão administrativa do regulador traz `cid10_justification` (o esquema
   já aceitava `string|null`; só a descrição mudou). `requester.cns` segue nulo.
   Novo exemplo `exam-order-administrative-regulator.json`.
