@@ -19,6 +19,8 @@ Contratos do módulo 21a (rastreamento de exames, ADR 0036). JSON Schema 2020-12
   nulo e `cid10_justification` também, exceto para o regulador (`exam_regulator`,
   ou `municipal_admin` na fila de regulação), que o recebe na fila e no detalhe
   (A42). Recepção, unidade e prestador não veem CID nem CNS.
+- **`denied_reason` opcional (A47).** Só os itens de `denied` da lista de
+  pendentes do solicitante o trazem; as demais formas não têm a chave.
 - **dom-3 fica no `api`.** O esquema não prova que cada `contained[].id` aparece
   em `result`. O `api` recusa com `invalid_resource` (`details: ["/result"]`). O
   exemplo `invalid-diagnostic-report-uncontained-observation.json` é válido

@@ -1,0 +1,88 @@
+{
+  "id": "00000011-0000-4000-8000-000000000011",
+  "short_code": "N3P8W5HV2D",
+  "patient": {
+    "id": "00000002-0000-4000-8000-000000000002",
+    "display_name": "Paciente Simulado"
+  },
+  "sigtap_code": "0202020380",
+  "sigtap_competence": "202610",
+  "label": "HEMOGRAMA COMPLETO",
+  "priority": "routine",
+  "cid10_justification": "D649",
+  "origin": "consultation",
+  "consultation_id": "00000003-0000-4000-8000-000000000003",
+  "consultation_exam_request_id": "00000004-0000-4000-8000-000000000004",
+  "result_fields": [
+    {
+      "key": "hb",
+      "label": "Hemoglobina",
+      "unit": "g/dL",
+      "loinc": "718-7"
+    },
+    {
+      "key": "plt",
+      "label": "Plaquetas",
+      "unit": "10*3/uL",
+      "loinc": "777-3"
+    }
+  ],
+  "requester": {
+    "user_id": "00000004-0000-4000-8000-000000000004",
+    "name": "Profissional Simulado",
+    "cns": "700000000000005"
+  },
+  "unit": {
+    "id": "00000005-0000-4000-8000-000000000005",
+    "name": "UBS Simulada"
+  },
+  "provider": null,
+  "scheduled_at": null,
+  "scheduled_place": null,
+  "external_reference": null,
+  "status": "denied",
+  "status_changed_at": "2026-10-13T09:30:00-03:00",
+  "overdue": null,
+  "escalated": false,
+  "guide_url": null,
+  "result": null,
+  "events": [
+    {
+      "kind": "requested",
+      "occurred_at": "2026-10-05T09:00:00-03:00",
+      "actor": {
+        "type": "user",
+        "name": "Profissional Simulado"
+      },
+      "reason": null
+    },
+    {
+      "kind": "scheduled",
+      "occurred_at": "2026-10-06T10:00:00-03:00",
+      "actor": {
+        "type": "user",
+        "name": "Atendente Simulado"
+      },
+      "reason": null
+    },
+    {
+      "kind": "collected",
+      "occurred_at": "2026-10-10T08:20:00-03:00",
+      "actor": {
+        "type": "provider",
+        "name": "Laboratório Simulado"
+      },
+      "reason": null
+    },
+    {
+      "kind": "resulted",
+      "occurred_at": "2026-10-13T14:05:00-03:00",
+      "actor": {
+        "type": "provider",
+        "name": "Laboratório Simulado"
+      },
+      "reason": null
+    }
+  ],
+  "denied_reason": "Exame sem indicação clínica registrada"
+}

@@ -2,6 +2,13 @@
 
 ## Não publicado (antes da tag exams-v1.0.0)
 
+- A47: `denied_reason` (string | null) em `exam-order-v1.json`, **opcional**
+  (fora de `required`): só os itens de `denied` de
+  `GET /exams/acknowledgements/pending` o trazem, com o motivo do evento
+  `denied`, ao próprio solicitante (A32). Nunca ao cidadão. Novo exemplo
+  `exam-order-denied-pending.json`. (A46, o contador `pending/count`, é rota
+  do api sem forma de pedido; não muda este esquema.)
+
 - A45: `consultation_exam_request_id` (uuid | null; preenchido quando
   `origin: consultation`) em `exam-order-v1.json`, obrigatório, nas duas
   visões. O dashboard liga pedido e exame por esse id. Os três exemplos de

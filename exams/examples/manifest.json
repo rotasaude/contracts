@@ -39,6 +39,10 @@
         {
           "file": "exam-order-administrative-regulator.json",
           "valid": true
+        },
+        {
+          "file": "exam-order-denied-pending.json",
+          "valid": true
         }
       ]
     }
