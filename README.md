@@ -16,7 +16,7 @@ versionados.
 
 ## Domínios
 
-Seis domínios, **versionados de forma independente** (ADR 0015):
+Sete domínios, **versionados de forma independente** (ADR 0015):
 
 | Domínio | O que é | Versão | Estado |
 |---|---|---|---|
@@ -24,6 +24,7 @@ Seis domínios, **versionados de forma independente** (ADR 0015):
 | [`protocols/`](protocols/README.md) | JSON Schema da definição de protocolo (ADR 0009) | `protocols-v1.6.0` | Materializado |
 | [`session/`](session/CHANGELOG.md) | Corpo da sessão (`GET /session`) e escopo do envelope de `/admin/api` | `session-v1.1.0` | Materializado |
 | [`clinical/`](clinical/README.md) | JSON canônico assinado da consulta, do adendo e dos documentos clínicos (ADRs 0032, 0033 e 0034) | `clinical-v1.2.0` | Materializado |
+| [`exams/`](exams/README.md) | Pedido de exame (`<exam_order>`) e perfil FHIR de entrada do laudo (ADR 0036) | `exams-v1.0.0` | Materializado |
 | [`types/`](types/README.md) | Contrato de tipos da API (Ruby ↔ TS) | — | Scaffold: extração pendente |
 | [`design-tokens/`](design-tokens/README.md) | Cores, espaçamento e tipografia como dado (4 temas, contraste validado) | `tokens-v1.1.0` | Materializado |
 
@@ -129,7 +130,7 @@ na mesma versão; só mudança incompatível pede versão nova (`v2`).
 ## Versionamento (ADR 0015)
 
 - **SemVer 2.0.0 por domínio**, com tag prefixada (`events-vX.Y.Z`,
-  `protocols-vX.Y.Z`, `session-vX.Y.Z`, `clinical-vX.Y.Z`, `types-vX.Y.Z`, `tokens-vX.Y.Z`). Cada app fixa a versão
+  `protocols-vX.Y.Z`, `session-vX.Y.Z`, `clinical-vX.Y.Z`, `exams-vX.Y.Z`, `types-vX.Y.Z`, `tokens-vX.Y.Z`). Cada app fixa a versão
   **do domínio que consome**.
 - **Classificação de mudança:**
   - **MAJOR:** quebra consumidores (remove ou renomeia campo, muda tipo,

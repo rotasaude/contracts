@@ -1,0 +1,42 @@
+{
+  "suites": [
+    {
+      "schema": "fhir-diagnostic-report-inbound.json",
+      "cases": [
+        {
+          "file": "diagnostic-report-hemograma.json",
+          "valid": true
+        },
+        {
+          "file": "invalid-diagnostic-report-without-pdf.json",
+          "valid": false,
+          "expect": "/presentedForm"
+        },
+        {
+          "file": "invalid-diagnostic-report-preliminary.json",
+          "valid": false,
+          "expect": "/status"
+        },
+        {
+          "file": "invalid-diagnostic-report-uncontained-observation.json",
+          "valid": true,
+          "enforced_by": "api",
+          "api_error": "invalid_resource"
+        }
+      ]
+    },
+    {
+      "schema": "exam-order-v1.json",
+      "cases": [
+        {
+          "file": "exam-order-clinical.json",
+          "valid": true
+        },
+        {
+          "file": "exam-order-administrative.json",
+          "valid": true
+        }
+      ]
+    }
+  ]
+}
