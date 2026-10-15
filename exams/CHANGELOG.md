@@ -1,5 +1,19 @@
 # Changelog — exams
 
+## exams-v1.1.0 — 2026-10-15
+
+Laboratório municipal (ADR 0037, módulo 21b). MINOR: só acrescenta.
+
+- `origin`: `lab_reception` (exame criado na recepção do laboratório, pedido em
+  papel).
+- `source` do `result` (visões clínica e administrativa): `lab`.
+- `gal_requisition` (string | null, até 30), obrigatório: número da requisição no
+  GAL. Os exemplos de pedido ganharam a chave (`null`).
+- Substituição do resultado (retificação do laudo, B8): `result.replaces_result_id`
+  e `superseded_at` (opcionais, visão clínica) e `superseded_results` (opcional,
+  só na visão clínica do detalhe). Novo exemplo `exam-order-lab-rectified.json`.
+- Evento `result_rectified` em `events[].kind`.
+
 ## Não publicado (antes da tag exams-v1.0.0)
 
 - A47: `denied_reason` (string | null) em `exam-order-v1.json`, **opcional**

@@ -1,0 +1,136 @@
+{
+  "id": "00000011-0000-4000-8000-000000000011",
+  "short_code": "P3W8H6ZC2N",
+  "patient": {
+    "id": "00000002-0000-4000-8000-000000000002",
+    "display_name": "Paciente Simulado"
+  },
+  "sigtap_code": "0202010473",
+  "sigtap_competence": "202610",
+  "label": "DOSAGEM DE GLICOSE",
+  "priority": "routine",
+  "cid10_justification": null,
+  "origin": "lab_reception",
+  "consultation_id": null,
+  "consultation_exam_request_id": null,
+  "result_fields": [
+    {
+      "key": "glicose",
+      "label": "Glicose",
+      "unit": "mg/dL",
+      "loinc": "2345-7"
+    }
+  ],
+  "requester": {
+    "user_id": "00000004-0000-4000-8000-000000000004",
+    "name": "Profissional Simulado",
+    "cns": "700000000000005"
+  },
+  "unit": {
+    "id": "00000005-0000-4000-8000-000000000005",
+    "name": "UBS Simulada"
+  },
+  "provider": {
+    "id": "00000006-0000-4000-8000-000000000006",
+    "name": "Laboratório Municipal Central"
+  },
+  "scheduled_at": null,
+  "scheduled_place": null,
+  "external_reference": null,
+  "gal_requisition": "4100000012345",
+  "status": "resulted",
+  "status_changed_at": "2026-10-16T10:00:00-03:00",
+  "overdue": null,
+  "escalated": false,
+  "guide_url": null,
+  "result": {
+    "id": "00000013-0000-4000-8000-000000000013",
+    "origin": "order",
+    "source": "lab",
+    "released_on": "2026-10-16",
+    "laboratory_name": "Laboratório Municipal Central",
+    "critical": false,
+    "values": [
+      {
+        "key": "glicose",
+        "label": "Glicose",
+        "value": "98",
+        "unit": "mg/dL",
+        "loinc": "2345-7"
+      }
+    ],
+    "pdf_url": "/exams/files/EXEMPLO-TOKEN-2",
+    "acknowledged_at": null,
+    "replaces_result_id": "00000012-0000-4000-8000-000000000012"
+  },
+  "events": [
+    {
+      "kind": "requested",
+      "occurred_at": "2026-10-15T08:30:00-03:00",
+      "actor": {
+        "type": "user",
+        "name": "Técnica Simulada"
+      },
+      "reason": null
+    },
+    {
+      "kind": "collected",
+      "occurred_at": "2026-10-15T09:00:00-03:00",
+      "actor": {
+        "type": "user",
+        "name": "Técnica Simulada"
+      },
+      "reason": null
+    },
+    {
+      "kind": "resulted",
+      "occurred_at": "2026-10-15T15:30:00-03:00",
+      "actor": {
+        "type": "user",
+        "name": "Biomédica Simulada"
+      },
+      "reason": null
+    },
+    {
+      "kind": "acknowledged",
+      "occurred_at": "2026-10-15T17:00:00-03:00",
+      "actor": {
+        "type": "user",
+        "name": "Profissional Simulado"
+      },
+      "reason": null
+    },
+    {
+      "kind": "result_rectified",
+      "occurred_at": "2026-10-16T10:00:00-03:00",
+      "actor": {
+        "type": "user",
+        "name": "Biomédica Simulada"
+      },
+      "reason": "Erro de digitação"
+    }
+  ],
+  "superseded_results": [
+    {
+      "id": "00000012-0000-4000-8000-000000000012",
+      "origin": "order",
+      "source": "lab",
+      "released_on": "2026-10-15",
+      "laboratory_name": "Laboratório Municipal Central",
+      "critical": false,
+      "values": [
+        {
+          "key": "glicose",
+          "label": "Glicose",
+          "value": "89",
+          "unit": "mg/dL",
+          "loinc": "2345-7"
+        }
+      ],
+      "pdf_url": "/exams/files/EXEMPLO-TOKEN-1",
+      "acknowledged_at": "2026-10-15T17:00:00-03:00",
+      "replaces_result_id": null,
+      "superseded_at": "2026-10-16T10:00:00-03:00"
+    }
+  ]
+}

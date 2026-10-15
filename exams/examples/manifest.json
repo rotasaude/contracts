@@ -43,6 +43,10 @@
         {
           "file": "exam-order-denied-pending.json",
           "valid": true
+        },
+        {
+          "file": "exam-order-lab-rectified.json",
+          "valid": true
         }
       ]
     }

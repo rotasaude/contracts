@@ -1,0 +1,23 @@
+{
+  "suites": [
+    {
+      "schema": "lab-report-v1.json",
+      "cases": [
+        { "file": "lab-report-advanced.json", "valid": true },
+        { "file": "invalid-lab-report-without-lead.json", "valid": false, "expect": "technical_lead" }
+      ]
+    },
+    {
+      "profile": "hl7-v2-profile.md",
+      "cases": [
+        { "file": "qbp-q11.hl7", "message": "QBP^Q11^QBP_Q11" },
+        { "file": "rsp-k11.hl7", "message": "RSP^K11^RSP_K11", "msa": "AA" },
+        { "file": "rsp-k11-unknown-barcode.hl7", "message": "RSP^K11^RSP_K11", "msa": "AE", "err5": "unknown_barcode" },
+        { "file": "oul-r22.hl7", "message": "OUL^R22^OUL_R22" },
+        { "file": "ack-aa.hl7", "message": "ACK^R22^ACK", "msa": "AA" },
+        { "file": "ack-ae.hl7", "message": "ACK^R22^ACK", "msa": "AE", "err5": "unknown_analyte" },
+        { "file": "ack-ar.hl7", "message": "ACK^R22^ACK", "msa": "AR", "err5": "unsupported_version" }
+      ]
+    }
+  ]
+}

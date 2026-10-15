@@ -43,6 +43,7 @@
   "scheduled_at": "2026-10-10T08:00:00-03:00",
   "scheduled_place": "Posto de coleta central",
   "external_reference": null,
+  "gal_requisition": null,
   "status": "resulted",
   "status_changed_at": "2026-10-13T14:05:00-03:00",
   "overdue": null,

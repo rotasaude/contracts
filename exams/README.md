@@ -21,6 +21,11 @@ Contratos do módulo 21a (rastreamento de exames, ADR 0036). JSON Schema 2020-12
   (A42). Recepção, unidade e prestador não veem CID nem CNS.
 - **`denied_reason` opcional (A47).** Só os itens de `denied` da lista de
   pendentes do solicitante o trazem; as demais formas não têm a chave.
+- **Laboratório municipal (v1.1, ADR 0037).** `origin: lab_reception`,
+  `source: lab`, `gal_requisition` (número no GAL, ou `null`). Retificação não
+  apaga nada: o resultado vigente traz `replaces_result_id`; os substituídos vão em
+  `superseded_results` (com `superseded_at`), só na visão clínica do detalhe, e o
+  evento é `result_rectified`. O cidadão vê só o vigente.
 - **dom-3 fica no `api`.** O esquema não prova que cada `contained[].id` aparece
   em `result`. O `api` recusa com `invalid_resource` (`details: ["/result"]`). O
   exemplo `invalid-diagnostic-report-uncontained-observation.json` é válido
@@ -57,6 +62,6 @@ m["suites"].each do |s|
 end'
 ```
 
-Esperado: os três pedidos e o hemograma `valid`; `without-pdf` com `required`
+Esperado: os cinco pedidos e o hemograma `valid`; `without-pdf` com `required`
 `["presentedForm"]` na raiz; `preliminary` com `/status`; `uncontained-observation`
 `valid` (o `api` recusa).
