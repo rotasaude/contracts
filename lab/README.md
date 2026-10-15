@@ -6,7 +6,7 @@ Contratos do módulo 21b (laboratório municipal, ADR 0037).
 |---|---|
 | `lab-report-v1.json` | `rotasaude.lab_report.v1`: JSON canônico do laudo, congelado na liberação. É o que a assinatura ICP (CAdES) cobre e de onde o PDF sai. JSON Schema 2020-12, **fechado** (`additionalProperties: false`). |
 | `hl7-v2-profile.md` | `rotasaude.lab.hl7.v1`: perfil HL7 v2.5.1 da entrada do middleware do fornecedor (`POST /hl7/v2`): `QBP^Q11` → `RSP^K11` (lista de trabalho) e `OUL^R22` → `ACK^R22` (resultado). |
-| `examples/` | Laudo válido e inválido, e uma mensagem ER7 por caso do perfil, listados em `examples/manifest.json`. |
+| `examples/` | Laudos válidos (assinatura avançada, ICP com crítico e parcial, retificação, laboratório de apoio) e um inválido; uma mensagem ER7 por caso do perfil (inclusive `OUL^R22` sem `SPM-4` e o `ACK` com dois `ERR`). Listados em `examples/manifest.json`. |
 
 ## Regras
 
@@ -20,10 +20,13 @@ Contratos do módulo 21b (laboratório municipal, ADR 0037).
   0357. `ERR` repete, um por recusa.
 - **HL7: o componente vai em `OBX-3`** (`analyte_key^nome^99RSL`) e o exame em
   `OBR-4` (`instrument_test_code`) — Divergência D2.
-- **`SPM-4`** (obrigatório na v2.5.1) = `material` da versão do exame, como código e
-  texto.
-- **Tudo ou nada.** Uma `OUL^R22` com vários `SPM`/`OBR`/`OBX` entra inteira ou é
-  recusada inteira (`AE`, um `ERR` por problema). Nenhum resultado é liberado sozinho.
+- **`SPM-4`** (obrigatório na v2.5.1): o Rota Saúde escreve
+  `material_key^rótulo^99RSL` (código local, sem a tabela HL7 0487). Na leitura,
+  `OUL^R22` sem `SPM-4` é aceito: a amostra é identificada pelo `SPM-2` (B25).
+- **Tudo ou nada, com todas as recusas.** Uma `OUL^R22` com vários `SPM`/`OBR`/`OBX`
+  entra inteira ou é recusada inteira. A leitura confere a mensagem toda e o `ACK`
+  `AE` traz um `ERR` por recusa (B26; ver `ack-ae-two-errors.hl7`, resposta a
+  `oul-r22-two-refusals.hl7`). Nenhum resultado é liberado sozinho.
 - **Idempotência.** `MSH-10` já aceito (`AA`) do mesmo token → `AA` sem efeito;
   mensagem recusada não é guardada e pode ser reenviada com o mesmo `MSH-10`.
 - **Sem dado de paciente** no `RSP^K11` (sem `PID`), no `ACK` e no `ERR`.
@@ -58,6 +61,8 @@ m["suites"].each do |s|
 end'
 ```
 
-Esperado: `lab-report-advanced.json: valid`; `invalid-lab-report-without-lead.json`
+Esperado: os quatro `lab-report-*.json` `valid`; `invalid-lab-report-without-lead.json`
 com `required ["technical_lead"]` na raiz; uma linha por `.hl7` com o `MSH-9` e o
-`MSA-1` do manifesto, e `lf=false`.
+`MSA-1` do manifesto, e `lf=false`. No manifesto, `err5` é o código (ou a lista,
+quando há mais de um `ERR`), `spm4: false` marca a mensagem sem `SPM-4` e
+`answered_by` liga a mensagem ao `ACK` que a responde.

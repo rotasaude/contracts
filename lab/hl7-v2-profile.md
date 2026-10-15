@@ -36,14 +36,16 @@ MSH|^~\&|ROTA-SAUDE|<cidade>|<app>|<instalação>|<agora>||RSP^K11^RSP_K11|<id>|
 MSA|AA|<MSH-10 da consulta>
 QAK|<etiqueta>|OK|LabWorklist^Lista de trabalho^99RSL
 QPD|LabWorklist^Lista de trabalho^99RSL|<etiqueta>|<código de barras>
-SPM|1|<código de barras>||<material>^<material>^99RSL|||||||||||||<coleta AAAAMMDDhhmmss>
+SPM|1|<código de barras>||<material_key>^<rótulo do material>^99RSL|||||||||||||<coleta AAAAMMDDhhmmss>
 ORC|NW|<id do item>
 OBR|1|<id do item>||<instrument_test_code>^<nome do exame>^99RSL
 ```
 - O grupo de conformidade do `RSP^K11` é o deste perfil: um `SPM` seguido de um par
   `ORC`/`OBR` por exame pendente da amostra (não se usa `RDF`/`RDT`).
-- `SPM-4` (tipo do espécime, obrigatório na v2.5.1) = `material` da versão vigente
-  do exame, como código e texto (`<material>^<material>^99RSL`); `SPM-17` = coleta.
+- `SPM-4` (tipo do espécime, obrigatório na v2.5.1) = material da versão vigente do
+  exame no sistema local: `SPM-4.1` = chave do material (`material_key`, ex. `soro`),
+  `SPM-4.2` = rótulo legível (ex. `Soro`), `SPM-4.3` = `99RSL`. Não se usa a tabela
+  HL7 0487. `SPM-17` = coleta.
 - `ORC-2` e `OBR-2` = id do item da requisição; `OBR-4` = `instrument_test_code`
   da versão vigente do exame.
 - Sem `PID`: o Rota Saúde não manda identificação do paciente; o código de barras é a chave.
@@ -55,13 +57,15 @@ OBR|1|<id do item>||<instrument_test_code>^<nome do exame>^99RSL
 ### Resultado: OUL^R22 → ACK^R22
 ```
 MSH|^~\&|<app>|<instalação>|ROTA-SAUDE|<cidade>|<agora>||OUL^R22^OUL_R22|<id>|P|2.5.1
-SPM|1|<código de barras>||<material>^<material>^99RSL
+SPM|1|<código de barras>||<material_key>^<rótulo do material>^99RSL
 OBR|1|||<instrument_test_code>^<nome>^99RSL
 OBX|1|NM|<analyte_key>^<nome>^99RSL||<valor>|<unidade>^^UCUM|||||F|||<AAAAMMDDhhmmss>
 ```
 - `SPM-2.1` (ou `SPM-2.2`, se o primeiro vier vazio) = código de barras.
-- `SPM-4` é obrigatório na v2.5.1: o middleware repete o que recebeu no `RSP^K11`.
-  O Rota Saúde não casa pela `SPM-4` (a chave é o código de barras).
+- `SPM-4` é obrigatório na v2.5.1: o middleware deve repetir o que recebeu no
+  `RSP^K11` (`material_key^rótulo^99RSL`). Na leitura, porém, o Rota Saúde **aceita
+  `OUL^R22` sem `SPM-4`** e não confere o valor: a amostra é identificada só pelo
+  `SPM-2` (código de barras).
 - `OBR-4.1` = `instrument_test_code` da versão vigente do exame (o exame vai no
   `OBR-4`, não no `OBX-3` — Divergência D2).
 - `OBX-3.1` = `analyte_key` (`analyte_key^nome^99RSL`); `OBX-2` `NM` (numérico) ou
@@ -69,7 +73,9 @@ OBX|1|NM|<analyte_key>^<nome>^99RSL||<valor>|<unidade>^^UCUM|||||F|||<AAAAMMDDhh
   quando vier; `OBX-14` = hora da medição.
 - Estrutura: `{ SPM { OBR { OBX } } }`. `OBX` antes do primeiro `OBR` de um `SPM`
   (observação da amostra) é ignorado.
-- Vários `SPM`/`OBR`/`OBX` na mesma mensagem: tudo ou nada.
+- Vários `SPM`/`OBR`/`OBX` na mesma mensagem: tudo ou nada. A leitura confere a
+  mensagem **inteira** e não para na primeira recusa: o `ACK` `AE` traz um `ERR` por
+  recusa encontrada, e nada da mensagem é gravado.
 - Componente calculado não é aceito (o Rota Saúde calcula).
 - Repetição: outro `OUL^R22` com o mesmo componente acrescenta uma linha (nada é sobrescrito).
 - Nenhum resultado é liberado sozinho: entra "aguardando conferência".
@@ -89,12 +95,15 @@ ERR||SPM^1^2|204^Unknown key identifier^HL70357|E|unknown_barcode^Codigo de barr
 - `ERR-2` = local (`segmento^ocorrência^campo`); `ERR-3` = código HL7 da tabela 0357
   (obrigatório); `ERR-4` = severidade (`E`); `ERR-5` = **nosso** código, no sistema `99RSL`.
   O código da aplicação nunca vai em `ERR-3`.
-- `ERR` é repetível no `ACK` e no `RSP^K11`: **um `ERR` por recusa**. Como a mensagem
-  entra inteira ou nada, um `OUL^R22` com dois `OBX` errados volta com dois `ERR`:
+- `ERR` é repetível no `ACK` e no `RSP^K11`: **um `ERR` por recusa**. A leitura do
+  `OUL^R22` junta todas as recusas da mensagem (não para na primeira) e a mensagem
+  continua entrando inteira ou nada. Ex. (`examples/ack-ae-two-errors.hl7`), um
+  `OUL^R22` com um código de barras desconhecido no 1º `SPM` e um valor fora da faixa
+  de digitação no 2º `OBX`:
   ```
   MSA|AE|<MSH-10 recebido>
-  ERR||OBX^1^3|204^Unknown key identifier^HL70357|E|unknown_analyte^Componente desconhecido^99RSL
-  ERR||OBX^2^6|207^Application internal error^HL70357|E|unit_mismatch^Unidade diferente^99RSL
+  ERR||SPM^1^2|204^Unknown key identifier^HL70357|E|unknown_barcode^Codigo de barras desconhecido^99RSL
+  ERR||OBX^2^5|207^Application internal error^HL70357|E|out_of_entry_range^Valor fora da faixa de digitacao^99RSL
   ```
   O leitor do Rota Saúde também aceita `ERR` repetido.
 
