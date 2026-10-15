@@ -21,12 +21,13 @@ Contratos do módulo 21b (laboratório municipal, ADR 0037).
 - **HL7: o componente vai em `OBX-3`** (`analyte_key^nome^99RSL`) e o exame em
   `OBR-4` (`instrument_test_code`) — Divergência D2.
 - **`SPM-4`** (obrigatório na v2.5.1): o Rota Saúde escreve
-  `material_key^rótulo^99RSL` (código local, sem a tabela HL7 0487). Na leitura,
+  `material_key^rótulo^99RSL` (código local, sem a tabela HL7 0487; `material_key` derivada do texto do material — sem acento, minúsculas, não alfanuméricos → `_` — B28). Na leitura,
   `OUL^R22` sem `SPM-4` é aceito: a amostra é identificada pelo `SPM-2` (B25).
 - **Tudo ou nada, com todas as recusas.** Uma `OUL^R22` com vários `SPM`/`OBR`/`OBX`
   entra inteira ou é recusada inteira. A leitura confere a mensagem toda e o `ACK`
   `AE` traz um `ERR` por recusa (B26; ver `ack-ae-two-errors.hl7`, resposta a
-  `oul-r22-two-refusals.hl7`). Nenhum resultado é liberado sozinho.
+  `oul-r22-two-refusals.hl7`: amostra conhecida, um `OBX` fora da faixa de digitação
+  e outro com componente desconhecido). Nenhum resultado é liberado sozinho.
 - **Idempotência.** `MSH-10` já aceito (`AA`) do mesmo token → `AA` sem efeito;
   mensagem recusada não é guardada e pode ser reenviada com o mesmo `MSH-10`.
 - **Sem dado de paciente** no `RSP^K11` (sem `PID`), no `ACK` e no `ERR`.

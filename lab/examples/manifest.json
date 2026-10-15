@@ -58,7 +58,7 @@
           "file": "oul-r22-two-refusals.hl7",
           "message": "OUL^R22^OUL_R22",
           "answered_by": "ack-ae-two-errors.hl7",
-          "note": "código de barras desconhecido e OBX 2 fora da faixa de digitação (B26)"
+          "note": "amostra conhecida; OBX 1 fora da faixa de digitação e OBX 2 com componente desconhecido (B26)"
         },
         {
           "file": "ack-aa.hl7",
@@ -76,8 +76,8 @@
           "message": "ACK^R22^ACK",
           "msa": "AE",
           "err5": [
-            "unknown_barcode",
-            "out_of_entry_range"
+            "out_of_entry_range",
+            "unknown_analyte"
           ]
         },
         {
