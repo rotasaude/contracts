@@ -1,0 +1,115 @@
+{
+  "id": "00000001-0000-4000-8000-000000000001",
+  "short_code": "K7M2Q9XR4T",
+  "patient": {
+    "id": "00000002-0000-4000-8000-000000000002",
+    "display_name": "Paciente Simulado"
+  },
+  "sigtap_code": "0202020380",
+  "sigtap_competence": "202610",
+  "label": "HEMOGRAMA COMPLETO",
+  "priority": "routine",
+  "cid10_justification": "D649",
+  "origin": "consultation",
+  "consultation_id": "00000003-0000-4000-8000-000000000003",
+  "consultation_exam_request_id": "00000004-0000-4000-8000-000000000004",
+  "result_fields": [
+    {
+      "key": "hb",
+      "label": "Hemoglobina",
+      "unit": "g/dL",
+      "loinc": "718-7"
+    },
+    {
+      "key": "plt",
+      "label": "Plaquetas",
+      "unit": "10*3/uL",
+      "loinc": "777-3"
+    }
+  ],
+  "requester": {
+    "user_id": "00000004-0000-4000-8000-000000000004",
+    "name": "Profissional Simulado",
+    "cns": "700000000000005"
+  },
+  "unit": {
+    "id": "00000005-0000-4000-8000-000000000005",
+    "name": "UBS Simulada"
+  },
+  "provider": {
+    "id": "00000006-0000-4000-8000-000000000006",
+    "name": "Laboratório Simulado"
+  },
+  "scheduled_at": "2026-10-10T08:00:00-03:00",
+  "scheduled_place": "Posto de coleta central",
+  "external_reference": null,
+  "status": "resulted",
+  "status_changed_at": "2026-10-13T14:05:00-03:00",
+  "overdue": null,
+  "escalated": true,
+  "guide_url": null,
+  "result": {
+    "id": "00000007-0000-4000-8000-000000000007",
+    "origin": "order",
+    "source": "fhir",
+    "released_on": "2026-10-13",
+    "laboratory_name": "Laboratório Simulado",
+    "critical": true,
+    "values": [
+      {
+        "key": "hb",
+        "label": "Hemoglobina",
+        "value": "13.4",
+        "unit": "g/dL",
+        "loinc": "718-7"
+      },
+      {
+        "key": "plt",
+        "label": "Plaquetas",
+        "value": "41",
+        "unit": "10*3/uL",
+        "loinc": "777-3"
+      }
+    ],
+    "pdf_url": "/exams/files/EXEMPLO-TOKEN",
+    "acknowledged_at": null
+  },
+  "events": [
+    {
+      "kind": "requested",
+      "occurred_at": "2026-10-05T09:00:00-03:00",
+      "actor": {
+        "type": "user",
+        "name": "Profissional Simulado"
+      },
+      "reason": null
+    },
+    {
+      "kind": "scheduled",
+      "occurred_at": "2026-10-06T10:00:00-03:00",
+      "actor": {
+        "type": "user",
+        "name": "Atendente Simulado"
+      },
+      "reason": null
+    },
+    {
+      "kind": "collected",
+      "occurred_at": "2026-10-10T08:20:00-03:00",
+      "actor": {
+        "type": "provider",
+        "name": "Laboratório Simulado"
+      },
+      "reason": null
+    },
+    {
+      "kind": "resulted",
+      "occurred_at": "2026-10-13T14:05:00-03:00",
+      "actor": {
+        "type": "provider",
+        "name": "Laboratório Simulado"
+      },
+      "reason": null
+    }
+  ]
+}

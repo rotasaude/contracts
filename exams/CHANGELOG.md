@@ -2,13 +2,16 @@
 
 ## exams-v1.1.0 — 2026-10-15
 
-Laboratório municipal (ADR 0037, módulo 21b). MINOR: só acrescenta.
+Laboratório municipal (ADR 0037, módulo 21b). MINOR: só acrescenta. Todo campo
+novo é **opcional** no esquema (fora de `required`, aceita `null`; B24), então
+documento da v1.0 continua válido; o `api` sempre envia as chaves. Novo exemplo
+`exam-order-v1-0-shape.json` (forma da v1.0) no manifesto, como válido.
 
 - `origin`: `lab_reception` (exame criado na recepção do laboratório, pedido em
   papel).
 - `source` do `result` (visões clínica e administrativa): `lab`.
-- `gal_requisition` (string | null, até 30), obrigatório: número da requisição no
-  GAL. Os exemplos de pedido ganharam a chave (`null`).
+- `gal_requisition` (string | null, até 30), opcional: número da requisição no
+  GAL. Os exemplos de pedido da v1.0 ganharam a chave (`null`).
 - Substituição do resultado (retificação do laudo, B8): `result.replaces_result_id`
   e `superseded_at` (opcionais, visão clínica) e `superseded_results` (opcional,
   só na visão clínica do detalhe). Novo exemplo `exam-order-lab-rectified.json`.

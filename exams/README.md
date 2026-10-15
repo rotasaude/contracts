@@ -25,7 +25,9 @@ Contratos do módulo 21a (rastreamento de exames, ADR 0036). JSON Schema 2020-12
   `source: lab`, `gal_requisition` (número no GAL, ou `null`). Retificação não
   apaga nada: o resultado vigente traz `replaces_result_id`; os substituídos vão em
   `superseded_results` (com `superseded_at`), só na visão clínica do detalhe, e o
-  evento é `result_rectified`. O cidadão vê só o vigente.
+  evento é `result_rectified`. O cidadão vê só o vigente. Os campos novos são
+  opcionais no esquema (B24): o `api` sempre envia as chaves, mas documento da
+  v1.0 sem elas continua válido (`exam-order-v1-0-shape.json`).
 - **dom-3 fica no `api`.** O esquema não prova que cada `contained[].id` aparece
   em `result`. O `api` recusa com `invalid_resource` (`details: ["/result"]`). O
   exemplo `invalid-diagnostic-report-uncontained-observation.json` é válido
@@ -62,6 +64,6 @@ m["suites"].each do |s|
 end'
 ```
 
-Esperado: os cinco pedidos e o hemograma `valid`; `without-pdf` com `required`
+Esperado: os seis pedidos e o hemograma `valid`; `without-pdf` com `required`
 `["presentedForm"]` na raiz; `preliminary` com `/status`; `uncontained-observation`
 `valid` (o `api` recusa).

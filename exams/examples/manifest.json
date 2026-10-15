@@ -47,6 +47,11 @@
         {
           "file": "exam-order-lab-rectified.json",
           "valid": true
+        },
+        {
+          "file": "exam-order-v1-0-shape.json",
+          "valid": true,
+          "note": "forma da v1.0 (sem gal_requisition nem campos de substituição): continua válida (B24)"
         }
       ]
     }
