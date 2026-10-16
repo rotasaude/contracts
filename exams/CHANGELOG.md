@@ -16,6 +16,10 @@ documento da v1.0 continua válido; o `api` sempre envia as chaves. Novo exemplo
   e `superseded_at` (opcionais, visão clínica) e `superseded_results` (opcional,
   só na visão clínica do detalhe). Novo exemplo `exam-order-lab-rectified.json`.
 - Evento `result_rectified` em `events[].kind`.
+- B63: `escalation_reasons` (lista de `overdue` | `critical` | `unlinked_requester`
+  ou `null`), opcional, só na visão clínica: os motivos gravados do escalonamento
+  (A31), sem dedução pelo resultado vigente. O exemplo `exam-order-lab-rectified.json`
+  passa a ser escalado por `critical` com o resultado retificado normal.
 
 ## Não publicado (antes da tag exams-v1.0.0)
 

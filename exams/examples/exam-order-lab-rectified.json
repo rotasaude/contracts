@@ -41,7 +41,10 @@
   "status": "resulted",
   "status_changed_at": "2026-10-16T10:00:00-03:00",
   "overdue": null,
-  "escalated": false,
+  "escalated": true,
+  "escalation_reasons": [
+    "critical"
+  ],
   "guide_url": null,
   "result": {
     "id": "00000013-0000-4000-8000-000000000013",
