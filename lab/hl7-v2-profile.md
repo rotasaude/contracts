@@ -84,6 +84,37 @@ OBX|1|NM|<analyte_key>^<nome>^99RSL||<valor>|<unidade>^^UCUM|||||F|||<AAAAMMDDhh
 - Repetição: outro `OUL^R22` com o mesmo componente acrescenta uma linha (nada é sobrescrito).
 - Nenhum resultado é liberado sozinho: entra "aguardando conferência".
 
+### Controle: OUL^R22 → ACK^R22 (ADR 0038, módulo 21c)
+Resultado de controle interno da qualidade (CIQ) vai na mesma mensagem `OUL^R22`,
+num `SPM` próprio. Conferido contra a HL7 v2.5.1 e o IHE LAW em 2026-10-18
+(docs/pesquisa/2026-10-18-laboratorio-qualidade-provas-tecnicas.md).
+```
+MSH|^~\&|<app>|<instalação>|ROTA-SAUDE|<cidade>|<agora>||OUL^R22^OUL_R22|<id>|P|2.5.1
+SPM|1|<código de barras do nível>|||||||||Q
+OBR|1|||<instrument_test_code>^<nome>^99RSL
+OBX|1|NM|<analyte_key>^<nome>^99RSL||<valor>|<unidade>^^UCUM|||||F|||<AAAAMMDDhhmmss>||||<hl7_equipment_id>
+```
+- **Quem decide que é controle é o `SPM-2`:** código de barras de um nível de lote de
+  controle cadastrado no Rota Saúde. O lote, o nível e o material vêm do cadastro.
+- `SPM-11` = `Q` (tabela 0369, "Control specimen") é recomendado. `SPM-11` = `Q` com um
+  código que não é de controle é recusado (`unknown_barcode`): um controle nunca vira
+  resultado de paciente. `SPM-4` é ignorado no controle; `INV` é aceito e ignorado.
+- `OBR-4.1` = `instrument_test_code` da versão vigente de um exame ligado ao material.
+- `OBX-3.1` = `analyte_key` (um analito do material para aquele exame); `OBX-2` `NM`;
+  `OBX-5.1` com **ponto** decimal (até 4 casas); `OBX-6.1`, quando vem, igual à unidade
+  do componente.
+- **Aparelho em `OBX-18`** (EI, repetível): vale a repetição cuja 1ª parte casa, sem
+  diferenciar maiúsculas, com o identificador HL7 do aparelho cadastrado. `EQU` não faz
+  parte do `OUL^R22` na 2.5.1.
+- Os valores de uma mensagem para o mesmo aparelho ficam na mesma corrida. Cada valor é
+  avaliado por Westgard ao entrar; a corrida reprovada **não** muda a resposta (`AA`):
+  a reprovação é resultado do CIQ, não erro da mensagem.
+- Mensagem inteira ou nada, com as amostras de paciente (B26).
+
+Exemplo: `examples/oul-r22-qc.hl7` (aprovada) e `examples/oul-r22-qc-2-2s.hl7`
+(reprovada por 2-2s entre níveis: os dois níveis acima de +2 dp na mesma corrida;
+responde `AA`). Recusa: `examples/ack-ae-qc.hl7`.
+
 ### ACK
 ```
 MSH|^~\&|ROTA-SAUDE|<cidade>|<app>|<instalação>|<agora>||ACK^R22^ACK|<id>|P|2.5.1
@@ -123,6 +154,11 @@ ERR||SPM^1^2|204^Unknown key identifier^HL70357|E|unknown_barcode^Codigo de barr
 | `out_of_entry_range` | AE | 207 | `OBX^n^5` |
 | `unit_mismatch` | AE | 207 | `OBX^n^6` |
 | `invalid_value` | AE | 102 | `OBX^n^5` |
+| `qc_lot_expired` | AE | 207 | `SPM^n^2` |
+| `qc_lot_closed` | AE | 207 | `SPM^n^2` |
+| `qc_disabled` | AE | 207 | `SPM^n^2` |
+| `qc_no_target` | AE | 207 | `OBX^n^3` |
+| `unknown_instrument` | AE | 204 | `OBX^n^18` |
 | `invalid_message` | AR | 100 | — |
 | `unsupported_message_type` | AR | 200 | `MSH^1^9` |
 | `unsupported_version` | AR | 203 | `MSH^1^12` |
@@ -131,6 +167,8 @@ ERR||SPM^1^2|204^Unknown key identifier^HL70357|E|unknown_barcode^Codigo de barr
 
 `feature_disabled` = token do middleware simulado com o interruptor `fake_middleware`
 desligado. Com `lab_hl7_inbound` desligado a resposta é HTTP 403 (sem HL7).
+
+`qc_disabled` = controle com o interruptor `lab_quality_control` desligado na cidade. `qc_no_target` = analito do material sem referência vigente para o lote, o nível e o aparelho.
 
 Nunca há dado do paciente em `ERR` nem no `ACK`.
 

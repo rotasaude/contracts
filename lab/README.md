@@ -6,6 +6,7 @@ Contratos do módulo 21b (laboratório municipal, ADR 0037).
 |---|---|
 | `lab-report-v1.json` | `rotasaude.lab_report.v1`: JSON canônico do laudo, congelado na liberação. É o que a assinatura ICP (CAdES) cobre e de onde o PDF sai. JSON Schema 2020-12, **fechado** (`additionalProperties: false`). |
 | `hl7-v2-profile.md` | `rotasaude.lab.hl7.v1`: perfil HL7 v2.5.1 da entrada do middleware do fornecedor (`POST /hl7/v2`): `QBP^Q11` → `RSP^K11` (lista de trabalho) e `OUL^R22` → `ACK^R22` (resultado). |
+| `hl7-v2-profile.md` (seção "Controle") | Desde `lab-v1.1.0`, o mesmo perfil descreve o controle interno da qualidade: `OUL^R22` com `SPM-2` de nível de lote de controle, aparelho em `OBX-18` e as recusas `qc_*` e `unknown_instrument`. Exemplos: `oul-r22-qc.hl7`, `oul-r22-qc-2-2s.hl7`, `ack-ae-qc.hl7`. |
 | `examples/` | Laudos válidos (assinatura avançada, ICP com crítico e parcial, retificação, laboratório de apoio) e um inválido; uma mensagem ER7 por caso do perfil (inclusive `OUL^R22` sem `SPM-4` e o `ACK` com dois `ERR`). Listados em `examples/manifest.json`. |
 
 ## Regras

@@ -85,6 +85,29 @@
           "message": "ACK^R22^ACK",
           "msa": "AR",
           "err5": "unsupported_version"
+        },
+        {
+          "file": "oul-r22-qc.hl7",
+          "message": "OUL^R22^OUL_R22",
+          "specimen_role": "Q",
+          "answered_by": "ack-aa.hl7",
+          "note": "controle aprovado: dois níveis do lote CQB-2611, aparelho em OBX-18 (ADR 0038)"
+        },
+        {
+          "file": "oul-r22-qc-2-2s.hl7",
+          "message": "OUL^R22^OUL_R22",
+          "specimen_role": "Q",
+          "answered_by": "ack-aa.hl7",
+          "note": "controle reprovado por 2-2s entre níveis; a mensagem é aceita (AA), a corrida fica rejected"
+        },
+        {
+          "file": "ack-ae-qc.hl7",
+          "message": "ACK^R22^ACK",
+          "msa": "AE",
+          "err5": [
+            "qc_lot_expired",
+            "unknown_instrument"
+          ]
         }
       ]
     }

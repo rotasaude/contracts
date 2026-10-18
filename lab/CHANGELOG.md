@@ -1,5 +1,18 @@
 # Changelog — lab
 
+## lab-v1.1.0 — 2026-10-18 (não publicada até a tag)
+
+Controle interno da qualidade pela HL7 (ADR 0038, módulo 21c). MINOR: nada do
+perfil anterior muda.
+
+- `hl7-v2-profile.md`: seção "Controle" — o controle é reconhecido pelo `SPM-2`
+  (código de barras do nível do lote cadastrado); `SPM-11` = `Q` recomendado e
+  recusado com código que não é de controle; aparelho em `OBX-18` (sem `EQU`);
+  recusas `qc_lot_expired`, `qc_lot_closed`, `qc_disabled`, `qc_no_target`,
+  `unknown_instrument`.
+- `examples/`: `oul-r22-qc.hl7` (aprovada), `oul-r22-qc-2-2s.hl7` (reprovada por
+  2-2s entre níveis, aceita como mensagem) e `ack-ae-qc.hl7`.
+
 ## lab-v1.0.0 — 2026-10-15
 
 Primeira versão do domínio (ADR 0037, módulo 21b, laboratório municipal).
