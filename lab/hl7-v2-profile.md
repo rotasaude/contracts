@@ -87,7 +87,7 @@ OBX|1|NM|<analyte_key>^<nome>^99RSL||<valor>|<unidade>^^UCUM|||||F|||<AAAAMMDDhh
 ### Controle: OUL^R22 → ACK^R22 (ADR 0038, módulo 21c)
 Resultado de controle interno da qualidade (CIQ) vai na mesma mensagem `OUL^R22`,
 num `SPM` próprio. Conferido contra a HL7 v2.5.1 e o IHE LAW em 2026-10-18
-(docs/pesquisa/2026-10-18-laboratorio-qualidade-provas-tecnicas.md).
+(pesquisa citada no contrato do módulo 21c no repositório docs).
 ```
 MSH|^~\&|<app>|<instalação>|ROTA-SAUDE|<cidade>|<agora>||OUL^R22^OUL_R22|<id>|P|2.5.1
 SPM|1|<código de barras do nível>|||||||||Q
@@ -98,13 +98,17 @@ OBX|1|NM|<analyte_key>^<nome>^99RSL||<valor>|<unidade>^^UCUM|||||F|||<AAAAMMDDhh
   controle cadastrado no Rota Saúde. O lote, o nível e o material vêm do cadastro.
 - `SPM-11` = `Q` (tabela 0369, "Control specimen") é recomendado. `SPM-11` = `Q` com um
   código que não é de controle é recusado (`unknown_barcode`): um controle nunca vira
-  resultado de paciente. `SPM-4` é ignorado no controle; `INV` é aceito e ignorado.
+  resultado de paciente. O código de barras do nível segue `^[A-Za-z0-9._-]{3,30}$` e
+  nunca é só de 10 dígitos (`^[0-9]{10}$` é o espaço das amostras de paciente), então
+  controle e amostra não colidem. `SPM-4` é ignorado no controle; `INV` é aceito e ignorado.
 - `OBR-4.1` = `instrument_test_code` da versão vigente de um exame ligado ao material.
 - `OBX-3.1` = `analyte_key` (um analito do material para aquele exame); `OBX-2` `NM`;
-  `OBX-5.1` com **ponto** decimal (até 4 casas); `OBX-6.1`, quando vem, igual à unidade
+  `OBX-5.1` com **ponto** decimal (NM: até 9 dígitos inteiros e 4 casas; vírgula ou valor
+  malformado é recusado com `AE` `invalid_value`); `OBX-6.1`, quando vem, igual à unidade
   do componente.
 - **Aparelho em `OBX-18`** (EI, repetível): vale a repetição cuja 1ª parte casa, sem
-  diferenciar maiúsculas, com o identificador HL7 do aparelho cadastrado. `EQU` não faz
+  diferenciar maiúsculas, com o identificador HL7 do aparelho cadastrado
+  (`hl7_equipment_id`, no máximo 50 caracteres). `EQU` não faz
   parte do `OUL^R22` na 2.5.1.
 - Os valores de uma mensagem para o mesmo aparelho ficam na mesma corrida. Cada valor é
   avaliado por Westgard ao entrar; a corrida reprovada **não** muda a resposta (`AA`):

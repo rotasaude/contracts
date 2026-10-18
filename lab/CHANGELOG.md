@@ -12,6 +12,9 @@ perfil anterior muda.
   `unknown_instrument`.
 - `examples/`: `oul-r22-qc.hl7` (aprovada), `oul-r22-qc-2-2s.hl7` (reprovada por
   2-2s entre níveis, aceita como mensagem) e `ack-ae-qc.hl7`.
+- Regras do controle: código de barras do nível `^[A-Za-z0-9._-]{3,30}$` (nunca só 10
+  dígitos), `hl7_equipment_id` com até 50 caracteres, valor NM com ponto (até 9 inteiros e
+  4 casas; vírgula ou malformado → `invalid_value`).
 
 ## lab-v1.0.0 — 2026-10-15
 
