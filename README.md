@@ -16,7 +16,7 @@ versionados.
 
 ## Domínios
 
-Oito domínios, **versionados de forma independente** (ADR 0015):
+Nove domínios, **versionados de forma independente** (ADR 0015):
 
 | Domínio | O que é | Versão | Estado |
 |---|---|---|---|
@@ -26,6 +26,7 @@ Oito domínios, **versionados de forma independente** (ADR 0015):
 | [`clinical/`](clinical/README.md) | JSON canônico assinado da consulta, do adendo e dos documentos clínicos (ADRs 0032, 0033 e 0034) | `clinical-v1.2.0` | Materializado |
 | [`exams/`](exams/README.md) | Pedido de exame (`<exam_order>`) e perfil FHIR de entrada do laudo (ADRs 0036 e 0037) | `exams-v1.1.0` | Materializado |
 | [`lab/`](lab/README.md) | Laudo do laboratório municipal e perfil HL7 v2.5.1 de entrada (ADR 0037) | `lab-v1.0.0` | Materializado |
+| [`billing/`](billing/README.md) | Arquivo de interface do BPA Magnético (BPA-C/BPA-I) gerado no fechamento da competência (ADR 0039) | `billing-v1.0.0` | Materializado |
 | [`types/`](types/README.md) | Contrato de tipos da API (Ruby ↔ TS) | — | Scaffold: extração pendente |
 | [`design-tokens/`](design-tokens/README.md) | Cores, espaçamento e tipografia como dado (4 temas, contraste validado) | `tokens-v1.1.0` | Materializado |
 
