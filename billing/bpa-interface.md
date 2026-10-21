@@ -140,6 +140,8 @@ Implementação: `(Σ (sigtap_code.to_i + quantity)) % 1111 + 1111`.
 
 ### "Sem informação" e notas do PDF
 
+Notas do PDF, descritivas. O que o Rota Saúde grava está em 'Origem dos dados' e na última coluna das tabelas: raça/cor nunca `99`; número sem número sempre `SN` (nunca `00`).
+
 - Raça/cor `99` = sem informação; etnia em brancos quando raça ≠ 05; situação de rua e "sem CPF" em branco quando não há informação; número do endereço `SN`/`00` quando não há número.
 - Nota 1 do PDF: o campo não pode ser editado pelo usuário. Nota 2: **o paciente é identificado por um documento só — CPF ou CNS, nunca os dois.**
 
