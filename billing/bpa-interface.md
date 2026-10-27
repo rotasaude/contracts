@@ -1,4 +1,4 @@
-# Perfil do arquivo de interface do BPA Magnético (billing-v1.0.0)
+# Perfil do arquivo de interface do BPA Magnético (billing-v1.1.0)
 
 Arquivo que o Rota Saúde gera no fechamento da competência de um
 estabelecimento faturante e que o faturista importa no BPA Magnético
@@ -34,8 +34,10 @@ conferido em `docs/pesquisa/2026-10-21-faturamento-bpa-prova-tecnica.md`.
 
 ## Origem dos dados
 - BPA-C agrega por CNES × competência de realização × CBO × procedimento × idade (anos completos na data).
-- BPA-I item a item. Paciente sempre pelo CPF (`prd_cpf_pcnte`); `Prd-cnspac` em brancos (nunca os dois);
-  `prd_sem_cpf` = `N`.
+- BPA-I item a item. Paciente identificado por **um** documento: com CPF, `prd_cpf_pcnte` preenchido,
+  `Prd-cnspac` em brancos e `prd_sem_cpf` = `N`; **sem CPF** (paciente do cadastro territorial, módulo 24a,
+  ADR 0042), CNS em `Prd-cnspac`, `prd_cpf_pcnte` em brancos e `prd_sem_cpf` = `S`. Paciente sem CPF e sem CNS
+  não entra no arquivo: é pendência (`missing_patient_id`).
 - Sexo `F`/`M`; IBGE de residência = 6 primeiros dígitos do IBGE da cidade; caráter `01` eletivo, `02` urgência;
   raça/cor (`01`..`05`, sem `99`) e etnia (só quando `05`) do cadastro do paciente; CEP, endereço,
   complemento, número (`SN` sem número) e bairro do cadastro do paciente (endereço em maiúsculas ASCII com
@@ -95,7 +97,7 @@ conferido em `docs/pesquisa/2026-10-21-faturamento-bpa-prova-tecnica.md`.
 | 7 | prd-flh | X | 3 | 45 | 47 | NUM | folha 001..999 | folha da série |
 | 8 | prd-seq | | 2 | 48 | 49 | NUM | linha na folha, **01..99** | 01..20 (folha de 20, como o BPA-C) |
 | 9 | prd-pa | | 10 | 50 | 59 | NUM | procedimento | `sigtap_code` |
-| 10 | Prd-cnspac | | 15 | 60 | 74 | NUM | CNS do paciente (obrigatório quando o procedimento exige) | **brancos** — o paciente vai pelo CPF (nota 2 do PDF: um documento só) |
+| 10 | Prd-cnspac | | 15 | 60 | 74 | NUM | CNS do paciente (obrigatório quando o procedimento exige) | CNS do paciente **só quando ele não tem CPF**; com CPF, **brancos** (nota 2 do PDF: um documento só) |
 | 11 | Prd-sexo | | 1 | 75 | 75 | ALFA | `M` ou `F` (`I` aceito desde 01/2026, LEIAME 04.11) | `F`/`M` do paciente |
 | 12 | Prd-ibge | | 6 | 76 | 81 | NUM | IBGE de residência (6 dígitos, sem o DV) | 6 primeiros dígitos de `city_profile.ibge_code` |
 | 13 | Prd-cid | | 4 | 82 | 85 | ALFA | CID-10 | `cid10` sem ponto ou brancos |
@@ -123,9 +125,9 @@ conferido em `docs/pesquisa/2026-10-21-faturamento-bpa-prova-tecnica.md`.
 | 35 | prd_ddtel_pcnte | | 11 | 278 | 288 | NUM | telefone; senão brancos | telefone do par sem o 55 (10–11 dígitos) quando houver |
 | 36 | prd_email_pcnte | | 40 | 289 | 328 | ALFA | e-mail | brancos |
 | 37 | prd_ine | X | 10 | 329 | 338 | NUM | INE da equipe (desde 08/2015) | brancos (unidade não-APS, sem equipe; risco no runbook) |
-| 38 | prd_cpf_pcnte | | 11 | 339 | 349 | NUM | CPF (obrigatório quando o procedimento exige) | `patients.cpf` |
+| 38 | prd_cpf_pcnte | | 11 | 339 | 349 | NUM | CPF (obrigatório quando o procedimento exige) | `patients.cpf`; **brancos** quando o paciente não tem CPF |
 | 38 | prd_situacao_rua | | 1 | 350 | 350 | ALFA | `N`/`S`, branco sem informação (desde 12/2024) | branco |
-| 39 | prd_sem_cpf | | 1 | 351 | 351 | ALFA | `N`/`S`, branco sem informação (desde **07/2026**) | `N` (o paciente sempre tem CPF) |
+| 39 | prd_sem_cpf | | 1 | 351 | 351 | ALFA | `N`/`S`, branco sem informação (desde **07/2026**) | `N` com CPF; `S` sem CPF (paciente pelo CNS) |
 | 40 | prd-fim | | 2 | 352 | 353 | | CR+LF | CR+LF |
 
 (O PDF repete o número 38 em duas linhas; as posições são as da tabela.)
@@ -155,8 +157,8 @@ Notas do PDF, descritivas. O que o Rota Saúde grava está em 'Origem dos dados'
 | 04.08 (02/12/2024) | `prd_situacao_rua` (posição 350), competência 12/2024 | branco |
 | 04.11 (23/01/2026) | Sexo `I` (indeterminado) aceito | só `F`/`M` saem (o cadastro só tem esses) |
 | 04.13 (05/05/2026) | Data de realização: competência atual até **3 competências anteriores** | `invalid_date` fora dessa janela (Divergência F4) |
-| 04.14 (22/05/2026) | Atributos SIGTAP "CPF obrigatório" (aceita só CPF) e "CNS obrigatório" (aceita CNS ou CPF) | sempre CPF: satisfaz os dois |
-| **05.00 (07/07/2026)** | `prd_sem_cpf` "Pessoa sem CPF/Registro Civil" (posição 351), exceção ao atributo SIGTAP `058 — Obrigatório CPF`; "registros com crítica não são exportados para o SIA" | `N`; linha `03` com 351 posições |
+| 04.14 (22/05/2026) | Atributos SIGTAP "CPF obrigatório" (aceita só CPF) e "CNS obrigatório" (aceita CNS ou CPF) | CPF quando há; sem CPF, CNS (satisfaz "CNS obrigatório"; "CPF obrigatório" usa a exceção `prd_sem_cpf`) |
+| **05.00 (07/07/2026)** | `prd_sem_cpf` "Pessoa sem CPF/Registro Civil" (posição 351), exceção ao atributo SIGTAP `058 — Obrigatório CPF`; "registros com crítica não são exportados para o SIA" | `N` com CPF, `S` sem CPF; linha `03` com 351 posições |
 | 02.68 (2014, já antes de 2020) | 999 folhas × 99 linhas no BPA-I | folha de 20 no BPA-I também (spec §6) |
 | 02.89 (2018) | Sexo diferente do sugerido na SIGTAP deixou de impedir o registro | Divergência F5 (`sex_not_allowed` continua, como o contrato manda) |
 | 02.59/02.60 (2013) | CEP, logradouro, endereço, número e bairro passam a ser criticados | D-U1: endereço no cadastro do paciente; incompleto = pendência `missing_address` |
@@ -168,6 +170,7 @@ Gerados por `tools/bpa_oracle.py` (implementação independente do layout) — `
   apóstrofo, nome com mais de 30 letras, controle 2131.
 - `bpa-mixed.txt`: 2 BPA-C e 2 BPA-I, folhas 001 e 002, controle 1617.
 O api compara o seu gerador byte a byte com cópias destes arquivos (`apps/api/spec/fixtures/billing/`).
+Os exemplos têm só pacientes com CPF; o caminho sem CPF (v1.1.0) é coberto pelos specs do api.
 Regerar: `python3 -I billing/tools/bpa_oracle.py billing/examples > billing/examples/SHA256SUMS`.
 
 ## Fora deste perfil
