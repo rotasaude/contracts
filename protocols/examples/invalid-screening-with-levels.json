@@ -1,0 +1,38 @@
+{
+  "name": "acolhimento",
+  "version": 1,
+  "kind": "screening",
+  "risk_rules": [
+    {
+      "when": {
+        "gte": [
+          "vitals.systolic",
+          180
+        ]
+      },
+      "color": "red"
+    }
+  ],
+  "levels": [
+    {
+      "color": "red",
+      "max_wait_minutes": 0
+    },
+    {
+      "color": "orange",
+      "max_wait_minutes": 10
+    },
+    {
+      "color": "yellow",
+      "max_wait_minutes": 60
+    },
+    {
+      "color": "green",
+      "max_wait_minutes": 120
+    },
+    {
+      "color": "blue",
+      "max_wait_minutes": 240
+    }
+  ]
+}

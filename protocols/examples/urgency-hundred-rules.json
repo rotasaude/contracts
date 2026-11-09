@@ -1,0 +1,1129 @@
+{
+  "name": "classificacao-urgencia",
+  "version": 1,
+  "kind": "urgency_classification",
+  "levels": [
+    {
+      "color": "red",
+      "max_wait_minutes": 0
+    },
+    {
+      "color": "orange",
+      "max_wait_minutes": 10
+    },
+    {
+      "color": "yellow",
+      "max_wait_minutes": 60
+    },
+    {
+      "color": "green",
+      "max_wait_minutes": 120
+    },
+    {
+      "color": "blue",
+      "max_wait_minutes": 240
+    }
+  ],
+  "classification_rules": [
+    {
+      "id": "regra-001",
+      "when": {
+        "gte": [
+          "pain_scale",
+          1
+        ]
+      },
+      "color": "orange",
+      "criterion": "Regra 1"
+    },
+    {
+      "id": "regra-002",
+      "when": {
+        "gte": [
+          "pain_scale",
+          2
+        ]
+      },
+      "color": "yellow",
+      "criterion": "Regra 2"
+    },
+    {
+      "id": "regra-003",
+      "when": {
+        "gte": [
+          "pain_scale",
+          3
+        ]
+      },
+      "color": "green",
+      "criterion": "Regra 3"
+    },
+    {
+      "id": "regra-004",
+      "when": {
+        "gte": [
+          "pain_scale",
+          4
+        ]
+      },
+      "color": "blue",
+      "criterion": "Regra 4"
+    },
+    {
+      "id": "regra-005",
+      "when": {
+        "gte": [
+          "pain_scale",
+          5
+        ]
+      },
+      "color": "red",
+      "criterion": "Regra 5"
+    },
+    {
+      "id": "regra-006",
+      "when": {
+        "gte": [
+          "pain_scale",
+          6
+        ]
+      },
+      "color": "orange",
+      "criterion": "Regra 6"
+    },
+    {
+      "id": "regra-007",
+      "when": {
+        "gte": [
+          "pain_scale",
+          7
+        ]
+      },
+      "color": "yellow",
+      "criterion": "Regra 7"
+    },
+    {
+      "id": "regra-008",
+      "when": {
+        "gte": [
+          "pain_scale",
+          8
+        ]
+      },
+      "color": "green",
+      "criterion": "Regra 8"
+    },
+    {
+      "id": "regra-009",
+      "when": {
+        "gte": [
+          "pain_scale",
+          9
+        ]
+      },
+      "color": "blue",
+      "criterion": "Regra 9"
+    },
+    {
+      "id": "regra-010",
+      "when": {
+        "gte": [
+          "pain_scale",
+          10
+        ]
+      },
+      "color": "red",
+      "criterion": "Regra 10"
+    },
+    {
+      "id": "regra-011",
+      "when": {
+        "gte": [
+          "pain_scale",
+          0
+        ]
+      },
+      "color": "orange",
+      "criterion": "Regra 11"
+    },
+    {
+      "id": "regra-012",
+      "when": {
+        "gte": [
+          "pain_scale",
+          1
+        ]
+      },
+      "color": "yellow",
+      "criterion": "Regra 12"
+    },
+    {
+      "id": "regra-013",
+      "when": {
+        "gte": [
+          "pain_scale",
+          2
+        ]
+      },
+      "color": "green",
+      "criterion": "Regra 13"
+    },
+    {
+      "id": "regra-014",
+      "when": {
+        "gte": [
+          "pain_scale",
+          3
+        ]
+      },
+      "color": "blue",
+      "criterion": "Regra 14"
+    },
+    {
+      "id": "regra-015",
+      "when": {
+        "gte": [
+          "pain_scale",
+          4
+        ]
+      },
+      "color": "red",
+      "criterion": "Regra 15"
+    },
+    {
+      "id": "regra-016",
+      "when": {
+        "gte": [
+          "pain_scale",
+          5
+        ]
+      },
+      "color": "orange",
+      "criterion": "Regra 16"
+    },
+    {
+      "id": "regra-017",
+      "when": {
+        "gte": [
+          "pain_scale",
+          6
+        ]
+      },
+      "color": "yellow",
+      "criterion": "Regra 17"
+    },
+    {
+      "id": "regra-018",
+      "when": {
+        "gte": [
+          "pain_scale",
+          7
+        ]
+      },
+      "color": "green",
+      "criterion": "Regra 18"
+    },
+    {
+      "id": "regra-019",
+      "when": {
+        "gte": [
+          "pain_scale",
+          8
+        ]
+      },
+      "color": "blue",
+      "criterion": "Regra 19"
+    },
+    {
+      "id": "regra-020",
+      "when": {
+        "gte": [
+          "pain_scale",
+          9
+        ]
+      },
+      "color": "red",
+      "criterion": "Regra 20"
+    },
+    {
+      "id": "regra-021",
+      "when": {
+        "gte": [
+          "pain_scale",
+          10
+        ]
+      },
+      "color": "orange",
+      "criterion": "Regra 21"
+    },
+    {
+      "id": "regra-022",
+      "when": {
+        "gte": [
+          "pain_scale",
+          0
+        ]
+      },
+      "color": "yellow",
+      "criterion": "Regra 22"
+    },
+    {
+      "id": "regra-023",
+      "when": {
+        "gte": [
+          "pain_scale",
+          1
+        ]
+      },
+      "color": "green",
+      "criterion": "Regra 23"
+    },
+    {
+      "id": "regra-024",
+      "when": {
+        "gte": [
+          "pain_scale",
+          2
+        ]
+      },
+      "color": "blue",
+      "criterion": "Regra 24"
+    },
+    {
+      "id": "regra-025",
+      "when": {
+        "gte": [
+          "pain_scale",
+          3
+        ]
+      },
+      "color": "red",
+      "criterion": "Regra 25"
+    },
+    {
+      "id": "regra-026",
+      "when": {
+        "gte": [
+          "pain_scale",
+          4
+        ]
+      },
+      "color": "orange",
+      "criterion": "Regra 26"
+    },
+    {
+      "id": "regra-027",
+      "when": {
+        "gte": [
+          "pain_scale",
+          5
+        ]
+      },
+      "color": "yellow",
+      "criterion": "Regra 27"
+    },
+    {
+      "id": "regra-028",
+      "when": {
+        "gte": [
+          "pain_scale",
+          6
+        ]
+      },
+      "color": "green",
+      "criterion": "Regra 28"
+    },
+    {
+      "id": "regra-029",
+      "when": {
+        "gte": [
+          "pain_scale",
+          7
+        ]
+      },
+      "color": "blue",
+      "criterion": "Regra 29"
+    },
+    {
+      "id": "regra-030",
+      "when": {
+        "gte": [
+          "pain_scale",
+          8
+        ]
+      },
+      "color": "red",
+      "criterion": "Regra 30"
+    },
+    {
+      "id": "regra-031",
+      "when": {
+        "gte": [
+          "pain_scale",
+          9
+        ]
+      },
+      "color": "orange",
+      "criterion": "Regra 31"
+    },
+    {
+      "id": "regra-032",
+      "when": {
+        "gte": [
+          "pain_scale",
+          10
+        ]
+      },
+      "color": "yellow",
+      "criterion": "Regra 32"
+    },
+    {
+      "id": "regra-033",
+      "when": {
+        "gte": [
+          "pain_scale",
+          0
+        ]
+      },
+      "color": "green",
+      "criterion": "Regra 33"
+    },
+    {
+      "id": "regra-034",
+      "when": {
+        "gte": [
+          "pain_scale",
+          1
+        ]
+      },
+      "color": "blue",
+      "criterion": "Regra 34"
+    },
+    {
+      "id": "regra-035",
+      "when": {
+        "gte": [
+          "pain_scale",
+          2
+        ]
+      },
+      "color": "red",
+      "criterion": "Regra 35"
+    },
+    {
+      "id": "regra-036",
+      "when": {
+        "gte": [
+          "pain_scale",
+          3
+        ]
+      },
+      "color": "orange",
+      "criterion": "Regra 36"
+    },
+    {
+      "id": "regra-037",
+      "when": {
+        "gte": [
+          "pain_scale",
+          4
+        ]
+      },
+      "color": "yellow",
+      "criterion": "Regra 37"
+    },
+    {
+      "id": "regra-038",
+      "when": {
+        "gte": [
+          "pain_scale",
+          5
+        ]
+      },
+      "color": "green",
+      "criterion": "Regra 38"
+    },
+    {
+      "id": "regra-039",
+      "when": {
+        "gte": [
+          "pain_scale",
+          6
+        ]
+      },
+      "color": "blue",
+      "criterion": "Regra 39"
+    },
+    {
+      "id": "regra-040",
+      "when": {
+        "gte": [
+          "pain_scale",
+          7
+        ]
+      },
+      "color": "red",
+      "criterion": "Regra 40"
+    },
+    {
+      "id": "regra-041",
+      "when": {
+        "gte": [
+          "pain_scale",
+          8
+        ]
+      },
+      "color": "orange",
+      "criterion": "Regra 41"
+    },
+    {
+      "id": "regra-042",
+      "when": {
+        "gte": [
+          "pain_scale",
+          9
+        ]
+      },
+      "color": "yellow",
+      "criterion": "Regra 42"
+    },
+    {
+      "id": "regra-043",
+      "when": {
+        "gte": [
+          "pain_scale",
+          10
+        ]
+      },
+      "color": "green",
+      "criterion": "Regra 43"
+    },
+    {
+      "id": "regra-044",
+      "when": {
+        "gte": [
+          "pain_scale",
+          0
+        ]
+      },
+      "color": "blue",
+      "criterion": "Regra 44"
+    },
+    {
+      "id": "regra-045",
+      "when": {
+        "gte": [
+          "pain_scale",
+          1
+        ]
+      },
+      "color": "red",
+      "criterion": "Regra 45"
+    },
+    {
+      "id": "regra-046",
+      "when": {
+        "gte": [
+          "pain_scale",
+          2
+        ]
+      },
+      "color": "orange",
+      "criterion": "Regra 46"
+    },
+    {
+      "id": "regra-047",
+      "when": {
+        "gte": [
+          "pain_scale",
+          3
+        ]
+      },
+      "color": "yellow",
+      "criterion": "Regra 47"
+    },
+    {
+      "id": "regra-048",
+      "when": {
+        "gte": [
+          "pain_scale",
+          4
+        ]
+      },
+      "color": "green",
+      "criterion": "Regra 48"
+    },
+    {
+      "id": "regra-049",
+      "when": {
+        "gte": [
+          "pain_scale",
+          5
+        ]
+      },
+      "color": "blue",
+      "criterion": "Regra 49"
+    },
+    {
+      "id": "regra-050",
+      "when": {
+        "gte": [
+          "pain_scale",
+          6
+        ]
+      },
+      "color": "red",
+      "criterion": "Regra 50"
+    },
+    {
+      "id": "regra-051",
+      "when": {
+        "gte": [
+          "pain_scale",
+          7
+        ]
+      },
+      "color": "orange",
+      "criterion": "Regra 51"
+    },
+    {
+      "id": "regra-052",
+      "when": {
+        "gte": [
+          "pain_scale",
+          8
+        ]
+      },
+      "color": "yellow",
+      "criterion": "Regra 52"
+    },
+    {
+      "id": "regra-053",
+      "when": {
+        "gte": [
+          "pain_scale",
+          9
+        ]
+      },
+      "color": "green",
+      "criterion": "Regra 53"
+    },
+    {
+      "id": "regra-054",
+      "when": {
+        "gte": [
+          "pain_scale",
+          10
+        ]
+      },
+      "color": "blue",
+      "criterion": "Regra 54"
+    },
+    {
+      "id": "regra-055",
+      "when": {
+        "gte": [
+          "pain_scale",
+          0
+        ]
+      },
+      "color": "red",
+      "criterion": "Regra 55"
+    },
+    {
+      "id": "regra-056",
+      "when": {
+        "gte": [
+          "pain_scale",
+          1
+        ]
+      },
+      "color": "orange",
+      "criterion": "Regra 56"
+    },
+    {
+      "id": "regra-057",
+      "when": {
+        "gte": [
+          "pain_scale",
+          2
+        ]
+      },
+      "color": "yellow",
+      "criterion": "Regra 57"
+    },
+    {
+      "id": "regra-058",
+      "when": {
+        "gte": [
+          "pain_scale",
+          3
+        ]
+      },
+      "color": "green",
+      "criterion": "Regra 58"
+    },
+    {
+      "id": "regra-059",
+      "when": {
+        "gte": [
+          "pain_scale",
+          4
+        ]
+      },
+      "color": "blue",
+      "criterion": "Regra 59"
+    },
+    {
+      "id": "regra-060",
+      "when": {
+        "gte": [
+          "pain_scale",
+          5
+        ]
+      },
+      "color": "red",
+      "criterion": "Regra 60"
+    },
+    {
+      "id": "regra-061",
+      "when": {
+        "gte": [
+          "pain_scale",
+          6
+        ]
+      },
+      "color": "orange",
+      "criterion": "Regra 61"
+    },
+    {
+      "id": "regra-062",
+      "when": {
+        "gte": [
+          "pain_scale",
+          7
+        ]
+      },
+      "color": "yellow",
+      "criterion": "Regra 62"
+    },
+    {
+      "id": "regra-063",
+      "when": {
+        "gte": [
+          "pain_scale",
+          8
+        ]
+      },
+      "color": "green",
+      "criterion": "Regra 63"
+    },
+    {
+      "id": "regra-064",
+      "when": {
+        "gte": [
+          "pain_scale",
+          9
+        ]
+      },
+      "color": "blue",
+      "criterion": "Regra 64"
+    },
+    {
+      "id": "regra-065",
+      "when": {
+        "gte": [
+          "pain_scale",
+          10
+        ]
+      },
+      "color": "red",
+      "criterion": "Regra 65"
+    },
+    {
+      "id": "regra-066",
+      "when": {
+        "gte": [
+          "pain_scale",
+          0
+        ]
+      },
+      "color": "orange",
+      "criterion": "Regra 66"
+    },
+    {
+      "id": "regra-067",
+      "when": {
+        "gte": [
+          "pain_scale",
+          1
+        ]
+      },
+      "color": "yellow",
+      "criterion": "Regra 67"
+    },
+    {
+      "id": "regra-068",
+      "when": {
+        "gte": [
+          "pain_scale",
+          2
+        ]
+      },
+      "color": "green",
+      "criterion": "Regra 68"
+    },
+    {
+      "id": "regra-069",
+      "when": {
+        "gte": [
+          "pain_scale",
+          3
+        ]
+      },
+      "color": "blue",
+      "criterion": "Regra 69"
+    },
+    {
+      "id": "regra-070",
+      "when": {
+        "gte": [
+          "pain_scale",
+          4
+        ]
+      },
+      "color": "red",
+      "criterion": "Regra 70"
+    },
+    {
+      "id": "regra-071",
+      "when": {
+        "gte": [
+          "pain_scale",
+          5
+        ]
+      },
+      "color": "orange",
+      "criterion": "Regra 71"
+    },
+    {
+      "id": "regra-072",
+      "when": {
+        "gte": [
+          "pain_scale",
+          6
+        ]
+      },
+      "color": "yellow",
+      "criterion": "Regra 72"
+    },
+    {
+      "id": "regra-073",
+      "when": {
+        "gte": [
+          "pain_scale",
+          7
+        ]
+      },
+      "color": "green",
+      "criterion": "Regra 73"
+    },
+    {
+      "id": "regra-074",
+      "when": {
+        "gte": [
+          "pain_scale",
+          8
+        ]
+      },
+      "color": "blue",
+      "criterion": "Regra 74"
+    },
+    {
+      "id": "regra-075",
+      "when": {
+        "gte": [
+          "pain_scale",
+          9
+        ]
+      },
+      "color": "red",
+      "criterion": "Regra 75"
+    },
+    {
+      "id": "regra-076",
+      "when": {
+        "gte": [
+          "pain_scale",
+          10
+        ]
+      },
+      "color": "orange",
+      "criterion": "Regra 76"
+    },
+    {
+      "id": "regra-077",
+      "when": {
+        "gte": [
+          "pain_scale",
+          0
+        ]
+      },
+      "color": "yellow",
+      "criterion": "Regra 77"
+    },
+    {
+      "id": "regra-078",
+      "when": {
+        "gte": [
+          "pain_scale",
+          1
+        ]
+      },
+      "color": "green",
+      "criterion": "Regra 78"
+    },
+    {
+      "id": "regra-079",
+      "when": {
+        "gte": [
+          "pain_scale",
+          2
+        ]
+      },
+      "color": "blue",
+      "criterion": "Regra 79"
+    },
+    {
+      "id": "regra-080",
+      "when": {
+        "gte": [
+          "pain_scale",
+          3
+        ]
+      },
+      "color": "red",
+      "criterion": "Regra 80"
+    },
+    {
+      "id": "regra-081",
+      "when": {
+        "gte": [
+          "pain_scale",
+          4
+        ]
+      },
+      "color": "orange",
+      "criterion": "Regra 81"
+    },
+    {
+      "id": "regra-082",
+      "when": {
+        "gte": [
+          "pain_scale",
+          5
+        ]
+      },
+      "color": "yellow",
+      "criterion": "Regra 82"
+    },
+    {
+      "id": "regra-083",
+      "when": {
+        "gte": [
+          "pain_scale",
+          6
+        ]
+      },
+      "color": "green",
+      "criterion": "Regra 83"
+    },
+    {
+      "id": "regra-084",
+      "when": {
+        "gte": [
+          "pain_scale",
+          7
+        ]
+      },
+      "color": "blue",
+      "criterion": "Regra 84"
+    },
+    {
+      "id": "regra-085",
+      "when": {
+        "gte": [
+          "pain_scale",
+          8
+        ]
+      },
+      "color": "red",
+      "criterion": "Regra 85"
+    },
+    {
+      "id": "regra-086",
+      "when": {
+        "gte": [
+          "pain_scale",
+          9
+        ]
+      },
+      "color": "orange",
+      "criterion": "Regra 86"
+    },
+    {
+      "id": "regra-087",
+      "when": {
+        "gte": [
+          "pain_scale",
+          10
+        ]
+      },
+      "color": "yellow",
+      "criterion": "Regra 87"
+    },
+    {
+      "id": "regra-088",
+      "when": {
+        "gte": [
+          "pain_scale",
+          0
+        ]
+      },
+      "color": "green",
+      "criterion": "Regra 88"
+    },
+    {
+      "id": "regra-089",
+      "when": {
+        "gte": [
+          "pain_scale",
+          1
+        ]
+      },
+      "color": "blue",
+      "criterion": "Regra 89"
+    },
+    {
+      "id": "regra-090",
+      "when": {
+        "gte": [
+          "pain_scale",
+          2
+        ]
+      },
+      "color": "red",
+      "criterion": "Regra 90"
+    },
+    {
+      "id": "regra-091",
+      "when": {
+        "gte": [
+          "pain_scale",
+          3
+        ]
+      },
+      "color": "orange",
+      "criterion": "Regra 91"
+    },
+    {
+      "id": "regra-092",
+      "when": {
+        "gte": [
+          "pain_scale",
+          4
+        ]
+      },
+      "color": "yellow",
+      "criterion": "Regra 92"
+    },
+    {
+      "id": "regra-093",
+      "when": {
+        "gte": [
+          "pain_scale",
+          5
+        ]
+      },
+      "color": "green",
+      "criterion": "Regra 93"
+    },
+    {
+      "id": "regra-094",
+      "when": {
+        "gte": [
+          "pain_scale",
+          6
+        ]
+      },
+      "color": "blue",
+      "criterion": "Regra 94"
+    },
+    {
+      "id": "regra-095",
+      "when": {
+        "gte": [
+          "pain_scale",
+          7
+        ]
+      },
+      "color": "red",
+      "criterion": "Regra 95"
+    },
+    {
+      "id": "regra-096",
+      "when": {
+        "gte": [
+          "pain_scale",
+          8
+        ]
+      },
+      "color": "orange",
+      "criterion": "Regra 96"
+    },
+    {
+      "id": "regra-097",
+      "when": {
+        "gte": [
+          "pain_scale",
+          9
+        ]
+      },
+      "color": "yellow",
+      "criterion": "Regra 97"
+    },
+    {
+      "id": "regra-098",
+      "when": {
+        "gte": [
+          "pain_scale",
+          10
+        ]
+      },
+      "color": "green",
+      "criterion": "Regra 98"
+    },
+    {
+      "id": "regra-099",
+      "when": {
+        "gte": [
+          "pain_scale",
+          0
+        ]
+      },
+      "color": "blue",
+      "criterion": "Regra 99"
+    },
+    {
+      "id": "regra-100",
+      "when": {
+        "gte": [
+          "pain_scale",
+          1
+        ]
+      },
+      "color": "red",
+      "criterion": "Regra 100"
+    }
+  ]
+}

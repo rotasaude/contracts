@@ -1,5 +1,39 @@
 # Changelog — protocols
 
+## protocols-v1.7.0 — 2026-11-05 — MINOR
+- Variante de classificação de risco da UPA (ADR 0050): `kind:
+  "urgency_classification"` com `levels` e `classification_rules`.
+  - `levels`: exatamente as 5 cores `red`, `orange`, `yellow`, `green`,
+    `blue`, nessa ordem de prioridade, cada uma `{ color, max_wait_minutes }`,
+    com o tempo máximo inteiro de 0 a 1440 minutos. O padrão sugerido é
+    0/10/60/120/240 (exemplo `urgency-default.json`); o schema não impõe valor.
+  - `classification_rules`: de 1 a 100 regras `{ id, when, color, criterion }`,
+    as quatro obrigatórias. `id` segue `^[a-z][a-z0-9_-]{0,39}$` e é o
+    `rule_id` da sugestão; `when` é a condição estruturada (`$defs/condition`;
+    o mapa simples não vale); `color` é uma das 5 cores; `criterion` (1 a 120
+    caracteres) é a frase curta que diz à enfermagem por que a cor foi sugerida.
+  - A variante não tem `risk_rules`, `start_step_id`, `steps`, `scoring`,
+    `recommendations`, `priority_when`, `offer`, `suggestions` nem `scheduling`.
+    Parte do conteúdo assinado (ADR 0016).
+- Roteamento: com `kind: "urgency_classification"`, `$defs/urgency_classification`;
+  com outro `kind`, `$defs/screening`, como na `v1.6.0`; sem `kind`, triagem. O
+  `const` de `kind` foi da raiz para o acolhimento, então um `kind` desconhecido
+  continua dando só `/kind const`. Triagem e acolhimento recusam `levels` e
+  `classification_rules`. A escala do acolhimento (`risk_rules`, 4 cores do CAB 28)
+  não muda.
+- O schema não confere as variáveis do `when` (`vitals.*`, `pain_scale`,
+  `profile.*`), a unicidade de `id`, a ordem crescente dos tempos, qual regra
+  vence quando várias casam, nem "um protocolo ativo de urgência por cidade".
+  Quem confere é o gate e o motor do `api`.
+- Nenhum conteúdo licenciado (fluxogramas do Manchester) entra nos exemplos: os
+  critérios são genéricos e só provam o formato.
+- `examples/`: 38 exemplos novos (4 válidos, 34 inválidos) no mesmo manifesto.
+- Expand: nada foi removido e nada vira obrigatório para triagem ou acolhimento.
+  Toda definição válida em `v1.6.0` continua válida, com o mesmo conjunto de
+  erros quando inválida, por isso MINOR. O `api` atualiza a cópia
+  (`config/protocols/schema.json`) no mesmo ciclo, antes de o `dashboard` passar a
+  gravar protocolos de urgência.
+
 ## protocols-v1.6.0 — 2026-10-07 — MINOR
 - Variante de acolhimento (ADR 0030): `kind: "screening"` com `risk_rules` —
   de 1 a 50 regras `{ when, color }`, as duas obrigatórias; `when` é a condição

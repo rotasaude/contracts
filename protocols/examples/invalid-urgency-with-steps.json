@@ -1,0 +1,140 @@
+{
+  "name": "classificacao-urgencia",
+  "version": 1,
+  "kind": "urgency_classification",
+  "levels": [
+    {
+      "color": "red",
+      "max_wait_minutes": 0
+    },
+    {
+      "color": "orange",
+      "max_wait_minutes": 10
+    },
+    {
+      "color": "yellow",
+      "max_wait_minutes": 60
+    },
+    {
+      "color": "green",
+      "max_wait_minutes": 120
+    },
+    {
+      "color": "blue",
+      "max_wait_minutes": 240
+    }
+  ],
+  "classification_rules": [
+    {
+      "id": "spo2-baixa",
+      "when": {
+        "lt": [
+          "vitals.spo2",
+          90
+        ]
+      },
+      "color": "red",
+      "criterion": "Saturação de oxigênio abaixo de 90%"
+    },
+    {
+      "id": "pas-muito-alta",
+      "when": {
+        "any": [
+          {
+            "gte": [
+              "vitals.systolic",
+              220
+            ]
+          },
+          {
+            "lte": [
+              "vitals.systolic",
+              80
+            ]
+          }
+        ]
+      },
+      "color": "orange",
+      "criterion": "Pressão sistólica de 220 ou mais, ou de 80 ou menos"
+    },
+    {
+      "id": "dor-intensa",
+      "when": {
+        "gte": [
+          "pain_scale",
+          8
+        ]
+      },
+      "color": "orange",
+      "criterion": "Dor intensa (8 a 10)"
+    },
+    {
+      "id": "febre-alta",
+      "when": {
+        "gte": [
+          "vitals.temperature_c",
+          39.5
+        ]
+      },
+      "color": "yellow",
+      "criterion": "Temperatura de 39,5 °C ou mais"
+    },
+    {
+      "id": "idoso-dor-moderada",
+      "when": {
+        "all": [
+          {
+            "gte": [
+              "profile.age",
+              60
+            ]
+          },
+          {
+            "gte": [
+              "pain_scale",
+              4
+            ]
+          }
+        ]
+      },
+      "color": "yellow",
+      "criterion": "60 anos ou mais com dor moderada"
+    },
+    {
+      "id": "dor-leve",
+      "when": {
+        "in": [
+          "pain_scale",
+          [
+            1,
+            2,
+            3
+          ]
+        ]
+      },
+      "color": "green",
+      "criterion": "Dor leve (1 a 3)"
+    },
+    {
+      "id": "sem-dor",
+      "when": {
+        "not": {
+          "gt": [
+            "pain_scale",
+            0
+          ]
+        }
+      },
+      "color": "blue",
+      "criterion": "Sem dor e sinais vitais sem alerta"
+    }
+  ],
+  "start_step_id": "q1",
+  "steps": [
+    {
+      "id": "q1",
+      "prompt": "Tem falta de ar?",
+      "answer_type": "boolean"
+    }
+  ]
+}

@@ -21,7 +21,7 @@ Nove domínios, **versionados de forma independente** (ADR 0015):
 | Domínio | O que é | Versão | Estado |
 |---|---|---|---|
 | [`events/`](events/EVENTS.md) | Catálogo dos eventos: nome, escopo, payload | `events-v2.1.0` | Materializado, reconciliado com o código |
-| [`protocols/`](protocols/README.md) | JSON Schema da definição de protocolo (ADR 0009) | `protocols-v1.6.0` | Materializado |
+| [`protocols/`](protocols/README.md) | JSON Schema da definição de protocolo (ADR 0009) | `protocols-v1.7.0` | Materializado |
 | [`session/`](session/CHANGELOG.md) | Corpo da sessão (`GET /session`) e escopo do envelope de `/admin/api` | `session-v1.1.0` | Materializado |
 | [`clinical/`](clinical/README.md) | JSON canônico assinado da consulta, do adendo e dos documentos clínicos (ADRs 0032, 0033 e 0034) | `clinical-v1.2.0` | Materializado |
 | [`exams/`](exams/README.md) | Pedido de exame (`<exam_order>`) e perfil FHIR de entrada do laudo (ADRs 0036 e 0037) | `exams-v1.1.0` | Materializado |
@@ -67,7 +67,7 @@ catálogo), `suggestions` e os operadores `gte`/`lte` (ADR 0027). `v1.5.0`
 acrescentou `scheduling`, as regras que geram pedido de agendamento na
 conclusão da triagem (ADR 0029). `v1.6.0` acrescentou a variante de
 acolhimento (`kind: "screening"`, ADR 0030): só `risk_rules`, as regras que
-sugerem a cor da escuta inicial. Exemplos válidos e inválidos ficam em
+sugerem a cor da escuta inicial. `v1.7.0` acrescentou a classificação de risco da UPA (`kind: "urgency_classification"`, ADR 0050): as 5 cores com o tempo máximo de cada uma (`levels`) e as regras que sugerem a cor com o critério (`classification_rules`). Exemplos válidos e inválidos ficam em
 `protocols/examples/`.
 
 O `api` usa uma **cópia** em `config/protocols/schema.json`, não uma

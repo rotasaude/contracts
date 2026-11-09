@@ -1,0 +1,29 @@
+{
+  "name": "acolhimento",
+  "version": 1,
+  "kind": "screening",
+  "risk_rules": [
+    {
+      "when": {
+        "gte": [
+          "vitals.systolic",
+          180
+        ]
+      },
+      "color": "red"
+    }
+  ],
+  "classification_rules": [
+    {
+      "id": "spo2-baixa",
+      "when": {
+        "lt": [
+          "vitals.spo2",
+          90
+        ]
+      },
+      "color": "red",
+      "criterion": "Saturação de oxigênio abaixo de 90%"
+    }
+  ]
+}
