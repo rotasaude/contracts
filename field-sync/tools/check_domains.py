@@ -3,7 +3,7 @@
 
 1. Todo $defs repetido em dois esquemas é igual.
 2. Cada enum do pedido de envio é exatamente o domínio de domains-v1.json,
-   e as faixas das medidas são as de domains-v1.json.
+   e as faixas das medidas e os tamanhos máximos das listas são os de domains-v1.json.
 3. Todo error dos exemplos válidos de resposta está em errors.item.
 --release: falha também com "proof": null (a tag só sai depois da prova técnica do api).
 Uso: python3 field-sync/tools/check_domains.py [--release]
@@ -53,7 +53,11 @@ def main():
         "publico_alvo": (codes(ca["publico_alvo"]), sorted(ca_props["target_audience"]["items"]["enum"])),
         "temas_para_saude": (codes(ca["temas_para_saude"]), sorted(ca_props["health_topics"]["items"]["enum"])),
         "praticas_em_saude": (codes(ca["praticas_em_saude"]), sorted(ca_props["health_practices"]["items"]["enum"])),
+        "outro_procedimento_coletivo": (codes(ca["outro_procedimento_coletivo"]), sorted(ca_props["procedure_code"]["enum"])),
+        "reasons_max": ([hv["rules"]["reasons_max"]], [req["home_visit_body"]["properties"]["reasons"]["maxItems"]]),
     }
+    for key, limit in ca["rules"]["list_max"].items():
+        pairs[f"list_max.{key}"] = ([limit], [ca_props[key]["maxItems"]])
     for key, rule in hv["rules"]["measurements"].items():
         if "min" in rule:
             pairs[f"measurements.{key}"] = ([rule["min"], rule["max"]], [meas[key]["minimum"], meas[key]["maximum"]])

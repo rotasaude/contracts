@@ -105,10 +105,17 @@ def hv_non_residential():
 def collective():
     return {"team_id": TEAM, "held_on": "2026-11-11", "shift": 2, "activity_type": 5,
             "place_text": "Salão da Associação de Moradores da Vila Nova",  # Q15
-            "participants_count": 12, "altered_count": 1, "target_audience": [12], "health_topics": [4],
+            "participants_count": 12, "target_audience": [12], "health_topics": [4],
             "health_practices": [20], "professionals": [{"professional_id": PROF2}],
             "participants": [{"patient_id": PAT, "altered_evaluation": True, "measurements": {"weight_kg": 81.5, "height_cm": 162.0}},
                              {"patient_client_uuid": cu(10), "altered_evaluation": False}]}
+
+
+def collective_procedure():
+    body = collective()
+    body.update({"activity_type": 6, "health_practices": [30], "procedure_code": "0101050046"})  # Q37
+    del body["health_topics"]
+    return body
 
 
 def household_update():
@@ -160,6 +167,10 @@ def upload_withdrawal():
 
 def upload_ca():
     return up(item(4, "collective_activity", collective()))
+
+
+def upload_ca_procedure():
+    return up(item(8, "collective_activity", collective_procedure()))
 
 
 def upload_patient():
@@ -263,7 +274,8 @@ def resp_rejected():
     return results(
         {"client_uuid": cu(1), "status": "rejected", "type": "home_visit", "error": "visit_date_out_of_range", "path": "occurred_at"},
         {"client_uuid": cu(4), "status": "rejected", "type": "collective_activity", "error": "feature_disabled"},
-        {"client_uuid": cu(5), "status": "rejected", "type": "patient", "error": "client_uuid_conflict"})
+        {"client_uuid": cu(5), "status": "rejected", "type": "patient", "error": "client_uuid_conflict"},
+        {"client_uuid": cu(9), "status": "rejected", "type": "home_visit", "error": "patient_unidentified", "path": "patient_id"})  # Q41
 
 
 def resp_invalid_request():
@@ -309,6 +321,12 @@ def page_last():
     return {"reset": False, "items": [], "removals": [], "who_to_visit": who_to_visit(), "next_cursor": CURSOR, "has_more": False}
 
 
+def page_last_age_null():
+    page = page_last()
+    page["who_to_visit"]["micro_areas"][0]["people"][1]["age"] = None  # Q33: paciente sem nascimento
+    return page
+
+
 def page_removals():
     return {"reset": False, "items": [],
             "removals": [{"type": "household", "id": HH2, "reason": "moved"},
@@ -336,6 +354,7 @@ SUITES = [
         "upload-home-visit-non-residential.json": (upload_hv_nr(), "valid"),
         "upload-home-visit-withdrawal.json": (upload_withdrawal(), "valid"),
         "upload-collective-activity.json": (upload_ca(), "valid"),
+        "upload-collective-activity-other-procedure.json": (upload_ca_procedure(), "valid"),
         "upload-patient.json": (upload_patient(), "valid"),
         "upload-household-update.json": (upload_household(), "valid"),
         "upload-individual-registration.json": (upload_registration(), "valid"),
@@ -357,6 +376,13 @@ SUITES = [
         "invalid-home-visit-two-households.json": (variant(upload_hv_new_household, ["items", 2, "body", "household_id"], HH), "/items/2/body not"),
         "invalid-registration-two-patients.json": (variant(upload_registration_same_batch, ["items", 2, "body", "patient_id"], PAT2), "/items/2/body not"),
         "invalid-withdrawal-reason-short.json": (variant(upload_withdrawal, B + ["reason"], "errado"), "/items/0/body/reason minLength"),
+        "invalid-home-visit-37-reasons.json": (variant(upload_hv, B + ["reasons"], [c for c in range(1, 39) if c != 26]), "/items/0/body/reasons maxItems"),  # Q36
+        "invalid-collective-activity-altered-count-in-body.json": (variant(upload_ca, B + ["altered_count"], 1), "/items/0/body/altered_count schema"),  # Q38
+        "invalid-collective-activity-8-meeting-topics.json": (variant(upload_ca, B + ["meeting_topics"], [1, 2, 3, 4, 5, 6, 7, 8]), "/items/0/body/meeting_topics maxItems"),  # Q36
+        "invalid-collective-activity-19-target-audience.json": (variant(upload_ca, B + ["target_audience"], [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 13, 14, 15, 16, 17, 18, 19, 20]), "/items/0/body/target_audience maxItems"),
+        "invalid-collective-activity-17-health-topics.json": (variant(upload_ca, B + ["health_topics"], [1, 4, 5, 6, 7, 8, 10, 13, 14, 15, 16, 17, 19, 21, 29, 31, 32]), "/items/0/body/health_topics maxItems"),
+        "invalid-collective-activity-16-health-practices.json": (variant(upload_ca, B + ["health_practices"], [2, 3, 9, 11, 12, 20, 22, 23, 24, 25, 26, 27, 28, 30, 33, 34]), "/items/0/body/health_practices maxItems"),
+        "invalid-collective-activity-procedure-not-sigtap-list.json": (variant(upload_ca_procedure, B + ["procedure_code"], "0101050001"), "/items/0/body/procedure_code enum"),  # Q37
         "invalid-collective-activity-pse-topic-18.json": (variant(upload_ca, B + ["health_topics"], [18]), "/items/0/body/health_topics/0 enum"),
         "invalid-collective-activity-two-places.json": (variant(upload_ca, B + ["place_health_unit_id"], UNIT), "/items/0/body oneOf"),  # Q15
         "invalid-collective-activity-inep.json": (variant(upload_ca, B + ["inep"], "41000000"), "/items/0/body/inep schema"),  # Q15
@@ -384,6 +410,7 @@ SUITES = [
     ("changes-response-v1.json", {
         "changes-first-page.json": (page_first(), "valid"),
         "changes-last-page.json": (page_last(), "valid"),
+        "changes-last-page-age-null.json": (page_last_age_null(), "valid"),
         "changes-removals.json": (page_removals(), "valid"),
         "changes-reset.json": (page_reset(), "valid"),
         "invalid-changes-who-null-on-last-page.json": (variant(page_last, ["who_to_visit"], None), "/who_to_visit object"),

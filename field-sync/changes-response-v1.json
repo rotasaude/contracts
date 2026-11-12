@@ -250,7 +250,7 @@
       "properties": {
         "patient_id": { "$ref": "#/$defs/uuid" },
         "display_name": { "type": "string", "minLength": 1 },
-        "age": { "type": "integer", "minimum": 0 },
+        "age": { "type": ["integer", "null"], "minimum": 0, "description": "Nulo quando o paciente não tem nascimento (Q33); o app mostra o item sem idade." },
         "household": {
           "type": ["object", "null"],
           "additionalProperties": false,

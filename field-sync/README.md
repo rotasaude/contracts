@@ -63,19 +63,26 @@ registrou e baixa o escopo do aparelho. Base `/field/v1` no host da cidade.
 - **O esquema confere forma, não regra.** As relações entre campos (desfecho ×
   motivos, imóvel × pessoa, tipo de atividade × temas, quem pode registrar)
   estão em `domains-v1.json` (`rules`) para o app guiar o formulário, e quem
-  decide é o api (`rejected` com o código e o `path`). Código de erro novo do
+  decide é o api (`rejected` com o código e o `path`). Entram no esquema só
+  os domínios (`enum`) e os tamanhos máximos oficiais das listas (`maxItems`:
+  motivos 36, temas de reunião 7, público 17, temas de saúde 16, práticas 14;
+  Q36), além do `procedure_code` da prática 30, que é um dos 58 códigos
+  SIGTAP de `outro_procedimento_coletivo` (Q37). `altered_count` da atividade
+  não vem no corpo: o api deriva dos participantes com avaliação alterada
+  (Q38). Paciente provisório da UPA volta `rejected` `patient_unidentified`
+  (Q41). `age` do "quem visitar" é `integer | null` (Q33). Código de erro novo do
   api é MINOR: o app mostra uma frase genérica.
 
 ## Exemplos e verificação
 
-`examples/` tem 63 exemplos (23 válidos, 40 inválidos, um defeito por arquivo),
+`examples/` tem 72 exemplos (25 válidos, 47 inválidos, um defeito por arquivo),
 gerados por `tools/make_examples.py` e listados em `examples/manifest.json`
 (`{ suites: [ { schema, cases: [ { file, expect } ] } ] }`; `expect` é
 `valid` ou o erro `<data_pointer> <type>` do `json_schemer`). A partir da raiz
 do monorepo, com o compose de pé:
 
 ```bash
-contracts/field-sync/tools/check.sh                           # todas as suítes (63/63)
+contracts/field-sync/tools/check.sh                           # todas as suítes (72/72)
 contracts/field-sync/tools/check.sh upload-request-v1.json    # uma suíte
 python3 contracts/field-sync/tools/check_domains.py           # $defs iguais, enum = domains, erros conhecidos
 python3 contracts/field-sync/tools/check_domains.py --release # idem, e falha sem a prova técnica (proof)

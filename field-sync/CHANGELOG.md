@@ -24,5 +24,19 @@ campo offline (24c) com o api.
   coletiva (tipo 6) e as regras cruzadas, em dado.
 - Fechados em todo nível, salvo as seções de dicionário do 24a; instantes com
   fuso explícito; CPF nunca desce.
-- `examples/`: 63 exemplos (23 válidos, 40 inválidos) e `manifest.json`;
+- `examples/`: 72 exemplos (25 válidos, 47 inválidos) e `manifest.json`;
   `tools/`: gerador e verificadores.
+- Domínios conferidos com a prova técnica do api (fcf23c87, contrato do 24b
+  §10–§11): `proof` preenchido; sem mudança de código nem de faixa; 31 rótulos
+  trocados pelos do dicionário oficial (29 dos domínios LEDI e 2 de
+  `tipo_de_imovel`, Q39); `outro_procedimento_coletivo` (58 códigos SIGTAP,
+  Q37) e `patient_unidentified` (Q41) entram no dado; `rules` ganha
+  `without_person_allowed_reasons` (`1 27 28`, Q34/Q40), `male_forbidden_reasons`
+  (`5 6`, Q35, no lugar de `reasons_forbidden_for_sex`), `non_residential_reasons`
+  (nome do contrato, no lugar de `non_residential_allowed_reasons`),
+  `responsible_document_reasons` (Q40, Q43, Q44), `reasons_max` e `list_max`
+  (Q36). No esquema: `maxItems` nas listas de `reasons` (36),
+  `meeting_topics` (7), `target_audience` (17), `health_topics` (16) e
+  `health_practices` (14); `procedure_code` só dos 58 códigos; `altered_count`
+  sai do corpo da atividade (derivado pelo api, Q38); `age` de "quem visitar"
+  passa a `integer | null` (Q33).

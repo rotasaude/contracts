@@ -70,7 +70,7 @@
         "family_id": { "$ref": "#/$defs/uuid" },
         "duplicates_reviewed": { "type": "boolean" },
         "outcome": { "enum": [1, 2, 3], "description": "1 Realizada, 2 Recusada, 3 Ausente." },
-        "reasons": { "type": "array", "uniqueItems": true, "items": { "$ref": "#/$defs/visit_reason" } },
+        "reasons": { "type": "array", "uniqueItems": true, "maxItems": 36, "items": { "$ref": "#/$defs/visit_reason" }, "description": "No máximo 36 (motivosVisita do LEDI; Q36); estourar → invalid_home_visit, path reasons." },
         "shared": { "type": "boolean" },
         "measurements": { "$ref": "#/$defs/visit_measurements" },
         "note": { "type": "string", "minLength": 1, "maxLength": 500, "description": "Observação interna: nunca vai ao LEDI, à linha do tempo nem ao cidadão." }
@@ -150,8 +150,8 @@
     "collective_activity_body": {
       "type": "object",
       "additionalProperties": false,
-      "description": "Corpo do POST /collective_activities (§7): a atividade inteira, sem rascunho. Lista ausente = vazia. Local plano (Q15): place_health_unit_id (unidade ativa com CNES) ou place_text, exatamente um; INEP nunca (sem PSE). O tema 18 não existe aqui. duplicates_reviewed só dentro de cada participante (Q15).",
-      "required": ["team_id", "held_on", "shift", "activity_type", "participants_count", "altered_count"],
+      "description": "Corpo do POST /collective_activities (§7): a atividade inteira, sem rascunho. Lista ausente = vazia; tamanhos máximos oficiais (Q36). altered_count não vem: o api deriva dos participantes com altered_evaluation (Q38). Local plano (Q15): place_health_unit_id (unidade ativa com CNES) ou place_text, exatamente um; INEP nunca (sem PSE). O tema 18 não existe aqui. duplicates_reviewed só dentro de cada participante (Q15).",
+      "required": ["team_id", "held_on", "shift", "activity_type", "participants_count"],
       "oneOf": [{ "required": ["place_health_unit_id"] }, { "required": ["place_text"] }],
       "properties": {
         "team_id": { "$ref": "#/$defs/uuid" },
@@ -161,12 +161,11 @@
         "place_health_unit_id": { "$ref": "#/$defs/uuid" },
         "place_text": { "type": "string", "minLength": 1, "maxLength": 250 },
         "participants_count": { "type": "integer", "minimum": 1, "maximum": 999 },
-        "altered_count": { "type": "integer", "minimum": 0, "maximum": 999 },
-        "meeting_topics": { "type": "array", "uniqueItems": true, "items": { "enum": [1, 2, 3, 4, 5, 6, 7, 8] } },
-        "target_audience": { "type": "array", "uniqueItems": true, "items": { "enum": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 13, 14, 15, 16, 17, 18, 19, 20] } },
-        "health_topics": { "type": "array", "uniqueItems": true, "items": { "enum": [1, 4, 5, 6, 7, 8, 10, 13, 14, 15, 16, 17, 19, 21, 29, 31, 32] } },
-        "health_practices": { "type": "array", "uniqueItems": true, "items": { "enum": [2, 3, 9, 11, 12, 20, 22, 23, 24, 25, 26, 27, 28, 30, 33, 34] } },
-        "procedure_code": { "type": "string", "pattern": "^[0-9]{10}$" },
+        "meeting_topics": { "type": "array", "uniqueItems": true, "maxItems": 7, "items": { "enum": [1, 2, 3, 4, 5, 6, 7, 8] } },
+        "target_audience": { "type": "array", "uniqueItems": true, "maxItems": 17, "items": { "enum": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 13, 14, 15, 16, 17, 18, 19, 20] } },
+        "health_topics": { "type": "array", "uniqueItems": true, "maxItems": 16, "items": { "enum": [1, 4, 5, 6, 7, 8, 10, 13, 14, 15, 16, 17, 19, 21, 29, 31, 32] } },
+        "health_practices": { "type": "array", "uniqueItems": true, "maxItems": 14, "items": { "enum": [2, 3, 9, 11, 12, 20, 22, 23, 24, 25, 26, 27, 28, 30, 33, 34] } },
+        "procedure_code": { "enum": ["0101050178", "0101050160", "0102020078", "0102010510", "0311020046", "0311020038", "0311020020", "0102020027", "0101010133", "0101010214", "0101010303", "0101010141", "0101010168", "0101010257", "0101010176", "0101010290", "0101010249", "0101010192", "0101010206", "0101010109", "0101010281", "0101010222", "0101010273", "0101010125", "0101010150", "0101010184", "0101010230", "0101010265", "0101010010", "0101010028", "0102010056", "0102010501", "0101020015", "0101020023", "0101020031", "0101020040", "0101020112", "0101040032", "0101020082", "0101050151", "0101050054", "0101040040", "0101010036", "0301080275", "0101050011", "0301080283", "0101010095", "0101050062", "0101050119", "0101050100", "0101050127", "0101050135", "0101050070", "0101050089", "0804020051", "0101050020", "0307010074", "0101050046"], "description": "Um dos 58 códigos SIGTAP de outro_procedimento_coletivo (domains-v1.json; Q37). Obrigatório com a prática 30 e proibido sem ela (regra do api)." },
         "professionals": {
           "type": "array",
           "uniqueItems": true,

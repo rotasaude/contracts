@@ -45,6 +45,10 @@
           "expect": "valid"
         },
         {
+          "file": "upload-collective-activity-other-procedure.json",
+          "expect": "valid"
+        },
+        {
           "file": "upload-patient.json",
           "expect": "valid"
         },
@@ -127,6 +131,34 @@
         {
           "file": "invalid-withdrawal-reason-short.json",
           "expect": "/items/0/body/reason minLength"
+        },
+        {
+          "file": "invalid-home-visit-37-reasons.json",
+          "expect": "/items/0/body/reasons maxItems"
+        },
+        {
+          "file": "invalid-collective-activity-altered-count-in-body.json",
+          "expect": "/items/0/body/altered_count schema"
+        },
+        {
+          "file": "invalid-collective-activity-8-meeting-topics.json",
+          "expect": "/items/0/body/meeting_topics maxItems"
+        },
+        {
+          "file": "invalid-collective-activity-19-target-audience.json",
+          "expect": "/items/0/body/target_audience maxItems"
+        },
+        {
+          "file": "invalid-collective-activity-17-health-topics.json",
+          "expect": "/items/0/body/health_topics maxItems"
+        },
+        {
+          "file": "invalid-collective-activity-16-health-practices.json",
+          "expect": "/items/0/body/health_practices maxItems"
+        },
+        {
+          "file": "invalid-collective-activity-procedure-not-sigtap-list.json",
+          "expect": "/items/0/body/procedure_code enum"
         },
         {
           "file": "invalid-collective-activity-pse-topic-18.json",
@@ -228,6 +260,10 @@
         },
         {
           "file": "changes-last-page.json",
+          "expect": "valid"
+        },
+        {
+          "file": "changes-last-page-age-null.json",
           "expect": "valid"
         },
         {
