@@ -1,6 +1,6 @@
 # Changelog — field-sync
 
-## field-sync-v1.0.0 — (não publicada até a tag) — MAJOR
+## field-sync-v1.0.0 — 2026-11-12 — MAJOR
 
 Primeira versão do domínio (ADR 0052, módulo 24b): a sincronização do app de
 campo offline (24c) com o api.
