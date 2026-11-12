@@ -16,7 +16,7 @@ versionados.
 
 ## Domínios
 
-Nove domínios, **versionados de forma independente** (ADR 0015):
+Dez domínios, **versionados de forma independente** (ADR 0015):
 
 | Domínio | O que é | Versão | Estado |
 |---|---|---|---|
@@ -25,8 +25,9 @@ Nove domínios, **versionados de forma independente** (ADR 0015):
 | [`session/`](session/CHANGELOG.md) | Corpo da sessão (`GET /session`) e escopo do envelope de `/admin/api` | `session-v1.1.0` | Materializado |
 | [`clinical/`](clinical/README.md) | JSON canônico assinado da consulta, do adendo e dos documentos clínicos (ADRs 0032, 0033 e 0034) | `clinical-v1.2.0` | Materializado |
 | [`exams/`](exams/README.md) | Pedido de exame (`<exam_order>`) e perfil FHIR de entrada do laudo (ADRs 0036 e 0037) | `exams-v1.1.0` | Materializado |
-| [`lab/`](lab/README.md) | Laudo do laboratório municipal e perfil HL7 v2.5.1 de entrada (ADR 0037) | `lab-v1.0.0` | Materializado |
-| [`billing/`](billing/README.md) | Arquivo de interface do BPA Magnético (BPA-C/BPA-I) gerado no fechamento da competência (ADR 0039) | `billing-v1.0.0` | Materializado |
+| [`lab/`](lab/README.md) | Laudo do laboratório municipal e perfil HL7 v2.5.1 de entrada (ADR 0037) | `lab-v1.1.0` | Materializado |
+| [`billing/`](billing/README.md) | Arquivo de interface do BPA Magnético (BPA-C/BPA-I) gerado no fechamento da competência (ADR 0039) | `billing-v1.1.0` | Materializado |
+| [`field-sync/`](field-sync/README.md) | Sincronização do app de campo v1: sessão, envio em lote idempotente e download incremental por microárea (ADRs 0041 e 0052) | `field-sync-v1.0.0` | Materializado |
 | [`types/`](types/README.md) | Contrato de tipos da API (Ruby ↔ TS) | — | Scaffold: extração pendente |
 | [`design-tokens/`](design-tokens/README.md) | Cores, espaçamento e tipografia como dado (4 temas, contraste validado) | `tokens-v1.1.0` | Materializado |
 
@@ -120,6 +121,18 @@ os que tem em comum com eles. Exemplos e o vetor de canonicalização ficam em
 Documento assinado nunca muda: acrescentar campo opcional compatível é MINOR
 na mesma versão; só mudança incompatível pede versão nova (`v2`).
 
+### field-sync
+
+`session-response-v1.json`, `upload-request-v1.json`,
+`upload-response-v1.json` e `changes-response-v1.json` (JSON Schema 2020-12)
+descrevem a sincronização do app de campo offline (módulo 24c) com o `api`,
+entregue no módulo 24b (ADR 0052): a sessão do aparelho, o envio em lote
+idempotente pelo `client_uuid` de cada item e o download incremental pelas
+microáreas do aparelho. `domains-v1.json` traz os domínios e as regras
+cruzadas da visita domiciliar e da atividade coletiva em dado. O `api` usa
+**cópias** em `config/field_sync/`, presas por SHA-256. Exemplos e
+verificação em [`field-sync/README.md`](field-sync/README.md).
+
 ### Fora deste repo, por enquanto
 
 - **SDL GraphQL da API de manutenção:** vive em `maintenance/schema.graphql`,
@@ -132,7 +145,7 @@ na mesma versão; só mudança incompatível pede versão nova (`v2`).
 ## Versionamento (ADR 0015)
 
 - **SemVer 2.0.0 por domínio**, com tag prefixada (`events-vX.Y.Z`,
-  `protocols-vX.Y.Z`, `session-vX.Y.Z`, `clinical-vX.Y.Z`, `exams-vX.Y.Z`, `lab-vX.Y.Z`, `types-vX.Y.Z`, `tokens-vX.Y.Z`). Cada app fixa a versão
+  `protocols-vX.Y.Z`, `session-vX.Y.Z`, `clinical-vX.Y.Z`, `exams-vX.Y.Z`, `lab-vX.Y.Z`, `billing-vX.Y.Z`, `field-sync-vX.Y.Z`, `types-vX.Y.Z`, `tokens-vX.Y.Z`). Cada app fixa a versão
   **do domínio que consome**.
 - **Classificação de mudança:**
   - **MAJOR:** quebra consumidores (remove ou renomeia campo, muda tipo,
