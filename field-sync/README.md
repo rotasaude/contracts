@@ -35,6 +35,10 @@ registrou e baixa o escopo do aparelho. Base `/field/v1` no host da cidade.
   (`household_client_uuid`), no mesmo lote ou em outro; em cada par vale no
   máximo um entre o id e o `client_uuid` (Q27). O domicílio e o cadastro com
   `version` vencida voltam `stale_version` com a versão atual.
+- **Retirada (`home_visit_withdrawal`).** Falha como na rota da equipe, sem
+  `path` (o código vale para o item inteiro): folha já fechada → `rejected`
+  `day_closed`; visita já retirada com outro `client_uuid` → `rejected`
+  `visit_changed` (Q45). O mesmo item reenviado continua `duplicate`.
 - **Validação em dois níveis.** Envelope inválido (fora de `items` de 1 a 50,
   item sem forma de item) → `422` para o lote inteiro. Item cujo corpo foge do
   esquema → `rejected` `invalid_request` com `path`, sem derrubar o lote. Os
@@ -75,14 +79,14 @@ registrou e baixa o escopo do aparelho. Base `/field/v1` no host da cidade.
 
 ## Exemplos e verificação
 
-`examples/` tem 72 exemplos (25 válidos, 47 inválidos, um defeito por arquivo),
+`examples/` tem 73 exemplos (26 válidos, 47 inválidos, um defeito por arquivo),
 gerados por `tools/make_examples.py` e listados em `examples/manifest.json`
 (`{ suites: [ { schema, cases: [ { file, expect } ] } ] }`; `expect` é
 `valid` ou o erro `<data_pointer> <type>` do `json_schemer`). A partir da raiz
 do monorepo, com o compose de pé:
 
 ```bash
-contracts/field-sync/tools/check.sh                           # todas as suítes (72/72)
+contracts/field-sync/tools/check.sh                           # todas as suítes (73/73)
 contracts/field-sync/tools/check.sh upload-request-v1.json    # uma suíte
 python3 contracts/field-sync/tools/check_domains.py           # $defs iguais, enum = domains, erros conhecidos
 python3 contracts/field-sync/tools/check_domains.py --release # idem, e falha sem a prova técnica (proof)

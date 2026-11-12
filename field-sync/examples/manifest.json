@@ -206,6 +206,10 @@
           "expect": "valid"
         },
         {
+          "file": "upload-response-withdrawal-rejected.json",
+          "expect": "valid"
+        },
+        {
           "file": "upload-response-invalid-request.json",
           "expect": "valid"
         },
