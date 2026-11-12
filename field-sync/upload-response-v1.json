@@ -186,7 +186,7 @@
         "type": { "enum": ["home_visit", "home_visit_withdrawal", "collective_activity", "patient", "household", "individual_registration", null] },
         "id": { "$ref": "#/$defs/uuid" },
         "error": { "$ref": "#/$defs/error_code" },
-        "path": { "type": "string", "minLength": 1, "description": "Notação pontilhada/colchetes do contrato, relativa ao body do item para campos do body (occurred_at, reasons[0], participants[1].new_patient); chave nua para as chaves do próprio item fora do body (client_uuid, type); body quando o body não é objeto. Nenhum *_body declara type, client_uuid ou body, para o path não ser ambíguo." },
+        "path": { "type": "string", "minLength": 1, "description": "Notação pontilhada/colchetes do contrato, relativa ao body do item para campos do body (occurred_at, reasons[0], participants[1].new_patient); chave nua para as chaves do próprio item fora do body (client_uuid, type); body quando o body não é objeto. Campo obrigatório ausente: o caminho do campo que falta (occurred_at, participants[1].patient_id). Falha do próprio objeto (pares um-ou-outro do Q27, local da atividade, par de medida): o caminho do objeto (body para o corpo, measurements, participants[i]). Nunca vazio. Nenhum *_body declara type, client_uuid ou body, para o path não ser ambíguo." },
         "candidates": { "type": "array", "maxItems": 10, "items": { "$ref": "#/$defs/candidate" } },
         "current_version": { "type": "integer", "minimum": 1 },
         "current": { "type": "object" }

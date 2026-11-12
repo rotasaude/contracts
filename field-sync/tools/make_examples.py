@@ -296,7 +296,7 @@ def resp_duplicate_suspected():
                     "candidates": [{"patient_id": PAT2, "display_name": "Benedita Rocha", "birth_date": "1948-05-02", "sex": "female", "has_cpf": False,
                                     "has_cns": True},
                                    {"patient_id": PAT3, "display_name": "Benedita A. Rocha", "birth_date": "1948-05-02",
-                                    "sex": None, "has_cpf": True, "has_cns": False, "registration_id": REG3}]})
+                                    "sex": None, "has_cpf": True, "has_cns": False}]})
 
 
 def resp_stale_household():

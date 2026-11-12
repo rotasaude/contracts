@@ -39,15 +39,24 @@ registrou e baixa o escopo do aparelho. Base `/field/v1` no host da cidade.
   `path` (o código vale para o item inteiro): folha já fechada → `rejected`
   `day_closed`; visita já retirada com outro `client_uuid` → `rejected`
   `visit_changed` (Q45). O mesmo item reenviado continua `duplicate`.
-- **Validação em dois níveis.** Envelope inválido (fora de `items` de 1 a 50,
-  item sem forma de item) → `422` para o lote inteiro. Item cujo corpo foge do
-  esquema → `rejected` `invalid_request` com `path`, sem derrubar o lote. Os
-  resultados vêm na ordem dos itens, com o `client_uuid` quando válido (Q31).
-- **Convenção de `path`.** Campo do corpo: notação do contrato (pontos e
+- **Validação em dois níveis (Q31).** `422 invalid_request` para o lote inteiro
+  só com envelope inválido: corpo que não é objeto; `items` ausente, vazio, não
+  lista ou com mais de 50; chave desconhecida no envelope. Item fora do esquema
+  (campo desconhecido, tipo errado, `type` desconhecido, `client_uuid` ausente
+  ou inválido) volta sozinho `rejected` `invalid_request` com `path`, sem
+  derrubar o lote. Os resultados vêm na ordem dos itens, com o `client_uuid`
+  quando válido. Limites do esquema (`reasons` acima de 36, motivo 26, tema 18,
+  `procedure_code` fora dos 58, `maxItems` da atividade) seguem a mesma regra no
+  app; na rota da equipe viram o `422` da rota (`invalid_home_visit`,
+  `invalid_collective_activity`).
+- **Convenção de `path` (Q32).** Campo do corpo: notação do contrato (pontos e
   colchetes, ex.: `reasons[0]`, `participants[1].new_patient`) relativa ao
   `body`. Chave do próprio item: o nome da chave (`client_uuid`, `type`).
-  Corpo que não é objeto: `body`. Os corpos não declaram essas chaves, então
-  não há colisão (Q32).
+  Corpo que não é objeto: `body`. Campo obrigatório ausente: o caminho do campo
+  que falta (`occurred_at`, `participants[1].patient_id`). Falha do próprio
+  objeto (pares "um ou outro" do Q27, local da atividade, par de medida): o
+  caminho do objeto (`body` para o corpo, `measurements`, `participants[i]`).
+  Nunca vazio. Os corpos não declaram essas chaves, então não há colisão.
 - **Download.** Por cursor opaco (`next_cursor`, sempre presente: o app o guarda
   para a próxima vez); páginas de até 500 itens; sem cursor = carga completa.
   `reset: true` = o escopo mudou: apague o que foi baixado (nunca o que falta

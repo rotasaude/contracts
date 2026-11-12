@@ -70,7 +70,7 @@
         "family_id": { "$ref": "#/$defs/uuid" },
         "duplicates_reviewed": { "type": "boolean" },
         "outcome": { "enum": [1, 2, 3], "description": "1 Realizada, 2 Recusada, 3 Ausente." },
-        "reasons": { "type": "array", "uniqueItems": true, "maxItems": 36, "items": { "$ref": "#/$defs/visit_reason" }, "description": "No máximo 36 (motivosVisita do LEDI; Q36); estourar → invalid_home_visit, path reasons." },
+        "reasons": { "type": "array", "uniqueItems": true, "maxItems": 36, "items": { "$ref": "#/$defs/visit_reason" }, "description": "No máximo 36 (motivosVisita do LEDI; Q36); estourar → no app, rejected invalid_request com path reasons (Q31); na rota da equipe, 422 invalid_home_visit." },
         "shared": { "type": "boolean" },
         "measurements": { "$ref": "#/$defs/visit_measurements" },
         "note": { "type": "string", "minLength": 1, "maxLength": 500, "description": "Observação interna: nunca vai ao LEDI, à linha do tempo nem ao cidadão." }
