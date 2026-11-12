@@ -124,14 +124,15 @@ def registration_create():
 
 def hv_new_household():
     visit = hv_resident()
-    del visit["household_id"], visit["measurements"], visit["note"]
+    del visit["household_id"], visit["patient_id"], visit["measurements"], visit["note"]
     visit["household_client_uuid"] = cu(20)
+    visit["patient_client_uuid"] = cu(10)
     return visit
 
 
 def registration_same_batch():
     body = registration_create()
-    del body["patient_id"], body["household_id"]
+    del body["patient_id"], body["household_id"], body["family_id"]
     body["patient_client_uuid"] = cu(10)
     body["household_client_uuid"] = cu(20)
     return body
@@ -184,7 +185,8 @@ def upload_mixed():
 def upload_hv_new_household():
     household = household_update()
     del household["household_id"], household["version"]
-    return up(item(20, "household", household), item(21, "home_visit", hv_new_household()))
+    return up(item(10, "patient", {"new_patient": copy.deepcopy(NEW_PATIENT)}), item(20, "household", household),
+              item(21, "home_visit", hv_new_household()))
 
 
 def upload_registration_same_batch():
@@ -266,9 +268,9 @@ def resp_rejected():
 
 def resp_invalid_request():
     return results(
-        {"client_uuid": cu(1), "status": "rejected", "type": "home_visit", "error": "invalid_request", "path": "body/shift"},
-        {"status": "rejected", "type": None, "error": "invalid_request", "path": "items/1/client_uuid"},
-        {"status": "rejected", "error": "invalid_request", "path": "items/2/type"})
+        {"client_uuid": cu(1), "status": "rejected", "type": "home_visit", "error": "invalid_request", "path": "reasons[0]"},
+        {"status": "rejected", "type": "home_visit", "error": "invalid_request", "path": "client_uuid"},
+        {"status": "rejected", "error": "invalid_request", "path": "type"})
 
 
 def resp_duplicate_suspected():
@@ -352,7 +354,7 @@ SUITES = [
         "invalid-home-visit-note-too-long.json": (variant(upload_hv, B + ["note"], "x" * 501), "/items/0/body/note maxLength"),
         "invalid-home-visit-latitude.json": (variant(upload_hv, B + ["latitude"], -25.43), "/items/0/body/latitude schema"),
         "invalid-home-visit-client-uuid-in-body.json": (variant(upload_hv, B + ["client_uuid"], cu(1)), "/items/0/body/client_uuid schema"),
-        "invalid-home-visit-two-households.json": (variant(upload_hv_new_household, ["items", 1, "body", "household_id"], HH), "/items/1/body not"),
+        "invalid-home-visit-two-households.json": (variant(upload_hv_new_household, ["items", 2, "body", "household_id"], HH), "/items/2/body not"),
         "invalid-registration-two-patients.json": (variant(upload_registration_same_batch, ["items", 2, "body", "patient_id"], PAT2), "/items/2/body not"),
         "invalid-withdrawal-reason-short.json": (variant(upload_withdrawal, B + ["reason"], "errado"), "/items/0/body/reason minLength"),
         "invalid-collective-activity-pse-topic-18.json": (variant(upload_ca, B + ["health_topics"], [18]), "/items/0/body/health_topics/0 enum"),

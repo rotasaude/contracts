@@ -118,7 +118,7 @@
         },
         {
           "file": "invalid-home-visit-two-households.json",
-          "expect": "/items/1/body not"
+          "expect": "/items/2/body not"
         },
         {
           "file": "invalid-registration-two-patients.json",

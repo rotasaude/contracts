@@ -40,7 +40,6 @@
       "client_uuid": "c0ffee22-0000-4000-8000-000000000022",
       "type": "individual_registration",
       "body": {
-        "family_id": "9d0e1f2a-3b4c-4d5e-9f6a-7b8c9d0e1f2a",
         "is_responsible": false,
         "identification": {},
         "patient_demographics": {

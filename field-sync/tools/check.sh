@@ -15,6 +15,8 @@ for s in m["suites"]:
         continue
     cases = [dict(c, doc=json.load(open(os.path.join(ex, c["file"]), encoding="utf-8"))) for c in s["cases"]]
     suites.append({"schema": s["schema"], "schema_doc": json.load(open(os.path.join(d, s["schema"]), encoding="utf-8")), "cases": cases})
+if not suites or any(not s["cases"] for s in suites):
+    sys.exit("nenhuma suite ou suite sem casos")
 print(json.dumps({"suites": suites}))
 ' "$dir" "$@" \
 | docker compose exec -T -w /rails api bundle exec ruby -rjson -rjson_schemer -e '

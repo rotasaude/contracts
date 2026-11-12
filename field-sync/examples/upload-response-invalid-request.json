@@ -5,18 +5,18 @@
       "status": "rejected",
       "type": "home_visit",
       "error": "invalid_request",
-      "path": "body/shift"
+      "path": "reasons[0]"
     },
     {
       "status": "rejected",
-      "type": null,
+      "type": "home_visit",
       "error": "invalid_request",
-      "path": "items/1/client_uuid"
+      "path": "client_uuid"
     },
     {
       "status": "rejected",
       "error": "invalid_request",
-      "path": "items/2/type"
+      "path": "type"
     }
   ]
 }
