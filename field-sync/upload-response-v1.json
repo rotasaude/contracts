@@ -188,6 +188,7 @@
         "error": { "$ref": "#/$defs/error_code" },
         "path": { "type": "string", "minLength": 1, "description": "Notação pontilhada/colchetes do contrato, relativa ao body do item para campos do body (occurred_at, reasons[0], participants[1].new_patient); chave nua para as chaves do próprio item fora do body (client_uuid, type); body quando o body não é objeto. Campo obrigatório ausente: o caminho do campo que falta (occurred_at, participants[1].patient_id). Falha do próprio objeto (pares um-ou-outro do Q27, local da atividade, par de medida): o caminho do objeto (body para o corpo, measurements, participants[i]). Nunca vazio. Nenhum *_body declara type, client_uuid ou body, para o path não ser ambíguo." },
         "candidates": { "type": "array", "maxItems": 10, "items": { "$ref": "#/$defs/candidate" } },
+        "confirmable": { "type": "boolean", "description": "Só em duplicate_participant (Q54; a mesma pessoa duas vezes na atividade coletiva; path participants[i], a segunda ocorrência; sem candidates). true = é só semelhança (dois new_patient com o mesmo nome e a mesma data de nascimento, sem documento igual): o app ou o painel pode reenviar com duplicates_reviewed: true naquele participante, para dizer que é outra pessoa. false = não há como liberar (mesmo patient_id, ou CPF ou CNS iguais). Obrigatório com duplicate_participant e proibido em qualquer outro erro." },
         "current_version": { "type": "integer", "minimum": 1 },
         "current": { "type": "object" }
       },
@@ -205,7 +206,10 @@
         { "if": { "required": ["status", "type"], "properties": { "status": { "const": "stale_version" }, "type": { "const": "individual_registration" } } },
           "then": { "properties": { "current": { "$ref": "#/$defs/registration" } } } },
         { "if": { "required": ["candidates"] },
-          "then": { "properties": { "error": { "const": "duplicate_suspected" } } } }
+          "then": { "properties": { "error": { "const": "duplicate_suspected" } } } },
+        { "if": { "required": ["error"], "properties": { "error": { "const": "duplicate_participant" } } },
+          "then": { "required": ["confirmable"] },
+          "else": { "properties": { "confirmable": false } } }
       ]
     }
   }

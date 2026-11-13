@@ -26,7 +26,11 @@ campo offline (24c) com o api.
   fuso explícito; CPF nunca desce.
 - `domains-v1.json`: `invalid_patient` em `errors.item` (identidade inválida no
   registro rápido; `rejected` no app com `path`, 422 na rota da equipe; Q49).
-- `examples/`: 74 exemplos (27 válidos, 47 inválidos) e `manifest.json`;
+- `upload-response-v1.json`: `confirmable` (boolean) no resultado, obrigatório em
+  `duplicate_participant` e proibido nos outros erros (Q54): `true` = só
+  semelhança, o app pode reenviar com `duplicates_reviewed: true` no
+  participante; `false` = não há como liberar.
+- `examples/`: 77 exemplos (28 válidos, 49 inválidos) e `manifest.json`;
   `tools/`: gerador e verificadores.
 - Domínios conferidos com a prova técnica do api (fcf23c87, contrato do 24b
   §10–§11): `proof` preenchido; sem mudança de código nem de faixa; 31 rótulos

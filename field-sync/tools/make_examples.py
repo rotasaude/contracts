@@ -303,6 +303,14 @@ def resp_duplicate_suspected():
                                     "sex": None, "has_cpf": True, "has_cns": False}]})
 
 
+def resp_duplicate_participant():  # Q54: semelhança (confirmable) e impossível de liberar
+    return results(
+        {"client_uuid": cu(11), "status": "rejected", "type": "collective_activity", "error": "duplicate_participant",
+         "path": "participants[1]", "confirmable": True},
+        {"client_uuid": cu(12), "status": "rejected", "type": "collective_activity", "error": "duplicate_participant",
+         "path": "participants[2]", "confirmable": False})
+
+
 def resp_stale_household():
     current = household()
     current["version"] = 4
@@ -405,6 +413,7 @@ SUITES = [
         "upload-response-duplicate.json": (resp_duplicate(), "valid"),
         "upload-response-rejected.json": (resp_rejected(), "valid"),
         "upload-response-duplicate-suspected.json": (resp_duplicate_suspected(), "valid"),
+        "upload-response-duplicate-participant.json": (resp_duplicate_participant(), "valid"),
         "upload-response-invalid-patient.json": (resp_invalid_patient(), "valid"),
         "upload-response-withdrawal-rejected.json": (resp_withdrawal_rejected(), "valid"),
         "upload-response-invalid-request.json": (resp_invalid_request(), "valid"),
@@ -417,6 +426,8 @@ SUITES = [
         "invalid-response-stale-without-current.json": (variant(resp_stale_household, ["results", 0, "current"], DELETE), "/results/0 required"),
         "invalid-response-rejected-with-id.json": (variant(resp_rejected, ["results", 0, "id"], VISIT), "/results/0/id schema"),
         "invalid-response-candidates-without-duplicate-suspected.json": (variant(resp_duplicate_suspected, ["results", 0, "error"], "cpf_taken"), "/results/0/error const"),
+        "invalid-response-duplicate-participant-without-confirmable.json": (variant(resp_duplicate_participant, ["results", 0, "confirmable"], DELETE), "/results/0 required"),
+        "invalid-response-confirmable-on-other-error.json": (variant(resp_rejected, ["results", 0, "confirmable"], True), "/results/0/confirmable schema"),
         "invalid-response-stale-household-with-cpf.json": (variant(resp_stale_household, ["results", 0, "current", "families", 0, "responsible", "cpf"], "39053344705"), "/results/0/current/families/0/responsible/cpf schema"),
     }),
     ("changes-response-v1.json", {

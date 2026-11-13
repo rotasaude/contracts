@@ -206,6 +206,10 @@
           "expect": "valid"
         },
         {
+          "file": "upload-response-duplicate-participant.json",
+          "expect": "valid"
+        },
+        {
           "file": "upload-response-invalid-patient.json",
           "expect": "valid"
         },
@@ -252,6 +256,14 @@
         {
           "file": "invalid-response-candidates-without-duplicate-suspected.json",
           "expect": "/results/0/error const"
+        },
+        {
+          "file": "invalid-response-duplicate-participant-without-confirmable.json",
+          "expect": "/results/0 required"
+        },
+        {
+          "file": "invalid-response-confirmable-on-other-error.json",
+          "expect": "/results/0/confirmable schema"
         },
         {
           "file": "invalid-response-stale-household-with-cpf.json",

@@ -45,6 +45,15 @@ registrou e baixa o escopo do aparelho. Base `/field/v1` no host da cidade.
   abaixo (Q32/Q46): `new_patient.<campo>` no item `patient` (ex.:
   `new_patient.full_name`) e `participants[i].new_patient.<campo>` dentro de um
   item `collective_activity`. Na rota da equipe é `422`.
+- **Participante repetido (`collective_activity`, Q54).** A mesma pessoa duas
+  vezes na atividade volta `rejected` `duplicate_participant`, com `path`
+  `participants[i]` (a segunda ocorrência) e sem `candidates`. O resultado traz
+  `confirmable` (boolean, obrigatório neste erro e proibido nos outros):
+  `true` quando é só semelhança (dois `new_patient` com o mesmo nome e a mesma
+  data de nascimento, sem documento igual), e o app ou o painel pode reenviar
+  com `duplicates_reviewed: true` naquele participante para dizer "é outra
+  pessoa"; `false` quando não há como liberar (mesmo `patient_id`, ou CPF ou
+  CNS iguais).
 - **Validação em dois níveis (Q31).** `422 invalid_request` para o lote inteiro
   só com envelope inválido: corpo que não é objeto; `items` ausente, vazio, não
   lista ou com mais de 50; chave desconhecida no envelope. Item fora do esquema
@@ -94,14 +103,14 @@ registrou e baixa o escopo do aparelho. Base `/field/v1` no host da cidade.
 
 ## Exemplos e verificação
 
-`examples/` tem 74 exemplos (27 válidos, 47 inválidos, um defeito por arquivo),
+`examples/` tem 77 exemplos (28 válidos, 49 inválidos, um defeito por arquivo),
 gerados por `tools/make_examples.py` e listados em `examples/manifest.json`
 (`{ suites: [ { schema, cases: [ { file, expect } ] } ] }`; `expect` é
 `valid` ou o erro `<data_pointer> <type>` do `json_schemer`). A partir da raiz
 do monorepo, com o compose de pé:
 
 ```bash
-contracts/field-sync/tools/check.sh                           # todas as suítes (74/74)
+contracts/field-sync/tools/check.sh                           # todas as suítes (77/77)
 contracts/field-sync/tools/check.sh upload-request-v1.json    # uma suíte
 python3 contracts/field-sync/tools/check_domains.py           # $defs iguais, enum = domains, erros conhecidos
 python3 contracts/field-sync/tools/check_domains.py --release # idem, e falha sem a prova técnica (proof)
