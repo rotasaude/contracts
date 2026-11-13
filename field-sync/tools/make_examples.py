@@ -311,6 +311,22 @@ def resp_duplicate_participant():  # Q54: semelhança (confirmable) e impossíve
          "path": "participants[2]", "confirmable": False})
 
 
+def resp_internal_error():  # Q63: exceção inesperada; sem path, fora do livro de idempotência
+    return results({"client_uuid": cu(14), "status": "rejected", "type": "home_visit", "error": "internal_error"})
+
+
+def resp_household_changed():  # Q63: cadastro individual NOVO cujo domicílio citado mudou de versão
+    return results({"client_uuid": cu(15), "status": "rejected", "type": "individual_registration", "error": "household_changed", "path": "household_id"})
+
+
+def resp_already_registered_with_id():  # Q63/6A: cadastro existente dentro do escopo do aparelho
+    return results({"client_uuid": cu(16), "status": "rejected", "type": "individual_registration", "error": "already_registered", "id": REG})
+
+
+def resp_already_registered_without_id():  # Q63/6A: fora do escopo, sem id
+    return results({"client_uuid": cu(17), "status": "rejected", "type": "individual_registration", "error": "already_registered"})
+
+
 def resp_stale_household():
     current = household()
     current["version"] = 4
@@ -429,6 +445,10 @@ SUITES = [
         "upload-response-invalid-patient.json": (resp_invalid_patient(), "valid"),
         "upload-response-withdrawal-rejected.json": (resp_withdrawal_rejected(), "valid"),
         "upload-response-invalid-request.json": (resp_invalid_request(), "valid"),
+        "upload-response-internal-error.json": (resp_internal_error(), "valid"),
+        "upload-response-household-changed.json": (resp_household_changed(), "valid"),
+        "upload-response-already-registered-with-id.json": (resp_already_registered_with_id(), "valid"),
+        "upload-response-already-registered-without-id.json": (resp_already_registered_without_id(), "valid"),
         "upload-response-stale-household.json": (resp_stale_household(), "valid"),
         "upload-response-stale-registration.json": (resp_stale_registration(), "valid"),
         "invalid-response-rejected-without-client-uuid.json": (variant(resp_invalid_request, ["results", 1, "error"], "visit_date_out_of_range"), "/results/1 required"),
@@ -437,6 +457,8 @@ SUITES = [
         "invalid-response-candidate-with-cpf.json": (variant(resp_duplicate_suspected, ["results", 0, "candidates", 0, "cpf"], "11144477735"), "/results/0/candidates/0/cpf schema"),
         "invalid-response-stale-without-current.json": (variant(resp_stale_household, ["results", 0, "current"], DELETE), "/results/0 required"),
         "invalid-response-rejected-with-id.json": (variant(resp_rejected, ["results", 0, "id"], VISIT), "/results/0/id schema"),
+        "invalid-response-id-on-rejected-other-error.json": (variant(resp_household_changed, ["results", 0, "id"], REG), "/results/0/id schema"),
+        "invalid-response-unknown-error-code.json": (variant(resp_internal_error, ["results", 0, "error"], "Internal Error"), "/results/0/error pattern"),
         "invalid-response-candidates-without-duplicate-suspected.json": (variant(resp_duplicate_suspected, ["results", 0, "error"], "cpf_taken"), "/results/0/error const"),
         "invalid-response-duplicate-participant-without-confirmable.json": (variant(resp_duplicate_participant, ["results", 0, "confirmable"], DELETE), "/results/0 required"),
         "invalid-response-confirmable-on-other-error.json": (variant(resp_rejected, ["results", 0, "confirmable"], True), "/results/0/confirmable schema"),

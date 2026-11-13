@@ -34,7 +34,21 @@ registrou e baixa o escopo do aparelho. Base `/field/v1` no host da cidade.
   (`patient_client_uuid`) e um domicílio criado offline
   (`household_client_uuid`), no mesmo lote ou em outro; em cada par vale no
   máximo um entre o id e o `client_uuid` (Q27). O domicílio e o cadastro com
-  `version` vencida voltam `stale_version` com a versão atual.
+  `version` vencida voltam `stale_version` com a versão atual, `current_version`
+  e `current`; isso vale só para um domicílio ou cadastro que JÁ EXISTE.
+- **Resultados de erro (Q63).** `rejected` leva `error` e, quando o erro é de
+  um campo, `path`; os outros `status` são `accepted`, `duplicate` e
+  `stale_version`. Três regras:
+  (a) item que levanta exceção inesperada é desfeito sozinho, no próprio
+  savepoint, e volta `rejected` `internal_error`, sem `path` (o código vale
+  para o item inteiro, como `day_closed`); não entra no livro de idempotência,
+  então o reenvio o processa de novo, e o lote continua;
+  (b) cadastro individual NOVO cujo domicílio citado mudou de versão volta
+  `rejected` `household_changed` com `path` `household_id`, não
+  `stale_version`;
+  (c) `already_registered` pode trazer `id` (o `registration_id` existente)
+  SÓ quando esse cadastro está no escopo do aparelho (6A); fora do escopo não
+  há `id`. Em qualquer outro `rejected`, `id` é proibido.
 - **Retirada (`home_visit_withdrawal`).** Falha como na rota da equipe, sem
   `path` (o código vale para o item inteiro): folha já fechada → `rejected`
   `day_closed`; visita já retirada com outro `client_uuid` → `rejected`
@@ -106,14 +120,14 @@ registrou e baixa o escopo do aparelho. Base `/field/v1` no host da cidade.
 
 ## Exemplos e verificação
 
-`examples/` tem 80 exemplos (29 válidos, 51 inválidos, um defeito por arquivo),
+`examples/` tem 86 exemplos (33 válidos, 53 inválidos, um defeito por arquivo),
 gerados por `tools/make_examples.py` e listados em `examples/manifest.json`
 (`{ suites: [ { schema, cases: [ { file, expect } ] } ] }`; `expect` é
 `valid` ou o erro `<data_pointer> <type>` do `json_schemer`). A partir da raiz
 do monorepo, com o compose de pé:
 
 ```bash
-contracts/field-sync/tools/check.sh                           # todas as suítes (80/80)
+contracts/field-sync/tools/check.sh                           # todas as suítes (86/86)
 contracts/field-sync/tools/check.sh upload-request-v1.json    # uma suíte
 python3 contracts/field-sync/tools/check_domains.py           # $defs iguais, enum = domains, erros conhecidos
 python3 contracts/field-sync/tools/check_domains.py --release # idem, e falha sem a prova técnica (proof)

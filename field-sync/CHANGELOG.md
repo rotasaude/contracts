@@ -28,6 +28,12 @@ campo offline (24c) com o api.
   registro rápido; `rejected` no app com `path`, 422 na rota da equipe; Q49).
 - `domains-v1.json`: `json_required` em `errors.http` (`415` quando o corpo da
   escrita do app não é JSON; Q59).
+- `domains-v1.json` e `upload-response-v1.json`: `internal_error` (exceção
+  inesperada; `rejected` sem `path`, fora do livro de idempotência) e
+  `household_changed` (cadastro individual novo com domicílio de versão
+  vencida; `path` `household_id`) em `errors.item`; `stale_version` só para
+  domicílio ou cadastro existente; `id` em `rejected` só com
+  `already_registered`, e só no escopo do aparelho (Q63).
 - `changes-response-v1.json`: `due_on` de motivo `care_line` com `status: overdue`
   pode ser `null` (prática atrasada nunca feita; o app mostra "nunca feita";
   Q60). `due_soon` e `registration_due` seguem exigindo data.
