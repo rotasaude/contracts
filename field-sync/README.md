@@ -20,7 +20,7 @@ registrou e baixa o escopo do aparelho. Base `/field/v1` no host da cidade.
   `Authorization: Bearer rsf_…`, nunca na URL. Ausente ou desconhecido →
   `401 invalid_token`; revogado (pelo dono, pelo administrador, fim de vínculo
   ou usuário desativado) → `401 device_revoked`. 120 requisições por minuto;
-  só JSON (415); corpo até 2 MB (413). Interruptor `home_visits` desligado →
+  só JSON (`415 json_required`); corpo até 2 MB (413). Interruptor `home_visits` desligado →
   `403 feature_disabled`.
 - **Escopo.** O ACS baixa as microáreas de que é responsável; os outros CBOs
   da Tabela 7, as que o enfermeiro atribui (`scope` `responsible` ou

@@ -388,7 +388,8 @@
       "invalid_cursor",
       "invalid_limit",
       "too_many_requests",
-      "payload_too_large"
+      "payload_too_large",
+      "json_required"
     ],
     "item": [
       "invalid_request",
