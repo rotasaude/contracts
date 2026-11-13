@@ -278,6 +278,10 @@ def resp_rejected():
         {"client_uuid": cu(9), "status": "rejected", "type": "home_visit", "error": "patient_unidentified", "path": "patient_id"})  # Q41
 
 
+def resp_invalid_patient():  # Q49: identidade inválida no registro rápido; path por Q32/Q46
+    return results({"client_uuid": cu(5), "status": "rejected", "type": "patient", "error": "invalid_patient", "path": "new_patient.full_name"})
+
+
 def resp_withdrawal_rejected():  # Q45: sem path, o código vale para o item inteiro
     return results(
         {"client_uuid": cu(3), "status": "rejected", "type": "home_visit_withdrawal", "error": "day_closed"},
@@ -401,6 +405,7 @@ SUITES = [
         "upload-response-duplicate.json": (resp_duplicate(), "valid"),
         "upload-response-rejected.json": (resp_rejected(), "valid"),
         "upload-response-duplicate-suspected.json": (resp_duplicate_suspected(), "valid"),
+        "upload-response-invalid-patient.json": (resp_invalid_patient(), "valid"),
         "upload-response-withdrawal-rejected.json": (resp_withdrawal_rejected(), "valid"),
         "upload-response-invalid-request.json": (resp_invalid_request(), "valid"),
         "upload-response-stale-household.json": (resp_stale_household(), "valid"),

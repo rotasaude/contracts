@@ -24,7 +24,9 @@ campo offline (24c) com o api.
   coletiva (tipo 6) e as regras cruzadas, em dado.
 - Fechados em todo nível, salvo as seções de dicionário do 24a; instantes com
   fuso explícito; CPF nunca desce.
-- `examples/`: 73 exemplos (26 válidos, 47 inválidos) e `manifest.json`;
+- `domains-v1.json`: `invalid_patient` em `errors.item` (identidade inválida no
+  registro rápido; `rejected` no app com `path`, 422 na rota da equipe; Q49).
+- `examples/`: 74 exemplos (27 válidos, 47 inválidos) e `manifest.json`;
   `tools/`: gerador e verificadores.
 - Domínios conferidos com a prova técnica do api (fcf23c87, contrato do 24b
   §10–§11): `proof` preenchido; sem mudança de código nem de faixa; 31 rótulos

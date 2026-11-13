@@ -39,6 +39,12 @@ registrou e baixa o escopo do aparelho. Base `/field/v1` no host da cidade.
   `path` (o código vale para o item inteiro): folha já fechada → `rejected`
   `day_closed`; visita já retirada com outro `client_uuid` → `rejected`
   `visit_changed` (Q45). O mesmo item reenviado continua `duplicate`.
+- **Registro rápido (`patient`, Q49).** Dado de identidade inválido no
+  registro rápido do 24a (também quando reaproveitado na visita e na atividade
+  coletiva) volta `rejected` `invalid_patient`, com `path` pela convenção
+  abaixo (Q32/Q46): `new_patient.<campo>` no item `patient` (ex.:
+  `new_patient.full_name`) e `participants[i].new_patient.<campo>` dentro de um
+  item `collective_activity`. Na rota da equipe é `422`.
 - **Validação em dois níveis (Q31).** `422 invalid_request` para o lote inteiro
   só com envelope inválido: corpo que não é objeto; `items` ausente, vazio, não
   lista ou com mais de 50; chave desconhecida no envelope. Item fora do esquema
@@ -88,14 +94,14 @@ registrou e baixa o escopo do aparelho. Base `/field/v1` no host da cidade.
 
 ## Exemplos e verificação
 
-`examples/` tem 73 exemplos (26 válidos, 47 inválidos, um defeito por arquivo),
+`examples/` tem 74 exemplos (27 válidos, 47 inválidos, um defeito por arquivo),
 gerados por `tools/make_examples.py` e listados em `examples/manifest.json`
 (`{ suites: [ { schema, cases: [ { file, expect } ] } ] }`; `expect` é
 `valid` ou o erro `<data_pointer> <type>` do `json_schemer`). A partir da raiz
 do monorepo, com o compose de pé:
 
 ```bash
-contracts/field-sync/tools/check.sh                           # todas as suítes (73/73)
+contracts/field-sync/tools/check.sh                           # todas as suítes (74/74)
 contracts/field-sync/tools/check.sh upload-request-v1.json    # uma suíte
 python3 contracts/field-sync/tools/check_domains.py           # $defs iguais, enum = domains, erros conhecidos
 python3 contracts/field-sync/tools/check_domains.py --release # idem, e falha sem a prova técnica (proof)

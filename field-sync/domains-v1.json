@@ -429,7 +429,8 @@
       "family_moved_out",
       "micro_area_inactive",
       "invalid_cpf",
-      "invalid_cns"
+      "invalid_cns",
+      "invalid_patient"
     ]
   }
 }
