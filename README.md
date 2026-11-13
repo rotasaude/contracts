@@ -27,7 +27,7 @@ Dez domínios, **versionados de forma independente** (ADR 0015):
 | [`exams/`](exams/README.md) | Pedido de exame (`<exam_order>`) e perfil FHIR de entrada do laudo (ADRs 0036 e 0037) | `exams-v1.1.0` | Materializado |
 | [`lab/`](lab/README.md) | Laudo do laboratório municipal e perfil HL7 v2.5.1 de entrada (ADR 0037) | `lab-v1.1.0` | Materializado |
 | [`billing/`](billing/README.md) | Arquivo de interface do BPA Magnético (BPA-C/BPA-I) gerado no fechamento da competência (ADR 0039) | `billing-v1.1.0` | Materializado |
-| [`field-sync/`](field-sync/README.md) | Sincronização do app de campo v1: sessão, envio em lote idempotente e download incremental por microárea (ADRs 0041 e 0052) | `field-sync-v1.0.0` | Materializado |
+| [`field-sync/`](field-sync/README.md) | Sincronização do app de campo v1: sessão, envio em lote idempotente e download incremental por microárea (ADRs 0041 e 0052) | `field-sync-v1.1.0` | Materializado |
 | [`types/`](types/README.md) | Contrato de tipos da API (Ruby ↔ TS) | — | Scaffold: extração pendente |
 | [`design-tokens/`](design-tokens/README.md) | Cores, espaçamento e tipografia como dado (4 temas, contraste validado) | `tokens-v1.1.0` | Materializado |
 

@@ -319,6 +319,10 @@ def resp_household_changed():  # Q63: cadastro individual NOVO cujo domicílio c
     return results({"client_uuid": cu(15), "status": "rejected", "type": "individual_registration", "error": "household_changed", "path": "household_id"})
 
 
+def resp_too_many_requests():  # Q67: orçamento de busca de pessoa estourado; sem path, fora do livro de idempotência
+    return results({"client_uuid": cu(18), "status": "rejected", "type": "patient", "error": "too_many_requests"})
+
+
 def resp_already_registered_with_id():  # Q63/6A: cadastro existente dentro do escopo do aparelho
     return results({"client_uuid": cu(16), "status": "rejected", "type": "individual_registration", "error": "already_registered", "id": REG})
 
@@ -447,6 +451,7 @@ SUITES = [
         "upload-response-invalid-request.json": (resp_invalid_request(), "valid"),
         "upload-response-internal-error.json": (resp_internal_error(), "valid"),
         "upload-response-household-changed.json": (resp_household_changed(), "valid"),
+        "upload-response-too-many-requests.json": (resp_too_many_requests(), "valid"),
         "upload-response-already-registered-with-id.json": (resp_already_registered_with_id(), "valid"),
         "upload-response-already-registered-without-id.json": (resp_already_registered_without_id(), "valid"),
         "upload-response-stale-household.json": (resp_stale_household(), "valid"),

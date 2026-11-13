@@ -38,7 +38,7 @@ registrou e baixa o escopo do aparelho. Base `/field/v1` no host da cidade.
   e `current`; isso vale só para um domicílio ou cadastro que JÁ EXISTE.
 - **Resultados de erro (Q63).** `rejected` leva `error` e, quando o erro é de
   um campo, `path`; os outros `status` são `accepted`, `duplicate` e
-  `stale_version`. Três regras:
+  `stale_version`. Quatro regras:
   (a) item que levanta exceção inesperada é desfeito sozinho, no próprio
   savepoint, e volta `rejected` `internal_error`, sem `path` (o código vale
   para o item inteiro, como `day_closed`); não entra no livro de idempotência,
@@ -46,6 +46,12 @@ registrou e baixa o escopo do aparelho. Base `/field/v1` no host da cidade.
   (b) cadastro individual NOVO cujo domicílio citado mudou de versão volta
   `rejected` `household_changed` com `path` `household_id`, não
   `stale_version`;
+  (d) `too_many_requests` (Q67): o usuário do aparelho estourou o orçamento
+  compartilhado das buscas de pessoa, 30 por minuto por usuário; ele cobre a
+  busca de duplicado e a checagem de unicidade de CPF/CNS que o item com
+  `new_patient` dispara. O item volta `rejected` `too_many_requests`, sem
+  `path`, e não entra no livro de idempotência: o reenvio o processa de novo.
+  O app mostra uma frase genérica e reenvia mais tarde;
   (c) `already_registered` pode trazer `id` (o `registration_id` existente)
   SÓ quando esse cadastro está no escopo do aparelho (6A); fora do escopo não
   há `id`. Em qualquer outro `rejected`, `id` é proibido.
@@ -134,14 +140,14 @@ registrou e baixa o escopo do aparelho. Base `/field/v1` no host da cidade.
 
 ## Exemplos e verificação
 
-`examples/` tem 86 exemplos (33 válidos, 53 inválidos, um defeito por arquivo),
+`examples/` tem 87 exemplos (34 válidos, 53 inválidos, um defeito por arquivo),
 gerados por `tools/make_examples.py` e listados em `examples/manifest.json`
 (`{ suites: [ { schema, cases: [ { file, expect } ] } ] }`; `expect` é
 `valid` ou o erro `<data_pointer> <type>` do `json_schemer`). A partir da raiz
 do monorepo, com o compose de pé:
 
 ```bash
-contracts/field-sync/tools/check.sh                           # todas as suítes (86/86)
+contracts/field-sync/tools/check.sh                           # todas as suítes (87/87)
 contracts/field-sync/tools/check.sh upload-request-v1.json    # uma suíte
 python3 contracts/field-sync/tools/check_domains.py           # $defs iguais, enum = domains, erros conhecidos
 python3 contracts/field-sync/tools/check_domains.py --release # idem, e falha sem a prova técnica (proof)

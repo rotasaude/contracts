@@ -1,5 +1,13 @@
 # Changelog — field-sync
 
+## field-sync-v1.1.0 — 2026-11-13 — MINOR
+
+- `domains-v1.json` (`errors.item`): `too_many_requests` (Q67). O item do envio
+  pode voltar `rejected` `too_many_requests`, sem `path`, quando o usuário do
+  aparelho estoura o orçamento compartilhado das buscas de pessoa (30 por minuto
+  por usuário); não entra no livro de idempotência, e o app reenvia mais tarde.
+  Exemplo novo: `upload-response-too-many-requests.json`.
+
 ## field-sync-v1.0.0 — 2026-11-12 — MAJOR
 
 Primeira versão do domínio (ADR 0052, módulo 24b): a sincronização do app de
