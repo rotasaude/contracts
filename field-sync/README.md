@@ -97,6 +97,15 @@ registrou e baixa o escopo do aparelho. Base `/field/v1` no host da cidade.
   `care_line` com `status: overdue` de prática nunca feita: aí é `null` (sem prazo, sem
   data inventada) e o app mostra "nunca feita" no lugar do prazo (Q60); `due_soon` e
   `registration_due` sempre trazem data.
+  Faixa de validade do cadastro (Q65): o `status` do cadastro é um retrato do instante do
+  download; `valid`/`due_soon`/`expired` mudam só com o tempo, sem gravação, e o aparelho
+  que já tem o item nunca recebe um `status` novo. Por isso o app recalcula a faixa na
+  hora de exibir, a partir de `registered_at` (instante com o fuso da cidade; o dia é o
+  da data desse instante): `vence_em` = esse dia + 24 meses de calendário (`Date#>>`;
+  29/02 + 24 meses = 28/02 ou 29/02); `expired` se `vence_em <= hoje`; `due_soon` se
+  `vence_em - hoje <= 60` dias; senão `valid`; `hoje` = o dia da cidade. É a regra do
+  24a (`TerritoryRegistry::Validity`). Os status que não dependem do tempo (`missing`,
+  `missing_identifier`, `refused`, `exited`) valem como enviados, sem recálculo.
 - **Formas.** Fechadas em todo nível, salvo as seções de dicionário do 24a
   (`living_conditions`, `identification`, `sociodemographic`,
   `health_conditions`, `street_situation`), cujas chaves e domínios são os do

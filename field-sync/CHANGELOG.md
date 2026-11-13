@@ -57,3 +57,8 @@ campo offline (24c) com o api.
   `health_practices` (14); `procedure_code` só dos 58 códigos; `altered_count`
   sai do corpo da atividade (derivado pelo api, Q38); `age` de "quem visitar"
   passa a `integer | null` (Q33).
+- Q65 (só documentação, nenhum `*-v1.json` mudou): o `status` do cadastro no
+  download é um retrato; o app recalcula `valid`/`due_soon`/`expired` na
+  exibição a partir de `registered_at` (+ 24 meses; `due_soon` a 60 dias ou
+  menos; `expired` a partir do dia do vencimento), regra do 24a. Os demais
+  status valem como enviados.
