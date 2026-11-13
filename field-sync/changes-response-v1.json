@@ -275,13 +275,15 @@
         "care_line": { "type": "string", "minLength": 1, "description": "Nome da linha de cuidado." },
         "practice": { "type": "string", "minLength": 1, "description": "Rótulo da boa prática." },
         "status": { "type": "string" },
-        "due_on": { "$ref": "#/$defs/date" }
+        "due_on": { "anyOf": [{ "$ref": "#/$defs/date" }, { "type": "null" }], "description": "Nulo só em care_line overdue de prática nunca feita (Q60); o app mostra 'nunca feita'." }
       },
       "allOf": [
         { "if": { "required": ["code"], "properties": { "code": { "const": "care_line" } } },
           "then": { "required": ["care_line", "practice", "status", "due_on"], "properties": { "status": { "enum": ["overdue", "due_soon"] } } } },
+        { "if": { "required": ["code"], "properties": { "code": { "const": "care_line" } } },
+          "then": { "if": { "required": ["status"], "properties": { "status": { "const": "overdue" } } }, "else": { "properties": { "due_on": { "$ref": "#/$defs/date" } } } } },
         { "if": { "required": ["code"], "properties": { "code": { "const": "registration_due" } } },
-          "then": { "required": ["status", "due_on"], "properties": { "status": { "enum": ["due_soon", "expired"] }, "care_line": false, "practice": false } } },
+          "then": { "required": ["status", "due_on"], "properties": { "status": { "enum": ["due_soon", "expired"] }, "due_on": { "$ref": "#/$defs/date" }, "care_line": false, "practice": false } } },
         { "if": { "required": ["code"], "properties": { "code": { "const": "never_visited" } } },
           "then": { "properties": { "care_line": false, "practice": false, "status": false, "due_on": false } } }
       ]

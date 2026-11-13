@@ -287,6 +287,10 @@
           "expect": "valid"
         },
         {
+          "file": "changes-last-page-care-line-never-done.json",
+          "expect": "valid"
+        },
+        {
           "file": "changes-removals.json",
           "expect": "valid"
         },
@@ -321,6 +325,14 @@
         {
           "file": "invalid-changes-care-line-reason-with-cid.json",
           "expect": "/who_to_visit/micro_areas/0/people/0/reasons/0/cid10 schema"
+        },
+        {
+          "file": "invalid-changes-care-line-due-soon-null-due-on.json",
+          "expect": "/who_to_visit/micro_areas/0/people/0/reasons/0/due_on string"
+        },
+        {
+          "file": "invalid-changes-registration-due-null-due-on.json",
+          "expect": "/who_to_visit/micro_areas/0/people/1/reasons/0/due_on string"
         },
         {
           "file": "invalid-changes-cursor-null.json",

@@ -28,6 +28,9 @@ campo offline (24c) com o api.
   registro rápido; `rejected` no app com `path`, 422 na rota da equipe; Q49).
 - `domains-v1.json`: `json_required` em `errors.http` (`415` quando o corpo da
   escrita do app não é JSON; Q59).
+- `changes-response-v1.json`: `due_on` de motivo `care_line` com `status: overdue`
+  pode ser `null` (prática atrasada nunca feita; o app mostra "nunca feita";
+  Q60). `due_soon` e `registration_due` seguem exigindo data.
 - `upload-response-v1.json`: `confirmable` (boolean) no resultado, obrigatório em
   `duplicate_participant` e proibido nos outros erros (Q54): `true` = só
   semelhança, o app pode reenviar com `duplicates_reviewed: true` no

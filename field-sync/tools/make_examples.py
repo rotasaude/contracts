@@ -345,6 +345,18 @@ def page_last_age_null():
     return page
 
 
+def page_last_never_done():
+    page = page_last()
+    page["who_to_visit"]["micro_areas"][0]["people"][0]["reasons"][0]["due_on"] = None  # Q60: prática atrasada nunca feita
+    return page
+
+
+def page_last_due_soon_null():
+    page = page_last_never_done()
+    page["who_to_visit"]["micro_areas"][0]["people"][0]["reasons"][0]["status"] = "due_soon"
+    return page
+
+
 def page_removals():
     return {"reset": False, "items": [],
             "removals": [{"type": "household", "id": HH2, "reason": "moved"},
@@ -434,6 +446,7 @@ SUITES = [
         "changes-first-page.json": (page_first(), "valid"),
         "changes-last-page.json": (page_last(), "valid"),
         "changes-last-page-age-null.json": (page_last_age_null(), "valid"),
+        "changes-last-page-care-line-never-done.json": (page_last_never_done(), "valid"),
         "changes-removals.json": (page_removals(), "valid"),
         "changes-reset.json": (page_reset(), "valid"),
         "invalid-changes-who-null-on-last-page.json": (variant(page_last, ["who_to_visit"], None), "/who_to_visit object"),
@@ -443,6 +456,8 @@ SUITES = [
         "invalid-changes-micro-area-with-version.json": (variant(page_first, ["items", 0, "version"], 1), "/items/0/version schema"),
         "invalid-changes-registration-with-cpf.json": (variant(page_first, ["items", 2, "body", "patient", "cpf"], "39053344705"), "/items/2/body/patient/cpf schema"),
         "invalid-changes-care-line-reason-with-cid.json": (variant(page_last, ["who_to_visit", "micro_areas", 0, "people", 0, "reasons", 0, "cid10"], "I10"), "/who_to_visit/micro_areas/0/people/0/reasons/0/cid10 schema"),
+        "invalid-changes-care-line-due-soon-null-due-on.json": (page_last_due_soon_null(), "/who_to_visit/micro_areas/0/people/0/reasons/0/due_on string"),
+        "invalid-changes-registration-due-null-due-on.json": (variant(page_last, ["who_to_visit", "micro_areas", 0, "people", 1, "reasons", 0, "due_on"], None), "/who_to_visit/micro_areas/0/people/1/reasons/0/due_on string"),
         "invalid-changes-cursor-null.json": (variant(page_first, ["next_cursor"], None), "/next_cursor string"),
     }),
 ]

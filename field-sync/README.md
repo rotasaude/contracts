@@ -79,7 +79,10 @@ registrou e baixa o escopo do aparelho. Base `/field/v1` no host da cidade.
   e da troca de escopo (`out_of_scope`); `erased` e `out_of_scope` são
   reservados no v1: o api ainda não os emite, mas o app deve tratá-los. "Quem visitar" vem só na última
   página (`has_more: false`), completo; nas outras, `null`. Toda página com
-  pessoa grava trilha no api.
+  pessoa grava trilha no api. Em `who_to_visit`, `due_on` do motivo é data, exceto em
+  `care_line` com `status: overdue` de prática nunca feita: aí é `null` (sem prazo, sem
+  data inventada) e o app mostra "nunca feita" no lugar do prazo (Q60); `due_soon` e
+  `registration_due` sempre trazem data.
 - **Formas.** Fechadas em todo nível, salvo as seções de dicionário do 24a
   (`living_conditions`, `identification`, `sociodemographic`,
   `health_conditions`, `street_situation`), cujas chaves e domínios são os do
@@ -103,14 +106,14 @@ registrou e baixa o escopo do aparelho. Base `/field/v1` no host da cidade.
 
 ## Exemplos e verificação
 
-`examples/` tem 77 exemplos (28 válidos, 49 inválidos, um defeito por arquivo),
+`examples/` tem 80 exemplos (29 válidos, 51 inválidos, um defeito por arquivo),
 gerados por `tools/make_examples.py` e listados em `examples/manifest.json`
 (`{ suites: [ { schema, cases: [ { file, expect } ] } ] }`; `expect` é
 `valid` ou o erro `<data_pointer> <type>` do `json_schemer`). A partir da raiz
 do monorepo, com o compose de pé:
 
 ```bash
-contracts/field-sync/tools/check.sh                           # todas as suítes (77/77)
+contracts/field-sync/tools/check.sh                           # todas as suítes (80/80)
 contracts/field-sync/tools/check.sh upload-request-v1.json    # uma suíte
 python3 contracts/field-sync/tools/check_domains.py           # $defs iguais, enum = domains, erros conhecidos
 python3 contracts/field-sync/tools/check_domains.py --release # idem, e falha sem a prova técnica (proof)
