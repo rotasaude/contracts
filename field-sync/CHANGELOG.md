@@ -41,7 +41,7 @@ campo offline (24c) com o api.
   `duplicate_participant` e proibido nos outros erros (Q54): `true` = só
   semelhança, o app pode reenviar com `duplicates_reviewed: true` no
   participante; `false` = não há como liberar.
-- `examples/`: 77 exemplos (28 válidos, 49 inválidos) e `manifest.json`;
+- `examples/`: 86 exemplos (33 válidos, 53 inválidos) e `manifest.json`;
   `tools/`: gerador e verificadores.
 - Domínios conferidos com a prova técnica do api (fcf23c87, contrato do 24b
   §10–§11): `proof` preenchido; sem mudança de código nem de faixa; 31 rótulos
@@ -62,3 +62,8 @@ campo offline (24c) com o api.
   exibição a partir de `registered_at` (+ 24 meses; `due_soon` a 60 dias ou
   menos; `expired` a partir do dia do vencimento), regra do 24a. Os demais
   status valem como enviados.
+- Q66 (só documentação, nenhum `*-v1.json` mudou): no download, a família cujo
+  responsável é paciente provisório da UPA (Q47) fica fora do domicílio, mas
+  os outros membros chegam como cadastros e o `family_id` deles aponta para uma
+  família que o aparelho nunca recebe. O app tolera: mostra o membro sem
+  família, sem falhar e sem criar família provisória.

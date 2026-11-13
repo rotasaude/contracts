@@ -106,6 +106,11 @@ registrou e baixa o escopo do aparelho. Base `/field/v1` no host da cidade.
   `vence_em - hoje <= 60` dias; senão `valid`; `hoje` = o dia da cidade. É a regra do
   24a (`TerritoryRegistry::Validity`). Os status que não dependem do tempo (`missing`,
   `missing_identifier`, `refused`, `exited`) valem como enviados, sem recálculo.
+  Família sem domicílio no download (Q66): a família cujo responsável é paciente
+  provisório da UPA (Q47) não vai no domicílio, mas os outros membros chegam como
+  cadastros e o `family_id` deles aponta para uma família que o aparelho nunca
+  recebe. O app tolera: mostra o membro sem família, não falha e não cria família
+  provisória.
 - **Formas.** Fechadas em todo nível, salvo as seções de dicionário do 24a
   (`living_conditions`, `identification`, `sociodemographic`,
   `health_conditions`, `street_situation`), cujas chaves e domínios são os do
