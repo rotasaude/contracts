@@ -38,6 +38,9 @@ PROF2 = "5d6e7f8a-9b0c-4d1e-9f2a-3b4c5d6e7f8a"
 UNIT = "6e7f8a9b-0c1d-4e2f-8a3b-4c5d6e7f8a9b"
 VISIT = "7f8a9b0c-1d2e-4f3a-9b4c-5d6e7f8a9b0c"
 ACT = "8a9b0c1d-2e3f-4a4b-8c5d-6e7f8a9b0c1d"
+FAM2 = "5e6f7a8b-9c0d-4e1f-8a2b-3c4d5e6f7a8b"
+MAP_SHA = "ab" * 32
+REF_SHA = "cd" * 32
 CURSOR = "eyJ2IjoxLCJzaW5jZSI6IjIwMjYtMTEtMTJUMTI6MDA6MDBaIn0"
 
 TEAM_REF = {"id": TEAM, "ine": "0001234567", "name": "ESF Vila Nova"}
@@ -47,6 +50,8 @@ ADDRESS = {"zip": "80010000", "street_type": "RUA", "street": "das Flores", "num
 NEW_PATIENT = {"full_name": "Benedita Aparecida Rocha", "birth_date": "1948-05-02", "sex": "female",
                "mother_name": "Maria José Rocha", "no_cpf_reason": "2", "cns": "702000000000001"}
 WITHDRAWAL_REASON = "Visita registrada no domicílio errado."
+LOC_GPS = {"latitude": -25.42847123, "longitude": -49.27325411, "accuracy_m": 8.5, "source": "gps"}
+LOC_MAP = {"latitude": -25.42851, "longitude": -49.2733, "source": "map"}
 
 
 def set_path(doc, path, value):
@@ -74,7 +79,8 @@ def session_acs():
                        "micro_areas": [{"id": MA1, "code": "03", "name": "Vila Nova — rua das Flores", "scope": "responsible"}],
                        "out_of_area_allowed": True}],
             "features": {"home_visits": True, "collective_activities": True, "territory_registry": True},
-            "min_date": "2026-10-01"}
+            "min_date": "2026-10-01",
+            "map": {"version": "2026-11-01", "size_bytes": 41234567, "sha256": MAP_SHA}, "reference_version": REF_SHA}
 
 
 def session_agent():
@@ -207,6 +213,56 @@ def upload_registration_same_batch():
               item(22, "individual_registration", registration_same_batch()))
 
 
+def new_household():
+    household = household_update()
+    del household["household_id"], household["version"]
+    return household
+
+
+def family_new(responsible, members_count):
+    return {"household_client_uuid": cu(30), "version": 1, "responsible": {"patient_client_uuid": responsible},
+            "income_band": "3", "members_count": members_count, "living_since": "2026-11"}
+
+
+def upload_family_new():
+    registration = registration_create()
+    del registration["patient_id"], registration["household_id"], registration["family_id"]
+    registration.update({"patient_client_uuid": cu(31), "household_client_uuid": cu(30), "is_responsible": True})
+    return up(item(30, "household", new_household()), item(31, "patient", {"new_patient": copy.deepcopy(NEW_PATIENT)}),
+              item(32, "individual_registration", registration), item(33, "family", family_new(cu(31), 2)))
+
+
+def upload_family_new_from_registration():  # Q26: o responsável cita o cadastro individual com new_patient
+    registration = registration_create()
+    del registration["patient_id"], registration["household_id"], registration["family_id"]
+    registration.update({"new_patient": dict(NEW_PATIENT, social_name="Dita"), "household_client_uuid": cu(30),
+                         "is_responsible": True})
+    return up(item(30, "household", new_household()), item(35, "individual_registration", registration),
+              item(36, "family", family_new(cu(35), 1)))
+
+
+def upload_family_update():
+    return up(item(34, "family", {"household_id": HH, "family_id": FAM, "version": 4, "income_band": "4",
+                                  "members_count": 3, "living_since": "2019-03", "moved_out": False}))
+
+
+def upload_household_location(location):
+    return up(item(6, "household", dict(household_update(), location=location)))
+
+
+def upload_hv_location(location=LOC_GPS):
+    visit = hv_resident()
+    visit["location"] = copy.deepcopy(location) if isinstance(location, dict) else location
+    return up(item(1, "home_visit", visit))
+
+
+def upload_hv_family_client_uuid():
+    visit = hv_resident()
+    del visit["patient_id"], visit["measurements"], visit["note"]
+    visit.update({"subject": "family_responsible", "family_client_uuid": cu(33)})
+    return up(upload_family_new()["items"][3], item(37, "home_visit", visit))
+
+
 B = ["items", 0, "body"]
 
 # ---------- formas do download (24a §2, json.rb) ----------
@@ -215,6 +271,7 @@ def household():
     return {"id": HH, "micro_area": dict(MA1_REF), "address": copy.deepcopy(ADDRESS), "property_type": "1",
             "contact_phone": "41999990000", "refused": False, "status": "active", "version": 3,
             "registered_at": "2026-10-28T10:15:00-03:00", "registered_by": {"name": "Rosângela Alves"},
+            "location": dict(LOC_GPS),
             "families": [{"id": FAM, "responsible": {"patient_id": PAT, "display_name": "Joana Conceição"},
                           "income_band": "3", "members_count": 3, "living_since": "2019-03-01", "moved_out": False,
                           "responsible_exited": False}],
@@ -345,6 +402,32 @@ def resp_stale_registration():
                     "current_version": 3, "current": current})
 
 
+def resp_accepted_with_version():  # Q5: version obrigatório no accepted dos cadastros; opcional no duplicate
+    return results(dict(done(6, "household", HH), version=4), dict(done(34, "family", FAM, "duplicate"), version=5),
+                   dict(done(7, "individual_registration", REG), version=2), done(1, "home_visit", VISIT))
+
+
+def resp_duplicate_without_version():  # Q5: recibo anterior à coluna result_version
+    return results(done(6, "household", HH, "duplicate"))
+
+
+def resp_stale_family():  # Q4: em stale_version de family, id = o domicílio
+    current = household()
+    current["version"] = 5
+    return results({"client_uuid": cu(34), "status": "stale_version", "type": "family", "id": HH,
+                    "current_version": 5, "current": current})
+
+
+def resp_invalid_location():  # Q2
+    return results({"client_uuid": cu(6), "status": "rejected", "type": "household", "error": "invalid_location",
+                    "path": "location.latitude"})
+
+
+def resp_family_not_found():
+    return results({"client_uuid": cu(34), "status": "rejected", "type": "family", "error": "family_not_found",
+                    "path": "family_id"})
+
+
 # ---------- GET /field/v1/changes ----------
 
 def page_first():
@@ -398,6 +481,9 @@ SUITES = [
         "invalid-session-contract-v2.json": (variant(session_acs, ["contract"], "field-sync-v2"), "/contract const"),
         "invalid-session-scope-team.json": (variant(session_acs, ["teams", 0, "micro_areas", 0, "scope"], "team"), "/teams/0/micro_areas/0/scope enum"),
         "invalid-session-token-key.json": (variant(session_acs, ["token"], "rsf_x"), "/token schema"),
+        "session-without-map.json": (variant(session_acs, ["map"], None), "valid"),
+        "invalid-session-without-reference-version.json": (variant(session_acs, ["reference_version"], DELETE), "(root) required"),
+        "invalid-session-map-short-sha.json": (variant(session_acs, ["map", "sha256"], "ab"), "/map/sha256 pattern"),
     }),
     ("upload-request-v1.json", {
         "upload-home-visit-resident.json": (upload_hv(), "valid"),
@@ -413,7 +499,7 @@ SUITES = [
         "upload-registration-same-batch.json": (upload_registration_same_batch(), "valid"),
         "invalid-upload-empty.json": (up(), "/items minItems"),
         "invalid-upload-51-items.json": (up(*[item(n, "home_visit_withdrawal", {"visit_client_uuid": cu(1), "reason": WITHDRAWAL_REASON}) for n in range(1, 52)]), "/items maxItems"),
-        "invalid-upload-unknown-type.json": (up({"client_uuid": cu(1), "type": "family", "body": {}}), "/items/0/type enum"),
+        "invalid-upload-unknown-type.json": (up({"client_uuid": cu(1), "type": "visit_sheet", "body": {}}), "/items/0/type enum"),
         "invalid-upload-client-uuid-uppercase.json": (variant(upload_hv, ["items", 0, "client_uuid"], cu(1).upper()), "/items/0/client_uuid pattern"),
         "invalid-home-visit-shift-in-body.json": (variant(upload_hv, B + ["shift"], 1), "/items/0/body/shift schema"),
         "invalid-home-visit-occurred-at-without-offset.json": (variant(upload_hv, B + ["occurred_at"], "2026-11-12T09:40:00"), "/items/0/body/occurred_at pattern"),
@@ -439,6 +525,21 @@ SUITES = [
         "invalid-patient-cpf-masked.json": (variant(upload_patient, B + ["new_patient", "cpf"], "390.533.447-05"), "/items/0/body/new_patient/cpf pattern"),
         "invalid-household-version-without-id.json": (variant(upload_household, B + ["household_id"], DELETE), "/items/0/body/version dependentRequired"),
         "invalid-household-property-type-integer.json": (variant(upload_household, B + ["property_type"], 1), "/items/0/body/property_type enum"),
+        "upload-family-new.json": (upload_family_new(), "valid"),
+        "upload-family-new-from-registration.json": (upload_family_new_from_registration(), "valid"),
+        "upload-family-update.json": (upload_family_update(), "valid"),
+        "upload-household-location.json": (upload_household_location(dict(LOC_MAP)), "valid"),
+        "upload-household-location-cleared.json": (upload_household_location(None), "valid"),
+        "upload-home-visit-location.json": (upload_hv_location(), "valid"),
+        "upload-home-visit-family-client-uuid.json": (upload_hv_family_client_uuid(), "valid"),
+        "invalid-location-latitude-only.json": (upload_hv_location({"latitude": -25.42847123, "source": "gps"}), "/items/0/body/location required"),
+        "invalid-location-latitude-out-of-range.json": (variant(upload_hv_location, B + ["location", "latitude"], -91), "/items/0/body/location/latitude minimum"),
+        "invalid-location-nine-decimals.json": (variant(upload_hv_location, B + ["location", "latitude"], -25.428471234), "/items/0/body/location/latitude multipleOf"),
+        "invalid-location-gps-without-accuracy.json": (variant(upload_hv_location, B + ["location", "accuracy_m"], DELETE), "/items/0/body/location required"),  # Q3
+        "invalid-home-visit-location-null.json": (upload_hv_location(None), "/items/0/body/location object"),
+        "invalid-family-two-households.json": (variant(upload_family_update, B + ["household_client_uuid"], cu(30)), "/items/0/body oneOf"),
+        "invalid-family-responsible-two-patients.json": (variant(upload_family_update, B + ["responsible"], {"patient_id": PAT, "patient_client_uuid": cu(31)}), "/items/0/body/responsible maxProperties"),
+        "invalid-registration-two-families.json": (variant(upload_registration, B + ["family_client_uuid"], cu(33)), "/items/0/body not"),
     }),
     ("upload-response-v1.json", {
         "upload-response-accepted.json": (resp_accepted(), "valid"),
@@ -456,6 +557,13 @@ SUITES = [
         "upload-response-already-registered-without-id.json": (resp_already_registered_without_id(), "valid"),
         "upload-response-stale-household.json": (resp_stale_household(), "valid"),
         "upload-response-stale-registration.json": (resp_stale_registration(), "valid"),
+        "upload-response-accepted-with-version.json": (resp_accepted_with_version(), "valid"),
+        "upload-response-duplicate-without-version.json": (resp_duplicate_without_version(), "valid"),
+        "upload-response-stale-family.json": (resp_stale_family(), "valid"),
+        "upload-response-invalid-location.json": (resp_invalid_location(), "valid"),
+        "upload-response-family-not-found.json": (resp_family_not_found(), "valid"),
+        "invalid-response-household-accepted-without-version.json": (results(done(6, "household", HH)), "/results/0 required"),
+        "invalid-response-home-visit-with-version.json": (results(dict(done(1, "home_visit", VISIT), version=1)), "/results/0/version schema"),
         "invalid-response-rejected-without-client-uuid.json": (variant(resp_invalid_request, ["results", 1, "error"], "visit_date_out_of_range"), "/results/1 required"),
         "invalid-response-accepted-without-id.json": (variant(resp_accepted, ["results", 0, "id"], DELETE), "/results/0 required"),
         "invalid-response-status-queued.json": (variant(resp_accepted, ["results", 0, "status"], "queued"), "/results/0/status enum"),
@@ -476,6 +584,8 @@ SUITES = [
         "changes-last-page-care-line-never-done.json": (page_last_never_done(), "valid"),
         "changes-removals.json": (page_removals(), "valid"),
         "changes-reset.json": (page_reset(), "valid"),
+        "changes-household-location-null.json": (variant(page_first, ["items", 1, "body", "location"], None), "valid"),
+        "invalid-changes-household-without-location.json": (variant(page_first, ["items", 1, "body", "location"], DELETE), "/items/1/body required"),
         "invalid-changes-who-null-on-last-page.json": (variant(page_last, ["who_to_visit"], None), "/who_to_visit object"),
         "invalid-changes-who-on-middle-page.json": (variant(page_first, ["who_to_visit"], who_to_visit()), "/who_to_visit null"),
         "invalid-changes-removal-reason-death.json": (variant(page_removals, ["removals", 0, "reason"], "death"), "/removals/0/reason enum"),
