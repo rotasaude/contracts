@@ -27,7 +27,7 @@ Onze domínios, **versionados de forma independente** (ADR 0015):
 | [`exams/`](exams/README.md) | Pedido de exame (`<exam_order>`) e perfil FHIR de entrada do laudo (ADRs 0036 e 0037) | `exams-v1.1.0` | Materializado |
 | [`lab/`](lab/README.md) | Laudo do laboratório municipal e perfil HL7 v2.5.1 de entrada (ADR 0037) | `lab-v1.1.0` | Materializado |
 | [`billing/`](billing/README.md) | Arquivo de interface do BPA Magnético (BPA-C/BPA-I) gerado no fechamento da competência (ADR 0039) | `billing-v1.1.0` | Materializado |
-| [`field-sync/`](field-sync/README.md) | Sincronização do app de campo v1: sessão, envio em lote idempotente e download incremental por microárea (ADRs 0041 e 0052) | `field-sync-v1.1.0` | Materializado |
+| [`field-sync/`](field-sync/README.md) | Sincronização do app de campo v1: sessão, envio em lote idempotente e download incremental por microárea; família, coordenadas, mapa e referência offline (ADRs 0041, 0052 e 0053) | `field-sync-v1.2.0` | Materializado |
 | [`types/`](types/README.md) | Contrato de tipos da API (Ruby ↔ TS) | — | Scaffold: extração pendente |
 | [`design-tokens/`](design-tokens/README.md) | Cores, espaçamento e tipografia como dado (4 temas, contraste validado) | `tokens-v1.1.0` | Materializado |
 | [`map-style/`](map-style/README.md) | Estilo do mapa de campo (light e dark, pt), glyphs e sprites locais (ADR 0053) | `map-style-v1.0.0` | Materializado |
@@ -125,13 +125,15 @@ na mesma versão; só mudança incompatível pede versão nova (`v2`).
 ### field-sync
 
 `session-response-v1.json`, `upload-request-v1.json`,
-`upload-response-v1.json` e `changes-response-v1.json` (JSON Schema 2020-12)
+`upload-response-v1.json`, `changes-response-v1.json` e
+`reference-response-v1.json` (JSON Schema 2020-12)
 descrevem a sincronização do app de campo offline (módulo 24c) com o `api`,
 entregue no módulo 24b (ADR 0052): a sessão do aparelho, o envio em lote
 idempotente pelo `client_uuid` de cada item e o download incremental pelas
-microáreas do aparelho. `domains-v1.json` traz os domínios e as regras
+microáreas do aparelho; desde o v1.2.0 (ADR 0053), também a família, as
+coordenadas, o mapa offline e a referência offline. `domains-v1.json` traz os domínios e as regras
 cruzadas da visita domiciliar e da atividade coletiva em dado. O `api` usa
-**cópias** em `config/field_sync/`, presas por SHA-256. Exemplos e
+**cópias** dos seis arquivos em `config/field_sync/`, presas por SHA-256. Exemplos e
 verificação em [`field-sync/README.md`](field-sync/README.md).
 
 ### Fora deste repo, por enquanto

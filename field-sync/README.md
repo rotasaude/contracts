@@ -10,6 +10,7 @@ registrou e baixa o escopo do aparelho. Base `/field/v1` no host da cidade.
 | `upload-request-v1.json` | `rotasaude.field_sync.upload_request.v1` | `POST /field/v1/uploads` (pedido) |
 | `upload-response-v1.json` | `rotasaude.field_sync.upload_response.v1` | `POST /field/v1/uploads` (resposta 200) |
 | `changes-response-v1.json` | `rotasaude.field_sync.changes_response.v1` | `GET /field/v1/changes` |
+| `reference-response-v1.json` | `rotasaude.field_sync.reference_response.v1` | `GET /field/v1/reference` (v1.2.0) |
 | `domains-v1.json` | `rotasaude.field_sync.domains.v1` | domínios e regras cruzadas da visita e da atividade, em dado |
 
 ## Regras
@@ -18,10 +19,23 @@ registrou e baixa o escopo do aparelho. Base `/field/v1` no host da cidade.
   (`rsf_` + 32 bytes em base64url) aparece uma vez, no QR
   `rotasaude-field:v1:<base64url de { host, token }>`. Vai só em
   `Authorization: Bearer rsf_…`, nunca na URL. Ausente ou desconhecido →
-  `401 invalid_token`; revogado (pelo dono, pelo administrador, fim de vínculo
-  ou usuário desativado) → `401 device_revoked`. 120 requisições por minuto;
+  `401 invalid_token`. Revogação manual (pelo dono ou pelo administrador:
+  motivos `user` e `admin`) → `401 device_revoked`, e o app apaga tudo.
+  Revogação por substituição do aparelho (`replaced`, Q17) ou automática (fim
+  de vínculo ou usuário desativado: `membership_ended`, `user_disabled`) →
+  `401 device_suspended`, sem dizer qual: o app guarda a fila de envio e apaga
+  o território. `invalid_token` o app trata como `device_suspended`.
+  120 requisições por minuto;
   só JSON (`415 json_required`); corpo até 2 MB (413). Interruptor `home_visits` desligado →
   `403 feature_disabled`.
+- **Sessão (v1.2.0).** `map` descreve o mapa offline do município: `null`
+  enquanto não há arquivo publicado; durante uma regeração ou depois de uma
+  falha continua o publicado (Q30). `sha256` é o `ETag` do
+  `GET /field/v1/map`, que aceita um `Range` por requisição, `If-Range` e
+  `If-None-Match`, responde `416 range_not_satisfiable` com
+  `Content-Range: bytes */<tamanho>` e `404 map_not_found` sem mapa (Q34).
+  `reference_version` é um resumo opaco: o app compara, nunca recalcula;
+  mudou → `GET /field/v1/reference`.
 - **Escopo.** O ACS baixa as microáreas de que é responsável; os outros CBOs
   da Tabela 7, as que o enfermeiro atribui (`scope` `responsible` ou
   `assigned`). Enfermeiro e médico não têm aparelho.
@@ -36,6 +50,47 @@ registrou e baixa o escopo do aparelho. Base `/field/v1` no host da cidade.
   máximo um entre o id e o `client_uuid` (Q27). O domicílio e o cadastro com
   `version` vencida voltam `stale_version` com a versão atual, `current_version`
   e `current`; isso vale só para um domicílio ou cadastro que JÁ EXISTE.
+- **Família (`family`, v1.2.0).** Só o ACS (`cbo_not_allowed`). Sem
+  `family_id` é família nova; com `family_id`, atualização. `version` é a do
+  **domicílio**. O responsável vai em `responsible.patient_id` ou em
+  `responsible.patient_client_uuid` (Q1); na família nova ele é obrigatório
+  (`invalid_family`, `path` `responsible.patient_id`). Se o responsável tem
+  cadastro individual ativo no domicílio, ele entra na família (L28 do 24a,
+  Q25); quando é pessoa nova, o cadastro dele vai antes na fila. `family_id`
+  desconhecido ou de outro domicílio → `family_not_found`. `stale_version`
+  traz o `<household>` atual, e `id` é o domicílio, também na família nova
+  (Q4). A troca de responsável fica fora do app. A versão nova do cadastro do
+  responsável, gravada pela família, não volta no `accepted`: o próximo envio
+  desse cadastro recebe `stale_version` e a mescla resolve (Q35).
+- **Citação de pessoa (`patient_client_uuid`).** Cita um item `patient` ou um
+  `individual_registration` que criou a pessoa (`new_patient`): o
+  `client_uuid` do cadastro vale pelo paciente criado por ele (Q26).
+- **`family_client_uuid` (v1.2.0).** No cadastro individual e na visita, cita
+  um item `family` aceito antes, no lugar de `family_id`; no máximo um dos dois.
+- **`version` no resultado (v1.2.0, Q5).** Obrigatória no `accepted` de
+  `household`, `family` e `individual_registration` (a versão do domicílio nos
+  dois primeiros, a do cadastro no terceiro). No `duplicate`, é a gravada
+  naquele recebimento, e falta em recibo anterior ao v1.2.0: o app marca a
+  linha para recarga, sem mescla. Os outros tipos nunca a trazem.
+- **Coordenada (`location`, v1.2.0).** `latitude` (−90 a 90) e `longitude`
+  (−180 a 180) com até 8 casas, e `source` (`gps` ou `map`), sempre presentes;
+  `accuracy_m` (0 a 10000, 1 casa) é obrigatório com `gps` e opcional com
+  `map` (Q3). Ausente = mantém o ponto (domicílio) ou sem ponto (visita);
+  `null` só no domicílio, e apaga; na visita, `null` → `invalid_location`. A
+  visita só aceita `gps` (`location.visit_sources` em `domains-v1.json`,
+  regra do api: `map` → `invalid_location`). Mudar só o ponto gera versão e
+  ficha de atualização. A coordenada nunca vai em URL, log ou evento. Erro de
+  esquema sob `/body/location` volta `rejected` `invalid_location` com o mesmo
+  `path`; os demais erros de esquema seguem `invalid_request` (Q2). No Ajv,
+  `multipleOf: 1e-8` exige `multipleOfPrecision: 8` (Q49).
+- **Referência (`GET /field/v1/reference`, v1.2.0).** Os domínios do cadastro
+  vêm como listas `[{ code, label }]` na ordem do YAML do api (Q27).
+  `team_professionals` traz só os profissionais das equipes do aparelho, com
+  `has_cns`, nunca CPF nem CNS. `health_units.cnes` `null` = unidade sem CNES
+  (Q6). Os domínios da visita e da atividade vêm num bloco só (Q7).
+- **Códigos HTTP.** `errors.http` de `domains-v1.json` lista todo código que o
+  `/field/v1` devolve, inclusive os de borda da cidade (`unknown_city`,
+  `city_suspended`, `city_schema_behind`; Q8).
 - **Resultados de erro (Q63).** `rejected` leva `error` e, quando o erro é de
   um campo, `path`; os outros `status` são `accepted`, `duplicate` e
   `stale_version`. Quatro regras:
@@ -92,7 +147,8 @@ registrou e baixa o escopo do aparelho. Base `/field/v1` no host da cidade.
   objeto (pares "um ou outro" do Q27, local da atividade, par de medida): o
   caminho do objeto (`body` para o corpo, `measurements`, `participants[i]`).
   Nunca vazio. Os corpos não declaram essas chaves, então não há colisão.
-- **Download.** Por cursor opaco (`next_cursor`, sempre presente: o app o guarda
+- **Download.** O `<household>` traz `location` (`null` sem ponto; v1.2.0).
+  Por cursor opaco (`next_cursor`, sempre presente: o app o guarda
   para a próxima vez); páginas de até 500 itens; sem cursor = carga completa.
   `reset: true` = o escopo mudou: apague o que foi baixado (nunca o que falta
   enviar) e aplique as páginas. `removals` vêm das lápides (`moved`, `erased`)
@@ -140,14 +196,14 @@ registrou e baixa o escopo do aparelho. Base `/field/v1` no host da cidade.
 
 ## Exemplos e verificação
 
-`examples/` tem 87 exemplos (34 válidos, 53 inválidos, um defeito por arquivo),
+`examples/` tem 120 exemplos (49 válidos, 71 inválidos, um defeito por arquivo),
 gerados por `tools/make_examples.py` e listados em `examples/manifest.json`
 (`{ suites: [ { schema, cases: [ { file, expect } ] } ] }`; `expect` é
 `valid` ou o erro `<data_pointer> <type>` do `json_schemer`). A partir da raiz
 do monorepo, com o compose de pé:
 
 ```bash
-contracts/field-sync/tools/check.sh                           # todas as suítes (87/87)
+contracts/field-sync/tools/check.sh                           # todas as suítes (120/120)
 contracts/field-sync/tools/check.sh upload-request-v1.json    # uma suíte
 python3 contracts/field-sync/tools/check_domains.py           # $defs iguais, enum = domains, erros conhecidos
 python3 contracts/field-sync/tools/check_domains.py --release # idem, e falha sem a prova técnica (proof)
@@ -155,8 +211,9 @@ python3 contracts/field-sync/tools/check_domains.py --release # idem, e falha se
 
 ## Consumo
 
-O `api` copia os cinco arquivos (os quatro esquemas e `domains-v1.json`) para
+O `api` copia os seis arquivos (os cinco esquemas e `domains-v1.json`) para
 `config/field_sync/` e prende o SHA-256 de cada um num spec (como `config/lab/lab-report-v1.json`); as respostas reais de
 `/field/v1/*` são validadas contra essas cópias. Mudou um esquema? Atualize os
 dois lugares no mesmo ciclo, com entrada no CHANGELOG. O app de campo (24c)
-consome os esquemas e `domains-v1.json` pela tag.
+consome os esquemas e `domains-v1.json` pela tag `field-sync-v1.2.0` e gera
+deles os tipos TypeScript.

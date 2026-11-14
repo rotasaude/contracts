@@ -1,5 +1,38 @@
 # Changelog — field-sync
 
+## field-sync-v1.2.0 — (não publicada até a tag) — MINOR
+
+App de campo offline (módulo 24c, ADR 0053). Compatível com o v1.1.0: nada do
+pedido v1.1.0 passa a ser recusado; nas respostas, os campos novos são emitidos
+pelo api no mesmo deploy.
+
+- `session-response-v1.json`: `map` (`{ version, size_bytes, sha256 }` ou
+  `null`) e `reference_version`, obrigatórios.
+- `upload-request-v1.json`: item `family` (`family_body`: domicílio por
+  `household_id` ou `household_client_uuid`, `version` do domicílio,
+  `responsible` aninhado); `family_client_uuid` no cadastro individual e na
+  visita (no máximo um entre ele e `family_id`); `location` no domicílio
+  (objeto ou `null`) e na visita (objeto); `$defs/location` com `accuracy_m`
+  obrigatório só com `source: "gps"`.
+- `upload-response-v1.json`: `family` nos tipos e no `stale_version` (com o
+  `<household>` atual e `id` = o domicílio); `version` obrigatória no
+  `accepted` de `household`, `family` e `individual_registration`, opcional no
+  `duplicate` desses três e proibida no resto; `location` no `<household>`.
+- `changes-response-v1.json`: `location` no `<household>` (obrigatório,
+  `null` sem ponto).
+- `reference-response-v1.json`: novo — `GET /field/v1/reference` (dicionários
+  do cadastro em listas ordenadas, bairros, unidades, profissionais da equipe
+  com `has_cns`, domínios da visita e da atividade).
+- `domains-v1.json`: `errors.http` com `device_suspended`, `map_not_found`,
+  `range_not_satisfiable`, `unknown_city`, `city_suspended` e
+  `city_schema_behind`; `errors.item` com `invalid_location` e
+  `family_not_found`; chave nova `location` (limites, casas, `sources` e
+  `visit_sources`).
+- `tools/check_domains.py`: cobre `reference-response-v1.json` nos `$defs` e
+  confere `location` contra `domains-v1.json`.
+- Exemplos: 120 (49 válidos, 71 inválidos). `invalid-upload-unknown-type.json`
+  passa a usar `"type": "visit_sheet"`, porque `family` agora existe.
+
 ## field-sync-v1.1.0 — 2026-11-13 — MINOR
 
 - `domains-v1.json` (`errors.item`): `too_many_requests` (Q67). O item do envio
