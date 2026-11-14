@@ -475,6 +475,35 @@
           "expect": "/next_cursor string"
         }
       ]
+    },
+    {
+      "schema": "reference-response-v1.json",
+      "cases": [
+        {
+          "file": "reference.json",
+          "expect": "valid"
+        },
+        {
+          "file": "invalid-reference-version-short.json",
+          "expect": "/reference_version pattern"
+        },
+        {
+          "file": "invalid-reference-professional-with-cpf.json",
+          "expect": "/team_professionals/0/cpf schema"
+        },
+        {
+          "file": "invalid-reference-professional-without-has-cns.json",
+          "expect": "/team_professionals/0 required"
+        },
+        {
+          "file": "invalid-reference-domain-as-object.json",
+          "expect": "/registration_dictionaries/domains/renda_familiar array"
+        },
+        {
+          "file": "invalid-reference-without-health-units.json",
+          "expect": "(root) required"
+        }
+      ]
     }
   ]
 }

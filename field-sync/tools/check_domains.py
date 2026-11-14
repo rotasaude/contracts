@@ -3,7 +3,8 @@
 
 1. Todo $defs repetido em dois esquemas é igual.
 2. Cada enum do pedido de envio é exatamente o domínio de domains-v1.json,
-   e as faixas das medidas e os tamanhos máximos das listas são os de domains-v1.json.
+   e as faixas das medidas, os tamanhos máximos das listas e os limites da
+   coordenada (location) são os de domains-v1.json.
 3. Todo error dos exemplos válidos de resposta está em errors.item.
 --release: falha também com "proof": null (a tag só sai depois da prova técnica do api).
 Uso: python3 field-sync/tools/check_domains.py [--release]
@@ -14,7 +15,8 @@ import os
 import sys
 
 D = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-SCHEMAS = ["session-response-v1.json", "upload-request-v1.json", "upload-response-v1.json", "changes-response-v1.json"]
+SCHEMAS = ["session-response-v1.json", "upload-request-v1.json", "upload-response-v1.json", "changes-response-v1.json",
+           "reference-response-v1.json"]
 
 
 def load(name):
@@ -61,6 +63,16 @@ def main():
     for key, rule in hv["rules"]["measurements"].items():
         if "min" in rule:
             pairs[f"measurements.{key}"] = ([rule["min"], rule["max"]], [meas[key]["minimum"], meas[key]["maximum"]])
+    loc, loc_dom = req["location"], dom["location"]
+    lp, acc = loc["properties"], dom["location"]["accuracy_m"]
+    pairs["location"] = (
+        [loc_dom["latitude"]["min"], loc_dom["latitude"]["max"], loc_dom["longitude"]["min"], loc_dom["longitude"]["max"],
+         10 ** -loc_dom["decimals"], 10 ** -loc_dom["decimals"], acc["min"], acc["max"], 10 ** -acc["decimals"],
+         sorted(loc_dom["sources"]), acc["required_for"], ["accuracy_m"]],
+        [lp["latitude"]["minimum"], lp["latitude"]["maximum"], lp["longitude"]["minimum"], lp["longitude"]["maximum"],
+         lp["latitude"]["multipleOf"], lp["longitude"]["multipleOf"], lp["accuracy_m"]["minimum"], lp["accuracy_m"]["maximum"],
+         lp["accuracy_m"]["multipleOf"], sorted(lp["source"]["enum"]), [loc["if"]["properties"]["source"]["const"]],
+         loc["then"]["required"]])
     diff = [k for k, (x, y) in pairs.items() if x != y]
     print("dominios-iguais" if not diff else "DOMINIOS DIFERENTES: " + ", ".join(diff))
     bad += diff

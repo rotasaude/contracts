@@ -474,6 +474,33 @@ def page_reset():
             "removals": [], "who_to_visit": None, "next_cursor": CURSOR, "has_more": True}
 
 
+# ---------- GET /field/v1/reference ----------
+
+def reference():
+    return {"reference_version": REF_SHA,
+            "registration_dictionaries": {
+                "version": "8.7.0",
+                # A ordem 117, 214, 118 é a do YAML: prova que a lista não é reordenada (Q27).
+                "domains": {"renda_familiar": [{"code": 3, "label": "1/2 a 1 salário mínimo"}],
+                            "abastecimento_de_agua": [{"code": 117, "label": "Rede encanada até o domicílio"},
+                                                      {"code": 214, "label": "Poço/nascente no domicílio"},
+                                                      {"code": 118, "label": "Cisterna"}]},
+                "sections": {"living_conditions": []}},
+            "string_domains": {"uf": [{"code": "41", "label": "PARANÁ"}], "tipo_logradouro": [{"code": "081", "label": "RUA"}]},
+            "neighborhoods": [{"id": cu(40), "name": "Vila Nova"}],
+            "health_units": [{"id": UNIT, "cnes": "2384299", "name": "UBS Vila Nova"},
+                             {"id": cu(41), "cnes": None, "name": "Ponto de apoio Jardim Esperança"}],  # Q6
+            "team_professionals": [{"team_id": TEAM, "professional_id": PROF2, "name": "Carla Mendes", "cbo": "515105",
+                                    "has_cns": True}],
+            "home_visit_domains": {"motivo_visita": [], "desfecho": [], "turno": [], "tipo_glicemia": [],
+                                   "tipo_de_imovel": [], "non_residential_property_types": [],
+                                   "non_residential_reasons": [], "male_forbidden_reasons": [],
+                                   "without_person_allowed_reasons": [], "responsible_document_reasons": [],
+                                   "reasons_max": 36, "measurement_ranges": {}},
+            "collective_activity_domains": {"activity_types": [], "meeting_topics": [], "target_audience": [],
+                                            "health_topics": [], "health_practices": [], "procedures": [], "rules": {}}}
+
+
 SUITES = [
     ("session-response-v1.json", {
         "session-acs.json": (session_acs(), "valid"),
@@ -596,6 +623,14 @@ SUITES = [
         "invalid-changes-care-line-due-soon-null-due-on.json": (page_last_due_soon_null(), "/who_to_visit/micro_areas/0/people/0/reasons/0/due_on string"),
         "invalid-changes-registration-due-null-due-on.json": (variant(page_last, ["who_to_visit", "micro_areas", 0, "people", 1, "reasons", 0, "due_on"], None), "/who_to_visit/micro_areas/0/people/1/reasons/0/due_on string"),
         "invalid-changes-cursor-null.json": (variant(page_first, ["next_cursor"], None), "/next_cursor string"),
+    }),
+    ("reference-response-v1.json", {
+        "reference.json": (reference(), "valid"),
+        "invalid-reference-version-short.json": (variant(reference, ["reference_version"], "cd"), "/reference_version pattern"),
+        "invalid-reference-professional-with-cpf.json": (variant(reference, ["team_professionals", 0, "cpf"], "39053344705"), "/team_professionals/0/cpf schema"),
+        "invalid-reference-professional-without-has-cns.json": (variant(reference, ["team_professionals", 0, "has_cns"], DELETE), "/team_professionals/0 required"),  # Q6
+        "invalid-reference-domain-as-object.json": (variant(reference, ["registration_dictionaries", "domains", "renda_familiar"], {"3": "1/2 a 1 salário mínimo"}), "/registration_dictionaries/domains/renda_familiar array"),  # Q27
+        "invalid-reference-without-health-units.json": (variant(reference, ["health_units"], DELETE), "(root) required"),
     }),
 ]
 
