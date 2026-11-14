@@ -1,6 +1,6 @@
 # Changelog — field-sync
 
-## field-sync-v1.2.0 — (não publicada até a tag) — MINOR
+## field-sync-v1.2.0 — 2026-11-14 — MINOR
 
 App de campo offline (módulo 24c, ADR 0053). Compatível com o v1.1.0: nada do
 pedido v1.1.0 passa a ser recusado; nas respostas, os campos novos são emitidos
