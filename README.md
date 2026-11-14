@@ -16,7 +16,7 @@ versionados.
 
 ## Domínios
 
-Dez domínios, **versionados de forma independente** (ADR 0015):
+Onze domínios, **versionados de forma independente** (ADR 0015):
 
 | Domínio | O que é | Versão | Estado |
 |---|---|---|---|
@@ -30,6 +30,7 @@ Dez domínios, **versionados de forma independente** (ADR 0015):
 | [`field-sync/`](field-sync/README.md) | Sincronização do app de campo v1: sessão, envio em lote idempotente e download incremental por microárea (ADRs 0041 e 0052) | `field-sync-v1.1.0` | Materializado |
 | [`types/`](types/README.md) | Contrato de tipos da API (Ruby ↔ TS) | — | Scaffold: extração pendente |
 | [`design-tokens/`](design-tokens/README.md) | Cores, espaçamento e tipografia como dado (4 temas, contraste validado) | `tokens-v1.1.0` | Materializado |
+| [`map-style/`](map-style/README.md) | Estilo do mapa de campo (light e dark, pt), glyphs e sprites locais (ADR 0053) | `map-style-v1.0.0` | Materializado |
 
 ### events
 
@@ -145,7 +146,7 @@ verificação em [`field-sync/README.md`](field-sync/README.md).
 ## Versionamento (ADR 0015)
 
 - **SemVer 2.0.0 por domínio**, com tag prefixada (`events-vX.Y.Z`,
-  `protocols-vX.Y.Z`, `session-vX.Y.Z`, `clinical-vX.Y.Z`, `exams-vX.Y.Z`, `lab-vX.Y.Z`, `billing-vX.Y.Z`, `field-sync-vX.Y.Z`, `types-vX.Y.Z`, `tokens-vX.Y.Z`). Cada app fixa a versão
+  `protocols-vX.Y.Z`, `session-vX.Y.Z`, `clinical-vX.Y.Z`, `exams-vX.Y.Z`, `lab-vX.Y.Z`, `billing-vX.Y.Z`, `field-sync-vX.Y.Z`, `types-vX.Y.Z`, `tokens-vX.Y.Z`, `map-style-vX.Y.Z`). Cada app fixa a versão
   **do domínio que consome**.
 - **Classificação de mudança:**
   - **MAJOR:** quebra consumidores (remove ou renomeia campo, muda tipo,

@@ -1,0 +1,14 @@
+{
+  "name": "@rotasaude/map-style",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Estilo do mapa de campo do Rota Saúde: Protomaps light e dark em português, com glyphs e sprites locais.",
+  "scripts": {
+    "build": "node build.mjs",
+    "test": "node --test test/*.test.mjs"
+  },
+  "dependencies": {
+    "@protomaps/basemaps": "5.7.2"
+  }
+}
