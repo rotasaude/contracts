@@ -1,6 +1,6 @@
 # Changelog — map-style
 
-## map-style-v1.0.0 — (não publicada até a tag) — MAJOR
+## map-style-v1.0.0 — 2026-11-14 — MAJOR
 
 Primeira versão do domínio (ADR 0053, módulo 24c): o estilo do mapa offline do
 app de campo e do dashboard.
