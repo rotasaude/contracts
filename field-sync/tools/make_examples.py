@@ -538,6 +538,8 @@ SUITES = [
         "invalid-home-visit-client-uuid-in-body.json": (variant(upload_hv, B + ["client_uuid"], cu(1)), "/items/0/body/client_uuid schema"),
         "invalid-home-visit-two-households.json": (variant(upload_hv_new_household, ["items", 2, "body", "household_id"], HH), "/items/2/body not"),
         "invalid-registration-two-patients.json": (variant(upload_registration_same_batch, ["items", 2, "body", "patient_id"], PAT2), "/items/2/body not"),
+        "invalid-home-visit-two-patients.json": (variant(upload_hv, B + ["patient_client_uuid"], cu(10)), "/items/0/body not"),
+        "invalid-registration-two-households.json": (variant(upload_registration, B + ["household_client_uuid"], cu(20)), "/items/0/body not"),
         "invalid-withdrawal-reason-short.json": (variant(upload_withdrawal, B + ["reason"], "errado"), "/items/0/body/reason minLength"),
         "invalid-home-visit-37-reasons.json": (variant(upload_hv, B + ["reasons"], [c for c in range(1, 39) if c != 26]), "/items/0/body/reasons maxItems"),  # Q36
         "invalid-collective-activity-altered-count-in-body.json": (variant(upload_ca, B + ["altered_count"], 1), "/items/0/body/altered_count schema"),  # Q38
@@ -591,6 +593,8 @@ SUITES = [
         "upload-response-family-not-found.json": (resp_family_not_found(), "valid"),
         "invalid-response-household-accepted-without-version.json": (results(done(6, "household", HH)), "/results/0 required"),
         "invalid-response-home-visit-with-version.json": (results(dict(done(1, "home_visit", VISIT), version=1)), "/results/0/version schema"),
+        "invalid-response-duplicate-suspected-without-candidates.json": (variant(resp_duplicate_suspected, ["results", 0, "candidates"], DELETE), "/results/0 required"),
+        "invalid-response-empty-results.json": (results(), "/results minItems"),
         "invalid-response-rejected-without-client-uuid.json": (variant(resp_invalid_request, ["results", 1, "error"], "visit_date_out_of_range"), "/results/1 required"),
         "invalid-response-accepted-without-id.json": (variant(resp_accepted, ["results", 0, "id"], DELETE), "/results/0 required"),
         "invalid-response-status-queued.json": (variant(resp_accepted, ["results", 0, "status"], "queued"), "/results/0/status enum"),

@@ -141,6 +141,14 @@
           "expect": "/items/2/body not"
         },
         {
+          "file": "invalid-home-visit-two-patients.json",
+          "expect": "/items/0/body not"
+        },
+        {
+          "file": "invalid-registration-two-households.json",
+          "expect": "/items/0/body not"
+        },
+        {
           "file": "invalid-withdrawal-reason-short.json",
           "expect": "/items/0/body/reason minLength"
         },
@@ -348,6 +356,14 @@
         {
           "file": "invalid-response-home-visit-with-version.json",
           "expect": "/results/0/version schema"
+        },
+        {
+          "file": "invalid-response-duplicate-suspected-without-candidates.json",
+          "expect": "/results/0 required"
+        },
+        {
+          "file": "invalid-response-empty-results.json",
+          "expect": "/results minItems"
         },
         {
           "file": "invalid-response-rejected-without-client-uuid.json",

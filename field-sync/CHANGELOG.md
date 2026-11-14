@@ -30,8 +30,28 @@ pelo api no mesmo deploy.
   `visit_sources`).
 - `tools/check_domains.py`: cobre `reference-response-v1.json` nos `$defs` e
   confere `location` contra `domains-v1.json`.
-- Exemplos: 120 (49 válidos, 71 inválidos). `invalid-upload-unknown-type.json`
+- Exemplos: 124 (49 válidos, 75 inválidos). `invalid-upload-unknown-type.json`
   passa a usar `"type": "visit_sheet"`, porque `family` agora existe.
+
+Pendências da revisão do v1.0.0/v1.1.0 (contracts#2, Q60 do 24c):
+
+- `upload-response-v1.json`: `results` com `minItems: 1` e `candidates`
+  obrigatório em `duplicate_suspected`. O api já responde assim; o esquema
+  passa a cobrar.
+- README: UUID sempre em minúsculas; `note` e `reason` enviados já aparados;
+  recusas de forma da retirada (`reason` curta, `visit_client_uuid` e
+  `visit_id` juntos ou ausentes) têm `path`; a troca de escopo chega como
+  `reset: true`, e `out_of_scope` segue reservado.
+- Exemplos dos pares exclusivos que faltavam:
+  `invalid-home-visit-two-patients.json` e
+  `invalid-registration-two-households.json`.
+- Já estavam resolvidos: `cpf_or_reason_required` em `errors.item` e
+  `json_required` (o 415) em `errors.http`, desde o v1.0.0; `overdue` com data
+  em `changes-last-page.json`.
+- Ficam para uma próxima versão, por serem refatorações sem efeito no app:
+  candidato discriminado por `type`; `id` do `already_registered` preso ao
+  `type`; fusão dos blocos `care_line`; metaesquema no `check.sh`; `expect`
+  dizendo a chave que falta; forma de `proof` conferida pelo esquema.
 
 ## field-sync-v1.1.0 — 2026-11-13 — MINOR
 

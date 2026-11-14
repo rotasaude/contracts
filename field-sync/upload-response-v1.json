@@ -7,7 +7,7 @@
   "additionalProperties": false,
   "required": ["results"],
   "properties": {
-    "results": { "type": "array", "maxItems": 50, "items": { "$ref": "#/$defs/result" } }
+    "results": { "type": "array", "minItems": 1, "maxItems": 50, "items": { "$ref": "#/$defs/result" } }
   },
   "$defs": {
         "uuid": { "type": "string", "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$" },
@@ -233,6 +233,8 @@
           "then": { "properties": { "version": false } } },
         { "if": { "required": ["candidates"] },
           "then": { "properties": { "error": { "const": "duplicate_suspected" } } } },
+        { "if": { "required": ["error"], "properties": { "error": { "const": "duplicate_suspected" } } },
+          "then": { "required": ["candidates"] } },
         { "if": { "required": ["error"], "properties": { "error": { "const": "duplicate_participant" } } },
           "then": { "required": ["confirmable"] },
           "else": { "properties": { "confirmable": false } } }

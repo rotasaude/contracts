@@ -110,10 +110,14 @@ registrou e baixa o escopo do aparelho. Base `/field/v1` no host da cidade.
   (c) `already_registered` pode trazer `id` (o `registration_id` existente)
   SÓ quando esse cadastro está no escopo do aparelho (6A); fora do escopo não
   há `id`. Em qualquer outro `rejected`, `id` é proibido.
-- **Retirada (`home_visit_withdrawal`).** Falha como na rota da equipe, sem
-  `path` (o código vale para o item inteiro): folha já fechada → `rejected`
-  `day_closed`; visita já retirada com outro `client_uuid` → `rejected`
-  `visit_changed` (Q45). O mesmo item reenviado continua `duplicate`.
+- **Retirada (`home_visit_withdrawal`).** As recusas de regra falham como na
+  rota da equipe, sem `path` (o código vale para o item inteiro): folha já
+  fechada → `rejected` `day_closed`; visita já retirada com outro
+  `client_uuid` → `rejected` `visit_changed` (Q45). As recusas de forma têm
+  `path`: `reason` fora de 10 a 500 caracteres → `invalid_request` com `path`
+  `reason`; `visit_client_uuid` e `visit_id` juntos, ou nenhum dos dois →
+  `invalid_request` com `path` `body`; visita desconhecida → `not_found` com
+  `path` na chave usada. O mesmo item reenviado continua `duplicate`.
 - **Registro rápido (`patient`, Q49).** Dado de identidade inválido no
   registro rápido do 24a (também quando reaproveitado na visita e na atividade
   coletiva) volta `rejected` `invalid_patient`, com `path` pela convenção
@@ -151,9 +155,10 @@ registrou e baixa o escopo do aparelho. Base `/field/v1` no host da cidade.
   Por cursor opaco (`next_cursor`, sempre presente: o app o guarda
   para a próxima vez); páginas de até 500 itens; sem cursor = carga completa.
   `reset: true` = o escopo mudou: apague o que foi baixado (nunca o que falta
-  enviar) e aplique as páginas. `removals` vêm das lápides (`moved`, `erased`)
-  e da troca de escopo (`out_of_scope`); `erased` e `out_of_scope` são
-  reservados no v1: o api ainda não os emite, mas o app deve tratá-los. "Quem visitar" vem só na última
+  enviar) e aplique as páginas. `removals` vêm das lápides (`moved`). A troca de escopo
+  chega hoje como `reset: true`, não como remoção; `erased` e `out_of_scope`
+  são motivos reservados no v1: o api ainda não os emite, mas o app deve
+  tratá-los. "Quem visitar" vem só na última
   página (`has_more: false`), completo; nas outras, `null`. Toda página com
   pessoa grava trilha no api. Em `who_to_visit`, `due_on` do motivo é data, exceto em
   `care_line` com `status: overdue` de prática nunca feita: aí é `null` (sem prazo, sem
@@ -173,6 +178,11 @@ registrou e baixa o escopo do aparelho. Base `/field/v1` no host da cidade.
   cadastros e o `family_id` deles aponta para uma família que o aparelho nunca
   recebe. O app tolera: mostra o membro sem família, não falha e não cria família
   provisória.
+- **UUID e texto.** Todo UUID vai em minúsculas (`client_uuid`, ids e
+  citações): em maiúsculas o item volta `rejected` `invalid_request` com
+  `path` `client_uuid` (ou o campo do id). O app envia `note` e `reason` já
+  aparados: o api conta os caracteres depois de tirar os espaços das pontas, e
+  o esquema conta o texto como veio.
 - **Formas.** Fechadas em todo nível, salvo as seções de dicionário do 24a
   (`living_conditions`, `identification`, `sociodemographic`,
   `health_conditions`, `street_situation`), cujas chaves e domínios são os do
@@ -196,14 +206,14 @@ registrou e baixa o escopo do aparelho. Base `/field/v1` no host da cidade.
 
 ## Exemplos e verificação
 
-`examples/` tem 120 exemplos (49 válidos, 71 inválidos, um defeito por arquivo),
+`examples/` tem 124 exemplos (49 válidos, 75 inválidos, um defeito por arquivo),
 gerados por `tools/make_examples.py` e listados em `examples/manifest.json`
 (`{ suites: [ { schema, cases: [ { file, expect } ] } ] }`; `expect` é
 `valid` ou o erro `<data_pointer> <type>` do `json_schemer`). A partir da raiz
 do monorepo, com o compose de pé:
 
 ```bash
-contracts/field-sync/tools/check.sh                           # todas as suítes (120/120)
+contracts/field-sync/tools/check.sh                           # todas as suítes (124/124)
 contracts/field-sync/tools/check.sh upload-request-v1.json    # uma suíte
 python3 contracts/field-sync/tools/check_domains.py           # $defs iguais, enum = domains, erros conhecidos
 python3 contracts/field-sync/tools/check_domains.py --release # idem, e falha sem a prova técnica (proof)
