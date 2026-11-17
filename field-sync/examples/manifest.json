@@ -609,6 +609,34 @@
         {
           "file": "invalid-changes-cursor-null.json",
           "expect": "/next_cursor string"
+        },
+        {
+          "file": "changes-vector-page.json",
+          "expect": "valid"
+        },
+        {
+          "file": "changes-vector-closed.json",
+          "expect": "valid"
+        },
+        {
+          "file": "invalid-changes-transmission-block-with-case.json",
+          "expect": "/items/4/body/cases schema"
+        },
+        {
+          "file": "invalid-changes-transmission-block-proposed.json",
+          "expect": "/items/4/body/status enum"
+        },
+        {
+          "file": "invalid-changes-ovitrap-without-version.json",
+          "expect": "/items/2 required"
+        },
+        {
+          "file": "invalid-changes-city-block-number-with-space.json",
+          "expect": "/items/1/body/number pattern"
+        },
+        {
+          "file": "invalid-changes-household-vector-risk-blue.json",
+          "expect": "/items/0/body/vector/risk_class enum"
         }
       ]
     },

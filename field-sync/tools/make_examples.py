@@ -545,6 +545,56 @@ def resp_family_not_found():
 
 # ---------- GET /field/v1/changes ----------
 
+def household_vector():
+    return {"city_block_id": BLOCK, "risk_class": "yellow", "risk_assessed_on": "2026-11-03",
+            "last_worked_on": "2026-11-03", "last_situation": "worked"}
+
+
+def city_block():
+    return {"id": BLOCK, "neighborhood_id": cu(40), "number": "12A", "active": True, "neighbor_ids": [BLOCK2], "version": 2}
+
+
+def ovitrap():
+    return {"id": OVI, "number": "OVT-014", "household_id": HH, "status": "active",
+            "open_reading": {"installed_on": "2026-11-12"},
+            "last_reading": {"collected_on": "2026-11-12", "condition": "ok", "egg_count": 37}, "version": 5}
+
+
+def liraa_item():
+    return {"id": LIRAA_ITEM, "survey_id": SURVEY, "survey_name": "LIRAa novembro 2026", "household_id": HH,
+            "city_block_id": BLOCK, "status": "pending", "version": 1}
+
+
+def transmission_block():
+    return {"id": TBLOCK, "status": "active", "block_ids": [BLOCK, BLOCK2],
+            "cycles": [{"number": 1, "starts_on": "2026-11-10", "ends_on": "2026-11-14"}], "version": 3}
+
+
+def page_vector():
+    hh = dict(household(), vector=household_vector())
+    return {"reset": False,
+            "items": [{"type": "household", "id": HH, "version": 3, "body": hh},
+                      {"type": "city_block", "id": BLOCK, "version": 2, "body": city_block()},
+                      {"type": "ovitrap", "id": OVI, "version": 5, "body": ovitrap()},
+                      {"type": "liraa_item", "id": LIRAA_ITEM, "version": 1, "body": liraa_item()},
+                      {"type": "transmission_block", "id": TBLOCK, "version": 3, "body": transmission_block()}],
+            "removals": [], "who_to_visit": None, "next_cursor": CURSOR, "has_more": True}
+
+
+def page_vector_closed():
+    page = page_vector()
+    page["items"][0]["body"]["vector"] = None
+    page["items"][2]["body"].update(status="removed", open_reading=None)
+    page["items"][2]["body"]["last_reading"]["egg_count"] = None
+    page["items"][3]["body"]["status"] = "closed"
+    page["items"][4]["body"].update(status="closed", cycles=[
+        {"number": 1, "starts_on": "2026-11-10", "ends_on": "2026-11-14"},
+        {"number": 2, "starts_on": "2026-11-17", "ends_on": "2026-11-21"},
+        {"number": 3, "starts_on": "2026-11-24", "ends_on": "2026-11-28"}])
+    page.update(who_to_visit=who_to_visit(), has_more=False)
+    return page
+
+
 def page_first():
     return {"reset": False,
             "items": [{"type": "micro_area", "id": MA1, "body": micro_area()},
@@ -772,6 +822,13 @@ SUITES = [
         "invalid-changes-care-line-due-soon-null-due-on.json": (page_last_due_soon_null(), "/who_to_visit/micro_areas/0/people/0/reasons/0/due_on string"),
         "invalid-changes-registration-due-null-due-on.json": (variant(page_last, ["who_to_visit", "micro_areas", 0, "people", 1, "reasons", 0, "due_on"], None), "/who_to_visit/micro_areas/0/people/1/reasons/0/due_on string"),
         "invalid-changes-cursor-null.json": (variant(page_first, ["next_cursor"], None), "/next_cursor string"),
+        "changes-vector-page.json": (page_vector(), "valid"),
+        "changes-vector-closed.json": (page_vector_closed(), "valid"),
+        "invalid-changes-transmission-block-with-case.json": (variant(page_vector, ["items", 4, "body", "cases"], [{"disease": "dengue", "case_on": "2026-11-08"}]), "/items/4/body/cases schema"),
+        "invalid-changes-transmission-block-proposed.json": (variant(page_vector, ["items", 4, "body", "status"], "proposed"), "/items/4/body/status enum"),
+        "invalid-changes-ovitrap-without-version.json": (variant(page_vector, ["items", 2, "version"], DELETE), "/items/2 required"),
+        "invalid-changes-city-block-number-with-space.json": (variant(page_vector, ["items", 1, "body", "number"], "12 A"), "/items/1/body/number pattern"),
+        "invalid-changes-household-vector-risk-blue.json": (variant(page_vector, ["items", 0, "body", "vector", "risk_class"], "blue"), "/items/0/body/vector/risk_class enum"),
     }),
     ("reference-response-v1.json", {
         "reference.json": (reference(), "valid"),
