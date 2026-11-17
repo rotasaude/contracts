@@ -227,7 +227,7 @@ registrou e baixa o escopo do aparelho. Base `/field/v1` no host da cidade.
   calculada igual no app e no api; colisão → `sample_label_taken` (código de
   item; 422 no dashboard, Q13(3)), `path` `vector_inspection.samples[i]` (Q7(1);
   o app só troca as etiquetas por ação explícita do agente). Os `path` das
-  recusas são os da Task 2 do plano do dashboard (Q9). `charges` com até 2
+  recusas são os `path` que o dashboard exibe (Q9). `charges` com até 2
   casas (o Ajv precisa de `multipleOfPrecision`, como na Q49).
 - **Domicílio pelo agente de endemias (v1.3.0, Q13(1)).** Com `vector_control`
   utilizável, o item `household` deixa de ser só do ACS: o agente de endemias
