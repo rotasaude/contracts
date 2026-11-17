@@ -10,6 +10,7 @@ Vigilância ambiental de endemias (módulo 35a, ADR 0054). Compatível com o v1.
 - `changes-response-v1.json`: `<household>.vector` (opcional) e os tipos de download `city_block`, `ovitrap`, `liraa_item` e `transmission_block`, cada um com `version`.
 - `reference-response-v1.json`: `vector_control_domains` (opcional); `collective_activity_domains.rules` fechado nas sete chaves do api (a única resposta que aperta, Q3).
 - `domains-v1.json`: seção `vector_control` (listas, `limits`, `rules`) e 21 códigos novos em `errors.item`; `proof` não muda.
+- `domains-v1.json`: rótulo do grupo de depósito B é "B — Depósito móvel", como nas fontes oficiais (Manual LIRAa 2013, DN-2009, DN-2025; Q16(f)).
 - `tools/check_domains.py`: confere `vector_control` contra o esquema; novas conferências `regras-da-atividade` e `logradouro-em-codigo`.
 - `reference-response-v1.json`: `vector_control_domains.products[].charge_size` é texto `"^[0-9]{1,8}\.[0-9]{2}$"` (numeric 10,2; "> 0" fica no api; Q15); `measures[].charges` do envio segue número (2 casas, > 0, ≤ 999).
 - `tools/check_domains.py`: pares novos `vector_control.product_units`, `vector_control.risk_classes(reference)` e `vector_control.measure_methods(reference)` (métodos menos `measure_without_product` × `uses`).
