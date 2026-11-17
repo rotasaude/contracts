@@ -666,6 +666,14 @@
         {
           "file": "invalid-reference-without-health-units.json",
           "expect": "(root) required"
+        },
+        {
+          "file": "reference-vector-control.json",
+          "expect": "valid"
+        },
+        {
+          "file": "invalid-reference-product-without-uses.json",
+          "expect": "/vector_control_domains/products/0/uses minItems"
         }
       ]
     }

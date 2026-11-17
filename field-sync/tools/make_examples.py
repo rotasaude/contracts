@@ -666,6 +666,23 @@ def reference():
                                             "health_topics": [], "health_practices": [], "procedures": [], "rules": {}}}
 
 
+def reference_vector():
+    """reference() + vector_control_domains; as seis listas vêm de domains-v1.json (uma fonte só)."""
+    with open(os.path.join(os.path.dirname(HERE), "domains-v1.json"), encoding="utf-8") as f:
+        vc = json.load(f)["vector_control"]
+    doc = reference()
+    doc["vector_control_domains"] = {
+        **{k: [{"code": e["code"], "label": e["label"]} for e in vc[k]]
+           for k in ("activities", "work_types", "situations", "deposit_groups", "measure_methods", "risk_classes")},
+        "products": [{"id": PRODUCT, "code": "SPN", "name": "Espinosade 7,48% DT (larvicida)", "unit": "un", "charge_size": 1, "uses": ["focal"]},
+                     {"id": PRODUCT2, "code": "CDM", "name": "Clotianidina + deltametrina PM (adulticida residual)", "unit": "g", "charge_size": 12.5, "uses": ["perifocal"]}],
+        "cadences": [{"neighborhood_id": None, "risk_class": None, "strategic_point": True, "days": 15},
+                     {"neighborhood_id": cu(40), "risk_class": "red", "strategic_point": False, "days": 30}],
+        "parameters": {"default_days": 60, "strategic_point_days": 15, "ovitrap_collection_days_min": 3, "ovitrap_collection_days_max": 10},
+        "limits": dict(vc["limits"])}
+    return doc
+
+
 SUITES = [
     ("session-response-v1.json", {
         "session-acs.json": (session_acs(), "valid"),
@@ -837,6 +854,8 @@ SUITES = [
         "invalid-reference-professional-without-has-cns.json": (variant(reference, ["team_professionals", 0, "has_cns"], DELETE), "/team_professionals/0 required"),  # Q6
         "invalid-reference-domain-as-object.json": (variant(reference, ["registration_dictionaries", "domains", "renda_familiar"], {"3": "1/2 a 1 salário mínimo"}), "/registration_dictionaries/domains/renda_familiar array"),  # Q27
         "invalid-reference-without-health-units.json": (variant(reference, ["health_units"], DELETE), "(root) required"),
+        "reference-vector-control.json": (reference_vector(), "valid"),
+        "invalid-reference-product-without-uses.json": (variant(reference_vector, ["vector_control_domains", "products", 0, "uses"], []), "/vector_control_domains/products/0/uses minItems"),
     }),
 ]
 

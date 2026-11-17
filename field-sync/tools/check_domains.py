@@ -4,7 +4,8 @@
 1. Todo $defs repetido em dois esquemas é igual.
 2. Cada enum do pedido de envio é exatamente o domínio de domains-v1.json,
    e as faixas das medidas, os tamanhos máximos das listas e os limites da
-   coordenada (location) são os de domains-v1.json.
+   coordenada (location) são os de domains-v1.json; o mesmo vale para vector_control
+   (listas, limites e regras do controle vetorial, 35a).
 3. Todo error dos exemplos válidos de resposta está em errors.item.
 --release: falha também com "proof": null (a tag só sai depois da prova técnica do api).
 Uso: python3 field-sync/tools/check_domains.py [--release]
@@ -73,6 +74,44 @@ def main():
          lp["latitude"]["multipleOf"], lp["longitude"]["multipleOf"], lp["accuracy_m"]["minimum"], lp["accuracy_m"]["maximum"],
          lp["accuracy_m"]["multipleOf"], sorted(lp["source"]["enum"]), [loc["if"]["properties"]["source"]["const"]],
          loc["then"]["required"]])
+    vc = dom["vector_control"]
+    vi = req["vector_inspection"]["properties"]
+    chg = s["changes-response-v1.json"]["$defs"]
+
+    def nn(enum):
+        return sorted(x for x in enum if x is not None)
+
+    hv_vec = chg["household_vector"]["properties"]
+    ovi = chg["ovitrap"]["properties"]
+    last_reading = next(o for o in ovi["last_reading"]["anyOf"] if o.get("type") == "object")
+    charges = req["vector_measure"]["properties"]["charges"]
+    sample = req["vector_sample"]["properties"]
+    vc_rules = vc["rules"]
+    pairs.update({
+        "vector_control.activities": (codes(vc["activities"]), sorted(vi["activity"]["enum"])),
+        "vector_control.work_types": (codes(vc["work_types"]), sorted(vi["work_type"]["enum"])),
+        "vector_control.situations": (codes(vc["situations"]), sorted(vi["situation"]["enum"])),
+        "vector_control.situations(changes)": (codes(vc["situations"]), nn(hv_vec["last_situation"]["enum"])),
+        "vector_control.risk_classes": (codes(vc["risk_classes"]), sorted(vi["risk_class"]["enum"])),
+        "vector_control.risk_classes(changes)": (codes(vc["risk_classes"]), nn(hv_vec["risk_class"]["enum"])),
+        "vector_control.deposit_groups": (codes(vc["deposit_groups"]), sorted(req["deposit_group"]["enum"])),
+        "vector_control.measure_methods": (codes(vc["measure_methods"]), sorted(req["vector_measure"]["properties"]["method"]["enum"])),
+        "vector_control.ovitrap_conditions": (codes(vc["ovitrap_conditions"]), sorted(req["ovitrap_collection_body"]["properties"]["condition"]["enum"])),
+        "vector_control.ovitrap_conditions(changes)": (codes(vc["ovitrap_conditions"]), sorted(last_reading["properties"]["condition"]["enum"])),
+        "vector_control.ovitrap_statuses": (codes(vc["ovitrap_statuses"]), sorted(ovi["status"]["enum"])),
+        "vector_control.liraa_item_statuses": (codes(vc["liraa_item_statuses"]), sorted(chg["liraa_item"]["properties"]["status"]["enum"])),
+        "vector_control.transmission_block_statuses": (codes(vc["transmission_block_statuses"]), sorted(chg["transmission_block"]["properties"]["status"]["enum"])),
+        "vector_control.limits": (
+            [vc["limits"]["deposit_count_max"], vc["limits"]["charges_max"], vc["limits"]["samples_max"], vc["limits"]["samples_max"],
+             vc["limits"]["larvae_collected_max"], vc["limits"]["measures_max"], len(vc["deposit_groups"]), 10 ** -vc_rules["charges_decimals"]],
+            [req["deposit_count"]["maximum"], charges["maximum"], sample["number"]["maximum"], vi["samples"]["maxItems"],
+             sample["larvae_collected"]["maximum"], vi["measures"]["maxItems"], vi["deposits"]["maxItems"], charges["multipleOf"]]),
+        "vector_control.rules": (
+            [[c for c in vc_rules["registrar_cbos"] if c not in hv["rules"]["registrar_cbos"]],
+             sorted(k for k in vc_rules["derived_reasons"] if int(k) not in req["visit_reason"]["enum"]),
+             sorted(t for v in vc_rules["activity_property_types"].values() for t in v if t not in req["property_type"]["enum"])],
+            [[], [], []]),
+    })
     diff = [k for k, (x, y) in pairs.items() if x != y]
     print("dominios-iguais" if not diff else "DOMINIOS DIFERENTES: " + ", ".join(diff))
     bad += diff
