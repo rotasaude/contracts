@@ -668,6 +668,14 @@
           "expect": "(root) required"
         },
         {
+          "file": "invalid-reference-activity-rules-old-vocabulary.json",
+          "expect": "/collective_activity_domains/rules required"
+        },
+        {
+          "file": "invalid-reference-activity-by-type-old-value.json",
+          "expect": "/collective_activity_domains/rules/by_type/1/health_topics enum"
+        },
+        {
           "file": "reference-vector-control.json",
           "expect": "valid"
         },

@@ -294,25 +294,25 @@
       { "code": "0101050046", "label": "YOGA" }
     ],
     "rules": {
-      "by_activity_type": {
+      "by_type": {
         "1": {
           "meeting_topics": "required",
           "target_audience": "forbidden",
-          "health_topics": "with_meeting_topic_6",
+          "health_topics": "forbidden",
           "health_practices": "forbidden",
           "participants": "optional"
         },
         "2": {
           "meeting_topics": "required",
           "target_audience": "forbidden",
-          "health_topics": "with_meeting_topic_6",
+          "health_topics": "forbidden",
           "health_practices": "forbidden",
           "participants": "optional"
         },
         "3": {
           "meeting_topics": "required",
           "target_audience": "forbidden",
-          "health_topics": "with_meeting_topic_6",
+          "health_topics": "forbidden",
           "health_practices": "forbidden",
           "participants": "optional"
         },
@@ -348,13 +348,13 @@
       "values": {
         "required": "obrigatório",
         "forbidden": "proibido",
-        "optional": "opcional",
-        "with_meeting_topic_6": "proibido, salvo com o tema de reunião 6 (Educação permanente)"
+        "optional": "opcional"
       },
-      "practices_only_in_activity_type": { "6": [2, 9, 33] },
-      "procedure_code_with_practice": 30,
+      "health_topics_with_meeting_topic": [6],
+      "practices_only_in_type": [{ "type": 6, "practices": [2, 9, 33] }],
+      "procedure_practices": [30],
       "procedure_code_domain": "outro_procedimento_coletivo",
-      "smoking_with_practices": [25, 26, 27, 28],
+      "smoking_practices": [25, 26, 27, 28],
       "pse_only_health_topics": [18],
       "list_max": { "meeting_topics": 7, "target_audience": 17, "health_topics": 16, "health_practices": 14 },
       "participants_count": { "min": 1, "max": 999 },
@@ -362,8 +362,8 @@
       "participants_required_identifier_types": [5, 6],
       "participant_without_identifier_in_other_types": "listed_without_identification",
       "participant_measurements": {
-        "weight_kg": { "min": 0.5, "max": 500, "decimals": 3, "ledi": "peso" },
-        "height_cm": { "min": 20, "max": 250, "decimals": 1, "ledi": "altura" }
+        "weight_kg": { "min": 0.5, "max": 500, "decimals": 3 },
+        "height_cm": { "min": 20, "max": 250, "decimals": 1 }
       },
       "unidentified_patient": { "no_cpf_reason": "unidentified", "error": "patient_unidentified" },
       "place_text_max_length": 250,

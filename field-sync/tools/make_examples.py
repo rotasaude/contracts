@@ -14,6 +14,10 @@ import os
 HERE = os.path.dirname(os.path.abspath(__file__))
 OUT = os.path.join(os.path.dirname(HERE), "examples")
 DELETE = object()
+# As sete chaves de collective_activity.rules que o api serve na referência, na ordem do api.
+# check_domains.py tem a mesma constante e confere a igualdade.
+REFERENCE_RULE_KEYS = ["list_max", "by_type", "health_topics_with_meeting_topic", "practices_only_in_type",
+                       "procedure_practices", "smoking_practices", "participant_measurements"]
 
 
 def cu(n):
@@ -55,7 +59,7 @@ CURSOR = "eyJ2IjoxLCJzaW5jZSI6IjIwMjYtMTEtMTJUMTI6MDA6MDBaIn0"
 
 TEAM_REF = {"id": TEAM, "ine": "0001234567", "name": "ESF Vila Nova"}
 MA1_REF = {"id": MA1, "code": "03"}
-ADDRESS = {"zip": "80010000", "street_type": "RUA", "street": "das Flores", "number": "120", "no_number": False,
+ADDRESS = {"zip": "80010000", "street_type": "081", "street": "das Flores", "number": "120", "no_number": False,
            "complement": None, "neighborhood_id": None, "district": "Centro", "reference": "Perto da praça"}
 NEW_PATIENT = {"full_name": "Benedita Aparecida Rocha", "birth_date": "1948-05-02", "sex": "female",
                "mother_name": "Maria José Rocha", "no_cpf_reason": "2", "cns": "702000000000001"}
@@ -642,6 +646,8 @@ def page_reset():
 # ---------- GET /field/v1/reference ----------
 
 def reference():
+    with open(os.path.join(os.path.dirname(HERE), "domains-v1.json"), encoding="utf-8") as f:
+        ca_rules = json.load(f)["collective_activity"]["rules"]
     return {"reference_version": REF_SHA,
             "registration_dictionaries": {
                 "version": "8.7.0",
@@ -663,7 +669,8 @@ def reference():
                                    "without_person_allowed_reasons": [], "responsible_document_reasons": [],
                                    "reasons_max": 36, "measurement_ranges": {}},
             "collective_activity_domains": {"activity_types": [], "meeting_topics": [], "target_audience": [],
-                                            "health_topics": [], "health_practices": [], "procedures": [], "rules": {}}}
+                                            "health_topics": [], "health_practices": [], "procedures": [],
+                                            "rules": {k: copy.deepcopy(ca_rules[k]) for k in REFERENCE_RULE_KEYS}}}
 
 
 def reference_vector():
@@ -854,6 +861,8 @@ SUITES = [
         "invalid-reference-professional-without-has-cns.json": (variant(reference, ["team_professionals", 0, "has_cns"], DELETE), "/team_professionals/0 required"),  # Q6
         "invalid-reference-domain-as-object.json": (variant(reference, ["registration_dictionaries", "domains", "renda_familiar"], {"3": "1/2 a 1 salário mínimo"}), "/registration_dictionaries/domains/renda_familiar array"),  # Q27
         "invalid-reference-without-health-units.json": (variant(reference, ["health_units"], DELETE), "(root) required"),
+        "invalid-reference-activity-rules-old-vocabulary.json": (variant(reference, ["collective_activity_domains", "rules"], {"by_activity_type": {}}), "/collective_activity_domains/rules required"),
+        "invalid-reference-activity-by-type-old-value.json": (variant(reference, ["collective_activity_domains", "rules", "by_type", "1", "health_topics"], "with_meeting_topic_6"), "/collective_activity_domains/rules/by_type/1/health_topics enum"),
         "reference-vector-control.json": (reference_vector(), "valid"),
         "invalid-reference-product-without-uses.json": (variant(reference_vector, ["vector_control_domains", "products", 0, "uses"], []), "/vector_control_domains/products/0/uses minItems"),
     }),

@@ -90,13 +90,64 @@
     "collective_activity_domains": {
       "type": "object",
       "description": "CollectiveActivities::Json.domains do api, um bloco só (Q7).",
-      "required": ["activity_types", "meeting_topics", "target_audience", "health_topics", "health_practices", "procedures", "rules"]
+      "required": ["activity_types", "meeting_topics", "target_audience", "health_topics", "health_practices", "procedures", "rules"],
+      "properties": { "rules": { "$ref": "#/$defs/collective_activity_rules" } }
     },
     "vector_control_domains": { "$ref": "#/$defs/vector_control_domains", "description": "Só com o gate vector_control utilizável (§13)." }
   },
   "$defs": {
     "uuid": { "type": "string", "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$" },
     "uuid_or_null": { "type": ["string", "null"], "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$" },
+    "collective_activity_rules": {
+      "type": "object",
+      "description": "As sete regras de CollectiveActivities::Json.domains[:rules] do api (Q3). Fechado: o vocabulário antigo (by_activity_type e afins) é recusado.",
+      "additionalProperties": false,
+      "required": ["list_max", "by_type", "health_topics_with_meeting_topic", "practices_only_in_type", "procedure_practices", "smoking_practices", "participant_measurements"],
+      "properties": {
+        "list_max": {
+          "type": "object", "additionalProperties": false,
+          "required": ["meeting_topics", "target_audience", "health_topics", "health_practices"],
+          "properties": {
+            "meeting_topics": { "type": "integer", "minimum": 1 },
+            "target_audience": { "type": "integer", "minimum": 1 },
+            "health_topics": { "type": "integer", "minimum": 1 },
+            "health_practices": { "type": "integer", "minimum": 1 }
+          }
+        },
+        "by_type": {
+          "type": "object", "minProperties": 1, "propertyNames": { "pattern": "^[1-7]$" },
+          "additionalProperties": {
+            "type": "object", "additionalProperties": false,
+            "required": ["meeting_topics", "target_audience", "health_topics", "health_practices", "participants"],
+            "properties": {
+              "meeting_topics": { "enum": ["required", "forbidden", "optional"] },
+              "target_audience": { "enum": ["required", "forbidden", "optional"] },
+              "health_topics": { "enum": ["required", "forbidden", "optional"] },
+              "health_practices": { "enum": ["required", "forbidden", "optional"] },
+              "participants": { "enum": ["required", "forbidden", "optional"] }
+            }
+          }
+        },
+        "health_topics_with_meeting_topic": { "type": "array", "items": { "type": "integer" } },
+        "practices_only_in_type": {
+          "type": "array",
+          "items": {
+            "type": "object", "additionalProperties": false, "required": ["type", "practices"],
+            "properties": { "type": { "type": "integer" }, "practices": { "type": "array", "items": { "type": "integer" } } }
+          }
+        },
+        "procedure_practices": { "type": "array", "items": { "type": "integer" } },
+        "smoking_practices": { "type": "array", "items": { "type": "integer" } },
+        "participant_measurements": {
+          "type": "object", "additionalProperties": false, "required": ["weight_kg", "height_cm"],
+          "properties": { "weight_kg": { "$ref": "#/$defs/measurement_range" }, "height_cm": { "$ref": "#/$defs/measurement_range" } }
+        }
+      }
+    },
+    "measurement_range": {
+      "type": "object", "additionalProperties": false, "required": ["min", "max", "decimals"],
+      "properties": { "min": { "type": "number" }, "max": { "type": "number" }, "decimals": { "type": "integer", "minimum": 0 } }
+    },
     "vector_control_domains": {
       "type": "object",
       "additionalProperties": false,

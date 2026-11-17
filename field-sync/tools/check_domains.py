@@ -7,17 +7,38 @@
    coordenada (location) são os de domains-v1.json; o mesmo vale para vector_control
    (listas, limites e regras do controle vetorial, 35a).
 3. Todo error dos exemplos válidos de resposta está em errors.item.
+4. regras-da-atividade: collective_activity.rules tem as sete chaves da referência (REFERENCE_RULE_KEYS, as do api),
+   by_type cobre os tipos de atividade com valores válidos, e o esquema da referência as exige.
+5. logradouro-em-codigo: todo street_type dos exemplos é código DNE de três dígitos (Q3), nunca o rótulo.
 --release: falha também com "proof": null (a tag só sai depois da prova técnica do api).
 Uso: python3 field-sync/tools/check_domains.py [--release]
 """
+import ast
 import itertools
 import json
 import os
+import re
 import sys
 
 D = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SCHEMAS = ["session-response-v1.json", "upload-request-v1.json", "upload-response-v1.json", "changes-response-v1.json",
            "reference-response-v1.json"]
+
+# As sete chaves de collective_activity.rules que o api serve na referência, na ordem do api
+# (CollectiveActivities::Json.domains[:rules]). make_examples.py tem a mesma constante; a guarda confere.
+REFERENCE_RULE_KEYS = ["list_max", "by_type", "health_topics_with_meeting_topic", "practices_only_in_type",
+                       "procedure_practices", "smoking_practices", "participant_measurements"]
+
+
+def find_key(node, key):
+    if isinstance(node, dict):
+        for k, v in node.items():
+            if k == key:
+                yield v
+            yield from find_key(v, key)
+    elif isinstance(node, list):
+        for v in node:
+            yield from find_key(v, key)
 
 
 def load(name):
@@ -130,6 +151,41 @@ def main():
                     unknown.append(f'{case["file"]}: {r["error"]}')
     print("erros-conhecidos" if not unknown else "ERROS FORA DA LISTA: " + "; ".join(unknown))
     bad += unknown
+
+    rules = ca["rules"]
+    why = []
+    # Lê a constante do gerador pela AST: importar o make_examples monta as suítes, e isso depende destas mesmas regras.
+    with open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "make_examples.py"), encoding="utf-8") as f:
+        gen_keys = next((ast.literal_eval(n.value) for n in ast.parse(f.read()).body if isinstance(n, ast.Assign)
+                         and any(getattr(t, "id", None) == "REFERENCE_RULE_KEYS" for t in n.targets)), None)
+    if gen_keys != REFERENCE_RULE_KEYS:
+        why.append("REFERENCE_RULE_KEYS do gerador difere do desta guarda")
+    missing = [k for k in REFERENCE_RULE_KEYS if k not in rules]
+    if missing:
+        why.append("faltam " + ", ".join(missing))
+    by_type = rules.get("by_type")
+    if isinstance(by_type, dict):
+        want = sorted(str(c) for c in ca_props["activity_type"]["enum"])
+        if sorted(by_type) != want:
+            why.append(f"by_type tem os tipos {sorted(by_type)} e o pedido {want}")
+        out = sorted({v for r in by_type.values() for v in r.values() if v not in ("required", "forbidden", "optional")})
+        if out:
+            why.append("by_type com valor fora de required/forbidden/optional: " + ", ".join(map(str, out)))
+    ref_rules = s["reference-response-v1.json"].get("$defs", {}).get("collective_activity_rules")
+    if ref_rules is not None and ref_rules.get("required") != REFERENCE_RULE_KEYS:
+        why.append("$defs/collective_activity_rules.required difere de REFERENCE_RULE_KEYS")
+    print("regras-da-atividade" if not why else "REGRAS DA ATIVIDADE: " + "; ".join(why))
+    bad += why
+
+    wrong = []
+    for suite in manifest["suites"]:
+        for case in suite["cases"]:
+            for v in find_key(load(os.path.join("examples", case["file"])), "street_type"):
+                if v is not None and not (isinstance(v, str) and re.fullmatch("[0-9]{3}", v)):
+                    wrong.append(case["file"])
+                    break
+    print("logradouro-em-codigo" if not wrong else "LOGRADOURO FORA DO CODIGO: " + ", ".join(wrong))
+    bad += wrong
 
     proof = dom["proof"]
     print("prova: " + ("pendente" if proof is None else f'{proof["api_commit"]} ({proof["date"]})'))
