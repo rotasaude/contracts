@@ -315,7 +315,7 @@
         "code": "SPN",
         "name": "Espinosade 7,48% DT (larvicida)",
         "unit": "un",
-        "charge_size": 1,
+        "charge_size": "1.00",
         "uses": []
       },
       {
@@ -323,7 +323,7 @@
         "code": "CDM",
         "name": "Clotianidina + deltametrina PM (adulticida residual)",
         "unit": "g",
-        "charge_size": 12.5,
+        "charge_size": "12.50",
         "uses": [
           "perifocal"
         ]

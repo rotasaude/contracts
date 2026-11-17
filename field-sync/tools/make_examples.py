@@ -681,8 +681,8 @@ def reference_vector():
     doc["vector_control_domains"] = {
         **{k: [{"code": e["code"], "label": e["label"]} for e in vc[k]]
            for k in ("activities", "work_types", "situations", "deposit_groups", "measure_methods", "risk_classes")},
-        "products": [{"id": PRODUCT, "code": "SPN", "name": "Espinosade 7,48% DT (larvicida)", "unit": "un", "charge_size": 1, "uses": ["focal"]},
-                     {"id": PRODUCT2, "code": "CDM", "name": "Clotianidina + deltametrina PM (adulticida residual)", "unit": "g", "charge_size": 12.5, "uses": ["perifocal"]}],
+        "products": [{"id": PRODUCT, "code": "SPN", "name": "Espinosade 7,48% DT (larvicida)", "unit": "un", "charge_size": "1.00", "uses": ["focal"]},
+                     {"id": PRODUCT2, "code": "CDM", "name": "Clotianidina + deltametrina PM (adulticida residual)", "unit": "g", "charge_size": "12.50", "uses": ["perifocal"]}],
         "cadences": [{"neighborhood_id": None, "risk_class": None, "strategic_point": True, "days": 15},
                      {"neighborhood_id": cu(40), "risk_class": "red", "strategic_point": False, "days": 30}],
         "parameters": {"default_days": 60, "strategic_point_days": 15, "ovitrap_collection_days_min": 3, "ovitrap_collection_days_max": 10},
@@ -776,6 +776,7 @@ SUITES = [
         "invalid-vector-inspection-8-deposits.json": (upload_vi_8_deposits(), "/items/0/body/vector_inspection/deposits maxItems"),
         "invalid-vector-inspection-charges-three-decimals.json": (variant(upload_vi, VI + ["measures", 1, "charges"], 1.234), "/items/0/body/vector_inspection/measures/1/charges multipleOf"),
         "invalid-vector-inspection-charges-zero.json": (variant(upload_vi, VI + ["measures", 1, "charges"], 0), "/items/0/body/vector_inspection/measures/1/charges exclusiveMinimum"),
+        "invalid-vector-inspection-sample-label-in-body.json": (variant(upload_vi, VI + ["samples", 0, "label"], "ABCDEF12-01"), "/items/0/body/vector_inspection/samples/0/label schema"),
         "invalid-vector-inspection-larvae-11.json": (variant(upload_vi, VI + ["samples", 0, "larvae_collected"], 11), "/items/0/body/vector_inspection/samples/0/larvae_collected maximum"),
         "invalid-ovitrap-installation-two-households.json": (variant(upload_ovitrap_installation, B + ["household_client_uuid"], cu(30)), "/items/0/body oneOf"),
         "invalid-ovitrap-installation-number-13-chars.json": (variant(upload_ovitrap_installation, B + ["number"], "OVT-012345678"), "/items/0/body/number pattern"),
@@ -852,6 +853,7 @@ SUITES = [
         "invalid-changes-transmission-block-proposed.json": (variant(page_vector, ["items", 4, "body", "status"], "proposed"), "/items/4/body/status enum"),
         "invalid-changes-ovitrap-without-version.json": (variant(page_vector, ["items", 2, "version"], DELETE), "/items/2 required"),
         "invalid-changes-city-block-number-with-space.json": (variant(page_vector, ["items", 1, "body", "number"], "12 A"), "/items/1/body/number pattern"),
+        "invalid-changes-ovitrap-with-resident.json": (variant(page_vector, ["items", 2, "body", "resident_name"], "Maria Teste"), "/items/2/body/resident_name schema"),
         "invalid-changes-household-vector-risk-blue.json": (variant(page_vector, ["items", 0, "body", "vector", "risk_class"], "blue"), "/items/0/body/vector/risk_class enum"),
     }),
     ("reference-response-v1.json", {
@@ -864,6 +866,7 @@ SUITES = [
         "invalid-reference-activity-rules-old-vocabulary.json": (variant(reference, ["collective_activity_domains", "rules"], {"by_activity_type": {}}), "/collective_activity_domains/rules required"),
         "invalid-reference-activity-by-type-old-value.json": (variant(reference, ["collective_activity_domains", "rules", "by_type", "1", "health_topics"], "with_meeting_topic_6"), "/collective_activity_domains/rules/by_type/1/health_topics enum"),
         "reference-vector-control.json": (reference_vector(), "valid"),
+        "invalid-reference-product-charge-size-number.json": (variant(reference_vector, ["vector_control_domains", "products", 0, "charge_size"], 1), "/vector_control_domains/products/0/charge_size string"),
         "invalid-reference-product-without-uses.json": (variant(reference_vector, ["vector_control_domains", "products", 0, "uses"], []), "/vector_control_domains/products/0/uses minItems"),
     }),
 ]

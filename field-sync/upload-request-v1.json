@@ -404,7 +404,7 @@
         "collected_on": { "$ref": "#/$defs/date" },
         "condition": { "enum": ["ok", "damaged", "lost", "dry"] },
         "reinstall": { "type": "boolean", "description": "Padrão true; com remove true, reinstall é ignorado (CV-9)." },
-        "remove": { "type": "boolean", "description": "Padrão false; com remove true, reinstall é ignorado (CV-9)." }
+        "remove": { "type": "boolean", "description": "Padrão false; true → status removed (com condition lost → lost); com remove true, reinstall é ignorado (CV-9)." }
       },
       "oneOf": [{ "required": ["ovitrap_id"] }, { "required": ["ovitrap_client_uuid"] }]
     }

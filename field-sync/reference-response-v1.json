@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://rota-saude/schemas/field-sync/reference-response-v1.json",
   "title": "rotasaude.field_sync.reference_response.v1",
-  "description": "GET /field/v1/reference (contrato do 24c §3.5): o que o app precisa para montar os formulários sem rede — dicionários do cadastro, bairros, unidades, profissionais da equipe e domínios da visita e da atividade coletiva. Nenhum dado de cidadão; do profissional, só nome, CBO e se tem CNS (nunca CPF nem CNS). Fechado no topo; as seções de dicionário ficam abertas, porque a fonte é o YAML do api (K-2). reference_version é o mesmo valor da sessão: o app compara, nunca recalcula.",
+  "description": "GET /field/v1/reference (contrato do 24c §3.5): o que o app precisa para montar os formulários sem rede — dicionários do cadastro, bairros, unidades, profissionais da equipe e domínios da visita e da atividade coletiva e, só com o gate vector_control utilizável, vector_control_domains (35a). Nenhum dado de cidadão; do profissional, só nome, CBO e se tem CNS (nunca CPF nem CNS). Fechado no topo; as seções de dicionário ficam abertas, porque a fonte é o YAML do api (K-2). reference_version é o mesmo valor da sessão: o app compara, nunca recalcula.",
   "type": "object",
   "additionalProperties": false,
   "required": ["reference_version", "registration_dictionaries", "string_domains", "neighborhoods", "health_units", "team_professionals", "home_visit_domains", "collective_activity_domains"],
@@ -171,7 +171,7 @@
               "code": { "type": "string", "minLength": 1, "maxLength": 10 },
               "name": { "type": "string", "minLength": 1, "maxLength": 80 },
               "unit": { "enum": ["g", "ml", "un"] },
-              "charge_size": { "type": "number", "exclusiveMinimum": 0, "multipleOf": 0.01 },
+              "charge_size": { "type": "string", "pattern": "^[0-9]{1,8}\\.[0-9]{2}$", "description": "numeric(10,2) como texto; \"> 0\" é do api." },
               "uses": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "enum": ["focal", "perifocal", "spatial"] } }
             }
           }
@@ -195,10 +195,10 @@
           "additionalProperties": false,
           "required": ["default_days", "strategic_point_days", "ovitrap_collection_days_min", "ovitrap_collection_days_max"],
           "properties": {
-          "default_days": { "type": "integer", "minimum": 1 },
-          "strategic_point_days": { "type": "integer", "minimum": 1 },
-          "ovitrap_collection_days_min": { "type": "integer", "minimum": 1 },
-          "ovitrap_collection_days_max": { "type": "integer", "minimum": 1 }
+            "default_days": { "type": "integer", "minimum": 1 },
+            "strategic_point_days": { "type": "integer", "minimum": 1 },
+            "ovitrap_collection_days_min": { "type": "integer", "minimum": 1 },
+            "ovitrap_collection_days_max": { "type": "integer", "minimum": 1 }
           }
         },
         "limits": {
@@ -206,11 +206,11 @@
           "additionalProperties": false,
           "required": ["deposit_count_max", "charges_max", "samples_max", "larvae_collected_max", "measures_max"],
           "properties": {
-          "deposit_count_max": { "type": "integer", "minimum": 1 },
-          "charges_max": { "type": "integer", "minimum": 1 },
-          "samples_max": { "type": "integer", "minimum": 1 },
-          "larvae_collected_max": { "type": "integer", "minimum": 1 },
-          "measures_max": { "type": "integer", "minimum": 1 }
+            "deposit_count_max": { "type": "integer", "minimum": 1 },
+            "charges_max": { "type": "integer", "minimum": 1 },
+            "samples_max": { "type": "integer", "minimum": 1 },
+            "larvae_collected_max": { "type": "integer", "minimum": 1 },
+            "measures_max": { "type": "integer", "minimum": 1 }
           }
         }
       }

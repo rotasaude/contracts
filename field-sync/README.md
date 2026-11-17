@@ -11,7 +11,7 @@ registrou e baixa o escopo do aparelho. Base `/field/v1` no host da cidade.
 | `upload-response-v1.json` | `rotasaude.field_sync.upload_response.v1` | `POST /field/v1/uploads` (resposta 200) |
 | `changes-response-v1.json` | `rotasaude.field_sync.changes_response.v1` | `GET /field/v1/changes` |
 | `reference-response-v1.json` | `rotasaude.field_sync.reference_response.v1` | `GET /field/v1/reference` (v1.2.0) |
-| `domains-v1.json` | `rotasaude.field_sync.domains.v1` | domínios e regras cruzadas da visita e da atividade, em dado |
+| `domains-v1.json` | `rotasaude.field_sync.domains.v1` | domínios e regras cruzadas da visita, da atividade e da vigilância ambiental (35a), em dado |
 
 ## Regras
 
@@ -253,7 +253,8 @@ registrou e baixa o escopo do aparelho. Base `/field/v1` no host da cidade.
   fechado) e `transmission_block` (só `active` e `closed`; nunca caso nem
   notificação), cada um com `version`; o fim vem pelo `status`, sem `removal`
   novo.
-- **Referência (v1.3.0).** `vector_control_domains` só com o gate utilizável;
+- **Referência (v1.3.0).** `vector_control_domains` só com o gate utilizável (`products[].charge_size` é texto
+  `"^[0-9]{1,8}\.[0-9]{2}$"`, numeric(10,2); "> 0" é do api; Q15);
   `collective_activity_domains.rules` na forma de
   `CollectiveActivities::Json.domains` (Q3), com as sete chaves do api.
 - **`street_type` (v1.3.0).** É o código DNE de `string_domains.tipo_logradouro`
@@ -262,14 +263,14 @@ registrou e baixa o escopo do aparelho. Base `/field/v1` no host da cidade.
 
 ## Exemplos e verificação
 
-`examples/` tem 165 exemplos (61 válidos, 104 inválidos, um defeito por arquivo),
+`examples/` tem 168 exemplos (61 válidos, 107 inválidos, um defeito por arquivo),
 gerados por `tools/make_examples.py` e listados em `examples/manifest.json`
 (`{ suites: [ { schema, cases: [ { file, expect } ] } ] }`; `expect` é
 `valid` ou o erro `<data_pointer> <type>` do `json_schemer`). A partir da raiz
 do monorepo, com o compose de pé:
 
 ```bash
-contracts/field-sync/tools/check.sh                           # todas as suítes (165/165)
+contracts/field-sync/tools/check.sh                           # todas as suítes (168/168)
 contracts/field-sync/tools/check.sh upload-request-v1.json    # uma suíte
 python3 contracts/field-sync/tools/check_domains.py           # $defs iguais, enum = domains, erros conhecidos,
                                                               # regras-da-atividade e logradouro-em-codigo (v1.3.0)

@@ -108,6 +108,9 @@ def main():
     charges = req["vector_measure"]["properties"]["charges"]
     sample = req["vector_sample"]["properties"]
     vc_rules = vc["rules"]
+    vcd = s["reference-response-v1.json"]["$defs"]["vector_control_domains"]["properties"]
+    prod = vcd["products"]["items"]["properties"]
+    cad = vcd["cadences"]["items"]["properties"]
     pairs.update({
         "vector_control.activities": (codes(vc["activities"]), sorted(vi["activity"]["enum"])),
         "vector_control.work_types": (codes(vc["work_types"]), sorted(vi["work_type"]["enum"])),
@@ -115,6 +118,10 @@ def main():
         "vector_control.situations(changes)": (codes(vc["situations"]), nn(hv_vec["last_situation"]["enum"])),
         "vector_control.risk_classes": (codes(vc["risk_classes"]), sorted(vi["risk_class"]["enum"])),
         "vector_control.risk_classes(changes)": (codes(vc["risk_classes"]), nn(hv_vec["risk_class"]["enum"])),
+        "vector_control.product_units": (codes(vc["product_units"]), sorted(prod["unit"]["enum"])),
+        "vector_control.risk_classes(reference)": (codes(vc["risk_classes"]), nn(cad["risk_class"]["enum"])),
+        "vector_control.measure_methods(reference)": (
+            sorted(c for c in codes(vc["measure_methods"]) if c not in vc_rules["measure_without_product"]), sorted(prod["uses"]["items"]["enum"])),
         "vector_control.deposit_groups": (codes(vc["deposit_groups"]), sorted(req["deposit_group"]["enum"])),
         "vector_control.measure_methods": (codes(vc["measure_methods"]), sorted(req["vector_measure"]["properties"]["method"]["enum"])),
         "vector_control.ovitrap_conditions": (codes(vc["ovitrap_conditions"]), sorted(req["ovitrap_collection_body"]["properties"]["condition"]["enum"])),

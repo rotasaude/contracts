@@ -337,6 +337,10 @@
           "expect": "/items/0/body/vector_inspection/measures/1/charges exclusiveMinimum"
         },
         {
+          "file": "invalid-vector-inspection-sample-label-in-body.json",
+          "expect": "/items/0/body/vector_inspection/samples/0/label schema"
+        },
+        {
           "file": "invalid-vector-inspection-larvae-11.json",
           "expect": "/items/0/body/vector_inspection/samples/0/larvae_collected maximum"
         },
@@ -635,6 +639,10 @@
           "expect": "/items/1/body/number pattern"
         },
         {
+          "file": "invalid-changes-ovitrap-with-resident.json",
+          "expect": "/items/2/body/resident_name schema"
+        },
+        {
           "file": "invalid-changes-household-vector-risk-blue.json",
           "expect": "/items/0/body/vector/risk_class enum"
         }
@@ -678,6 +686,10 @@
         {
           "file": "reference-vector-control.json",
           "expect": "valid"
+        },
+        {
+          "file": "invalid-reference-product-charge-size-number.json",
+          "expect": "/vector_control_domains/products/0/charge_size string"
         },
         {
           "file": "invalid-reference-product-without-uses.json",
