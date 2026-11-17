@@ -39,6 +39,16 @@ UNIT = "6e7f8a9b-0c1d-4e2f-8a3b-4c5d6e7f8a9b"
 VISIT = "7f8a9b0c-1d2e-4f3a-9b4c-5d6e7f8a9b0c"
 ACT = "8a9b0c1d-2e3f-4a4b-8c5d-6e7f8a9b0c1d"
 FAM2 = "5e6f7a8b-9c0d-4e1f-8a2b-3c4d5e6f7a8b"
+BLOCK = "a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c5d"
+BLOCK2 = "b2c3d4e5-f6a7-4b8c-9d0e-1f2a3b4c5d6e"
+OVI = "c3d4e5f6-a7b8-4c9d-8e0f-2a3b4c5d6e7f"
+OVI2 = "d5e6f7a8-b9c0-4d1e-8f2a-3b4c5d6e7f80"
+LIRAA_ITEM = "d4e5f6a7-b8c9-4d0e-9f1a-3b4c5d6e7f8a"
+SURVEY = "e5f6a7b8-c9d0-4e1f-8a2b-4c5d6e7f8a9b"
+TBLOCK = "f6a7b8c9-d0e1-4f2a-9b3c-5d6e7f8a9b0c"
+PRODUCT = "0a1b2c3d-4e5f-4a6b-8c7d-9e0f1a2b3c4d"
+PRODUCT2 = "1b2c3d4e-5f6a-4b7c-9d8e-0f1a2b3c4d5e"
+VINSP = "2c3d4e5f-6a7b-4c8d-8e9f-1a2b3c4d5e6f"
 MAP_SHA = "ab" * 32
 REF_SHA = "cd" * 32
 CURSOR = "eyJ2IjoxLCJzaW5jZSI6IjIwMjYtMTEtMTJUMTI6MDA6MDBaIn0"
@@ -264,6 +274,111 @@ def upload_hv_family_client_uuid():
 
 
 B = ["items", 0, "body"]
+VI = B + ["vector_inspection"]
+
+# ---------- 35a: vigilância ambiental (boletim e ovitrampas) ----------
+
+def vi_worked():
+    return {"activity": "li_t", "work_type": "routine", "situation": "worked", "educational_action": True,
+            "entered_at": "2026-11-12T09:30:00-03:00", "left_at": "2026-11-12T09:52:00-03:00", "risk_class": "yellow",
+            "deposits": [{"group": "A1", "existing": 3, "with_water": 2, "with_larvae": 1, "eliminated": 1, "treated": 1},
+                         {"group": "D2", "existing": 4, "with_water": 2, "with_larvae": 1, "eliminated": 4, "treated": 0}],
+            "measures": [{"method": "mechanical"}, {"method": "focal", "vector_product_id": PRODUCT, "charges": 2.25}],
+            "samples": [{"number": 1, "deposit_group": "A1", "larvae_collected": 8},
+                        {"number": 2, "deposit_group": "D2", "larvae_collected": 5}]}
+
+
+def hv_ace():
+    return {"team_id": TEAM, "occurred_at": "2026-11-12T09:40:00-03:00", "household_id": HH, "subject": "family_responsible",
+            "family_id": FAM, "outcome": 1, "reasons": [], "shared": False, "vector_inspection": vi_worked()}
+
+
+def hv_ace_pe():
+    return {"team_id": TEAM, "occurred_at": "2026-11-12T14:05:00-03:00", "household_id": HH2, "subject": "none",
+            "outcome": 1, "reasons": [], "shared": False,
+            "vector_inspection": {"activity": "pe", "work_type": "routine", "situation": "worked", "educational_action": False,
+                                  "entered_at": "2026-11-12T13:50:00-03:00", "left_at": "2026-11-12T14:20:00-03:00",
+                                  "city_block_id": BLOCK,
+                                  "deposits": [{"group": "D1", "existing": 12, "with_water": 5, "with_larvae": 0, "eliminated": 0, "treated": 5}],
+                                  "measures": [{"method": "perifocal", "vector_product_id": PRODUCT2, "charges": 0.5}]}}
+
+
+def hv_ace_closed():
+    return {"team_id": TEAM, "occurred_at": "2026-11-12T10:15:00-03:00", "household_id": HH, "subject": "none",
+            "outcome": 3, "reasons": [], "shared": False,
+            "vector_inspection": {"activity": "liraa", "work_type": "routine", "situation": "closed", "educational_action": False,
+                                  "entered_at": "2026-11-12T10:14:00-03:00", "left_at": "2026-11-12T10:16:00-03:00",
+                                  "liraa_draw_item_id": LIRAA_ITEM}}
+
+
+def upload_vi():
+    return up(item(60, "home_visit", hv_ace()))
+
+
+def upload_vi_pe():
+    return up(item(61, "home_visit", hv_ace_pe()))
+
+
+def upload_vi_closed():
+    return up(item(62, "home_visit", hv_ace_closed()))
+
+
+def ovi_installation():
+    return {"household_id": HH, "number": "OVT-014", "consent": True, "installed_on": "2026-11-12"}
+
+
+def upload_ovitrap_installation():
+    return up(item(63, "ovitrap_installation", ovi_installation()))
+
+
+def upload_ovitrap_collection():
+    return up(item(66, "ovitrap_collection", {"ovitrap_id": OVI, "collected_on": "2026-11-12", "condition": "ok", "reinstall": True, "remove": False}),
+              item(67, "ovitrap_collection", {"ovitrap_id": OVI2, "collected_on": "2026-11-12", "condition": "lost", "remove": True}))
+
+
+def upload_ovitrap_same_batch():
+    return up(item(64, "ovitrap_installation", {"household_id": HH, "number": "OVT-015", "consent": True, "installed_on": "2026-11-12"}),
+              item(65, "ovitrap_collection", {"ovitrap_client_uuid": cu(64), "collected_on": "2026-11-17", "condition": "ok"}))
+
+
+def upload_vi_8_deposits():
+    d = vi_worked()
+    d["deposits"] = [{"group": g, "existing": 0, "with_water": 0, "with_larvae": 0, "eliminated": 0, "treated": 0}
+                     for g in ["A1", "A2", "B", "C", "D1", "D2", "E", "A1"]]
+    d["samples"] = []
+    return up(item(60, "home_visit", dict(hv_ace(), vector_inspection=d)))
+
+
+def vr(n, kind, error, path=None):
+    r = {"client_uuid": cu(n), "status": "rejected", "type": kind, "error": error}
+    if path:
+        r["path"] = path
+    return r
+
+
+def resp_vector_rejected():
+    hv, oi, oc = "home_visit", "ovitrap_installation", "ovitrap_collection"
+    rows = [(hv, "cbo_not_allowed", "vector_inspection"), (hv, "vector_inspection_invalid", "vector_inspection.liraa_draw_item_id"),
+            (hv, "situation_outcome_mismatch", "vector_inspection.situation"), (hv, "inspection_not_worked", "vector_inspection.deposits"),
+            (hv, "activity_property_mismatch", "vector_inspection.activity"), (hv, "liraa_item_not_found", "vector_inspection.liraa_draw_item_id"),
+            (hv, "transmission_block_not_active", "vector_inspection.transmission_block_id"),
+            (hv, "deposit_counts_inconsistent", "vector_inspection.deposits[0].with_larvae"),
+            (hv, "product_not_allowed", "vector_inspection.measures[1].vector_product_id"),
+            (hv, "samples_exceed_larvae", "vector_inspection.samples[1]"), (hv, "sample_label_taken", "vector_inspection.samples[0]"),
+            (hv, "inspection_times_invalid", "vector_inspection.entered_at"), (hv, "reason_derived", "reasons"),
+            (hv, "block_already_set", "vector_inspection.city_block_id"), (hv, "household_without_neighborhood", "vector_inspection.city_block_id"),
+            (hv, "block_not_in_household_neighborhood", "vector_inspection.city_block_id"),
+            (oi, "cbo_not_allowed", None), (oi, "household_without_block", "household_id"), (oi, "consent_required", "consent"),
+            (oi, "ovitrap_number_taken", "number"), (oc, "not_found", "ovitrap_client_uuid"),
+            (oc, "collection_out_of_range", "collected_on"), (oc, "reading_not_open", "ovitrap_id"), (oc, "ovitrap_not_active", "ovitrap_id")]
+    return results(*[vr(70 + i, k, e, p) for i, (k, e, p) in enumerate(rows)])
+
+
+def resp_vector_accepted():
+    return results(dict(done(60, "home_visit", VISIT), vector_inspection_id=VINSP),
+                   done(63, "ovitrap_installation", OVI), done(66, "ovitrap_collection", OVI),
+                   done(60, "home_visit", VISIT, "duplicate"))
+
 
 # ---------- formas do download (24a §2, json.rb) ----------
 
@@ -511,6 +626,8 @@ SUITES = [
         "session-without-map.json": (variant(session_acs, ["map"], None), "valid"),
         "invalid-session-without-reference-version.json": (variant(session_acs, ["reference_version"], DELETE), "(root) required"),
         "invalid-session-map-short-sha.json": (variant(session_acs, ["map", "sha256"], "ab"), "/map/sha256 pattern"),
+        "session-endemic-agent.json": (variant(session_agent, ["features", "vector_control"], True), "valid"),
+        "invalid-session-vector-control-string.json": (variant(session_agent, ["features", "vector_control"], "true"), "/features/vector_control boolean"),
     }),
     ("upload-request-v1.json", {
         "upload-home-visit-resident.json": (upload_hv(), "valid"),
@@ -569,6 +686,29 @@ SUITES = [
         "invalid-family-two-households.json": (variant(upload_family_update, B + ["household_client_uuid"], cu(30)), "/items/0/body oneOf"),
         "invalid-family-responsible-two-patients.json": (variant(upload_family_update, B + ["responsible"], {"patient_id": PAT, "patient_client_uuid": cu(31)}), "/items/0/body/responsible maxProperties"),
         "invalid-registration-two-families.json": (variant(upload_registration, B + ["family_client_uuid"], cu(33)), "/items/0/body not"),
+        "upload-home-visit-vector-inspection.json": (upload_vi(), "valid"),
+        "upload-home-visit-vector-inspection-pe.json": (upload_vi_pe(), "valid"),
+        "upload-home-visit-vector-inspection-closed.json": (upload_vi_closed(), "valid"),
+        "upload-ovitrap-installation.json": (upload_ovitrap_installation(), "valid"),
+        "upload-ovitrap-same-batch.json": (upload_ovitrap_same_batch(), "valid"),
+        "upload-ovitrap-collection.json": (upload_ovitrap_collection(), "valid"),
+        "invalid-vector-inspection-null.json": (variant(upload_vi, VI, None), "/items/0/body/vector_inspection object"),
+        "invalid-vector-inspection-activity-unknown.json": (variant(upload_vi, VI + ["activity"], "lit"), "/items/0/body/vector_inspection/activity enum"),
+        "invalid-vector-inspection-recovered-in-body.json": (variant(upload_vi, VI + ["recovered"], True), "/items/0/body/vector_inspection/recovered schema"),
+        "invalid-vector-inspection-entered-at-without-offset.json": (variant(upload_vi, VI + ["entered_at"], "2026-11-12T09:30:00"), "/items/0/body/vector_inspection/entered_at pattern"),
+        "invalid-vector-inspection-risk-class-blue.json": (variant(upload_vi, VI + ["risk_class"], "blue"), "/items/0/body/vector_inspection/risk_class enum"),
+        "invalid-vector-inspection-deposit-group-f.json": (variant(upload_vi, VI + ["deposits", 0, "group"], "F"), "/items/0/body/vector_inspection/deposits/0/group enum"),
+        "invalid-vector-inspection-deposit-1000.json": (variant(upload_vi, VI + ["deposits", 0, "existing"], 1000), "/items/0/body/vector_inspection/deposits/0/existing maximum"),
+        "invalid-vector-inspection-8-deposits.json": (upload_vi_8_deposits(), "/items/0/body/vector_inspection/deposits maxItems"),
+        "invalid-vector-inspection-charges-three-decimals.json": (variant(upload_vi, VI + ["measures", 1, "charges"], 1.234), "/items/0/body/vector_inspection/measures/1/charges multipleOf"),
+        "invalid-vector-inspection-charges-zero.json": (variant(upload_vi, VI + ["measures", 1, "charges"], 0), "/items/0/body/vector_inspection/measures/1/charges exclusiveMinimum"),
+        "invalid-vector-inspection-larvae-11.json": (variant(upload_vi, VI + ["samples", 0, "larvae_collected"], 11), "/items/0/body/vector_inspection/samples/0/larvae_collected maximum"),
+        "invalid-ovitrap-installation-two-households.json": (variant(upload_ovitrap_installation, B + ["household_client_uuid"], cu(30)), "/items/0/body oneOf"),
+        "invalid-ovitrap-installation-number-13-chars.json": (variant(upload_ovitrap_installation, B + ["number"], "OVT-012345678"), "/items/0/body/number pattern"),
+        "invalid-ovitrap-installation-without-consent.json": (variant(upload_ovitrap_installation, B + ["consent"], DELETE), "/items/0/body required"),
+        "invalid-ovitrap-collection-two-ovitraps.json": (variant(upload_ovitrap_collection, B + ["ovitrap_client_uuid"], cu(64)), "/items/0/body oneOf"),
+        "invalid-ovitrap-collection-condition-wet.json": (variant(upload_ovitrap_collection, B + ["condition"], "wet"), "/items/0/body/condition enum"),
+        "invalid-ovitrap-collection-egg-count.json": (variant(upload_ovitrap_collection, B + ["egg_count"], 12), "/items/0/body/egg_count schema"),
     }),
     ("upload-response-v1.json", {
         "upload-response-accepted.json": (resp_accepted(), "valid"),
@@ -607,6 +747,11 @@ SUITES = [
         "invalid-response-duplicate-participant-without-confirmable.json": (variant(resp_duplicate_participant, ["results", 0, "confirmable"], DELETE), "/results/0 required"),
         "invalid-response-confirmable-on-other-error.json": (variant(resp_rejected, ["results", 0, "confirmable"], True), "/results/0/confirmable schema"),
         "invalid-response-stale-household-with-cpf.json": (variant(resp_stale_household, ["results", 0, "current", "families", 0, "responsible", "cpf"], "39053344705"), "/results/0/current/families/0/responsible/cpf schema"),
+        "upload-response-vector-accepted.json": (resp_vector_accepted(), "valid"),
+        "upload-response-vector-rejected.json": (resp_vector_rejected(), "valid"),
+        "invalid-response-vector-inspection-id-on-patient.json": (results(dict(done(10, "patient", PAT2), vector_inspection_id=VINSP)), "/results/0/vector_inspection_id schema"),
+        "invalid-response-vector-inspection-id-on-rejected.json": (variant(resp_vector_rejected, ["results", 0, "vector_inspection_id"], VINSP), "/results/0/vector_inspection_id schema"),
+        "invalid-response-ovitrap-id.json": (results(dict(done(63, "ovitrap_installation", OVI), ovitrap_id=OVI)), "/results/0/ovitrap_id schema"),
     }),
     ("changes-response-v1.json", {
         "changes-first-page.json": (page_first(), "valid"),
