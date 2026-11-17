@@ -203,19 +203,76 @@ registrou e baixa o escopo do aparelho. Base `/field/v1` no host da cidade.
   (Q38). Paciente provisório da UPA volta `rejected` `patient_unidentified`
   (Q41). `age` do "quem visitar" é `integer | null` (Q33). Código de erro novo do
   api é MINOR: o app mostra uma frase genérica.
+- **Interruptor (v1.3.0).** `features.vector_control` na sessão (ausente =
+  false). Desligado → itens `rejected` `feature_disabled`; o que já foi gravado
+  fica.
+- **Compatibilidade (v1.3.0, Q6).** O api só emite as entidades novas
+  (`city_block`, `ovitrap`, `liraa_item`, `transmission_block`) e o
+  `<household>.vector` para cidade com o gate `vector_control` utilizável;
+  ligar ou desligar o interruptor chega a todo aparelho da cidade como
+  `reset: true`; o app anterior ao do 35a não ignora tipo desconhecido no
+  download e quebra com as entidades novas, por isso **nenhum aparelho com app
+  anterior ao do 35a pode estar numa cidade com `vector_control` ligado** (gate
+  de go-live); o app do 35a ignora tipo desconhecido e zera o cursor ao migrar
+  o esquema local para a v2. O api aceita o envio da v1.2.0 sem mudança.
+- **Boletim (`vector_inspection`, v1.3.0).** Só o agente de endemias (CBO
+  515140) nas microáreas atribuídas (`cbo_not_allowed`, `path`
+  `vector_inspection`); exige domicílio (`household_id` ou
+  `household_client_uuid`; sem ele → `vector_inspection_invalid` com `path`
+  `household_id`, CV-6). Listas ausentes = vazias. As relações estão em
+  `vector_control.rules` e o api decide, com os códigos do §17; erro de esquema
+  dentro do boletim → `rejected` `vector_inspection_invalid` com o mesmo `path`
+  (CV-4). Os motivos 34 a 37 não vêm no `reasons` (`reason_derived`): o api os
+  deriva. A etiqueta da amostra é `upcase(client_uuid[0,8]) + "-" + NN`,
+  calculada igual no app e no api; colisão → `sample_label_taken` (código de
+  item; 422 no dashboard, Q13(3)), `path` `vector_inspection.samples[i]` (Q7(1);
+  o app só troca as etiquetas por ação explícita do agente). Os `path` das
+  recusas são os da Task 2 do plano do dashboard (Q9). `charges` com até 2
+  casas (o Ajv precisa de `multipleOfPrecision`, como na Q49).
+- **Domicílio pelo agente de endemias (v1.3.0, Q13(1)).** Com `vector_control`
+  utilizável, o item `household` deixa de ser só do ACS: o agente de endemias
+  (515140) cadastra e edita, nas microáreas atribuídas a ele, domicílio **só**
+  de tipo não residencial (`2 3 4 5 6 12 13`), sem família nem morador. Tipo
+  residencial, troca para residencial, `family` e `individual_registration` →
+  `rejected` `cbo_not_allowed`, como hoje. O esquema não muda (autoria não é
+  forma), por isso não há exemplo novo.
+- **Ovitrampa (v1.3.0).** `ovitrap_installation` (domicílio por id ou
+  `client_uuid`; `consent` false → `consent_required`) e `ovitrap_collection`
+  (por `ovitrap_id` ou `ovitrap_client_uuid`, que resolve pelo livro de
+  idempotência; falta → `not_found`, `path` `ovitrap_client_uuid`). `reinstall`
+  é true por padrão e ignorado com `remove: true` (o app manda
+  `reinstall: !remove`), sem acoplamento no esquema; `condition: lost` +
+  `remove: true` = perdida (CV-9). O `id` do resultado das duas é o da
+  **ovitrampa** (CV-3). A contagem de ovos nunca vem do app.
+- **Resultado (v1.3.0).** `vector_inspection_id` só no `accepted`/`duplicate`
+  de `home_visit` com boletim.
+- **Download (v1.3.0).** `<household>.vector` (ausente = gate não utilizável;
+  `null` = sem perfil; **só leitura**, nunca vai no item `household`, CV-10);
+  mudança de perfil reemite o `<household>` com a mesma `version` do 24a (o app
+  sobrescreve). `city_block`, `ovitrap`, `liraa_item` (`closed` = levantamento
+  fechado) e `transmission_block` (só `active` e `closed`; nunca caso nem
+  notificação), cada um com `version`; o fim vem pelo `status`, sem `removal`
+  novo.
+- **Referência (v1.3.0).** `vector_control_domains` só com o gate utilizável;
+  `collective_activity_domains.rules` na forma de
+  `CollectiveActivities::Json.domains` (Q3), com as sete chaves do api.
+- **`street_type` (v1.3.0).** É o código DNE de `string_domains.tipo_logradouro`
+  (`"081"`), nunca o rótulo; o esquema aceita texto, e quem recusa é o api
+  (`invalid_household`, `path` `address.street_type`; CV-11).
 
 ## Exemplos e verificação
 
-`examples/` tem 124 exemplos (49 válidos, 75 inválidos, um defeito por arquivo),
+`examples/` tem 165 exemplos (61 válidos, 104 inválidos, um defeito por arquivo),
 gerados por `tools/make_examples.py` e listados em `examples/manifest.json`
 (`{ suites: [ { schema, cases: [ { file, expect } ] } ] }`; `expect` é
 `valid` ou o erro `<data_pointer> <type>` do `json_schemer`). A partir da raiz
 do monorepo, com o compose de pé:
 
 ```bash
-contracts/field-sync/tools/check.sh                           # todas as suítes (124/124)
+contracts/field-sync/tools/check.sh                           # todas as suítes (165/165)
 contracts/field-sync/tools/check.sh upload-request-v1.json    # uma suíte
-python3 contracts/field-sync/tools/check_domains.py           # $defs iguais, enum = domains, erros conhecidos
+python3 contracts/field-sync/tools/check_domains.py           # $defs iguais, enum = domains, erros conhecidos,
+                                                              # regras-da-atividade e logradouro-em-codigo (v1.3.0)
 python3 contracts/field-sync/tools/check_domains.py --release # idem, e falha sem a prova técnica (proof)
 ```
 
@@ -225,5 +282,5 @@ O `api` copia os seis arquivos (os cinco esquemas e `domains-v1.json`) para
 `config/field_sync/` e prende o SHA-256 de cada um num spec (como `config/lab/lab-report-v1.json`); as respostas reais de
 `/field/v1/*` são validadas contra essas cópias. Mudou um esquema? Atualize os
 dois lugares no mesmo ciclo, com entrada no CHANGELOG. O app de campo (24c)
-consome os esquemas e `domains-v1.json` pela tag `field-sync-v1.2.0` e gera
+consome os esquemas e `domains-v1.json` pela tag `field-sync-v1.3.0` e gera
 deles os tipos TypeScript.

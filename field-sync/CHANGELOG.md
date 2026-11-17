@@ -1,5 +1,20 @@
 # Changelog — field-sync
 
+## field-sync-v1.3.0 — (não publicada até a tag) — MINOR
+
+Vigilância ambiental de endemias (módulo 35a, ADR 0054). Compatível com o v1.2.0: nada do pedido v1.2.0 passa a ser recusado; o novo nas respostas é opcional.
+
+- `session-response-v1.json`: `features.vector_control` (opcional).
+- `upload-request-v1.json`: `vector_inspection` na visita (`home_visit_body`) e `$defs` novos (`vector_inspection`, `deposit_group`, `deposit_count`, `vector_deposit`, `vector_measure`, `vector_sample`, `ovitrap_number`); itens `ovitrap_installation` e `ovitrap_collection` (`ovitrap_installation_body`, `ovitrap_collection_body`).
+- `upload-response-v1.json`: os dois tipos novos; `vector_inspection_id` (só no `accepted`/`duplicate` de `home_visit`); `<household>.vector` (`household_vector` ou `null`, opcional). Sem `ovitrap_id`: o `id` do resultado é a ovitrampa (CV-3).
+- `changes-response-v1.json`: `<household>.vector` (opcional) e os tipos de download `city_block`, `ovitrap`, `liraa_item` e `transmission_block`, cada um com `version`.
+- `reference-response-v1.json`: `vector_control_domains` (opcional); `collective_activity_domains.rules` fechado nas sete chaves do api (a única resposta que aperta, Q3).
+- `domains-v1.json`: seção `vector_control` (listas, `limits`, `rules`) e 21 códigos novos em `errors.item`; `proof` não muda.
+- `tools/check_domains.py`: confere `vector_control` contra o esquema; novas conferências `regras-da-atividade` e `logradouro-em-codigo`.
+- Exemplos: 165 (61 válidos, 104 inválidos). `street_type` passa a `"081"` (código DNE) em todos.
+
+Pendências do contracts#2 (Q3): resolvidos o `street_type` em código e o `collective_activity.rules` no vocabulário do api; os seis itens adiados continuam adiados.
+
 ## field-sync-v1.2.0 — 2026-11-14 — MINOR
 
 App de campo offline (módulo 24c, ADR 0053). Compatível com o v1.1.0: nada do
