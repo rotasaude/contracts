@@ -1,6 +1,6 @@
 # Changelog — field-sync
 
-## field-sync-v1.3.0 — (não publicada até a tag) — MINOR
+## field-sync-v1.3.0 — 2026-11-18 — MINOR
 
 Vigilância ambiental de endemias (módulo 35a, ADR 0054). Compatível com o v1.2.0: nada do pedido v1.2.0 passa a ser recusado; o novo nas respostas é opcional.
 
