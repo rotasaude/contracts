@@ -241,8 +241,10 @@ registrou e baixa o escopo do aparelho. Base `/field/v1` no host da cidade.
   (por `ovitrap_id` ou `ovitrap_client_uuid`, que resolve pelo livro de
   idempotência; falta → `not_found`, `path` `ovitrap_client_uuid`). `reinstall`
   é true por padrão e ignorado com `remove: true` (o app manda
-  `reinstall: !remove`), sem acoplamento no esquema; `condition: lost` +
-  `remove: true` = perdida (CV-9). O `id` do resultado das duas é o da
+  `reinstall: !remove`), sem acoplamento no esquema; `reinstall: false` sem
+  `remove: true` é recusado (`rejected` `invalid_request`, `path` `reinstall`;
+  Q33); `condition: lost` + `remove: true` = perdida (CV-9). O `id` do
+  resultado das duas é o da
   **ovitrampa** (CV-3). A contagem de ovos nunca vem do app.
 - **Resultado (v1.3.0).** `vector_inspection_id` só no `accepted`/`duplicate`
   de `home_visit` com boletim.
