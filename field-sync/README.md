@@ -252,7 +252,11 @@ registrou e baixa o escopo do aparelho. Base `/field/v1` no host da cidade.
   sobrescreve). `city_block`, `ovitrap`, `liraa_item` (`closed` = levantamento
   fechado) e `transmission_block` (só `active` e `closed`; nunca caso nem
   notificação), cada um com `version`; o fim vem pelo `status`, sem `removal`
-  novo.
+  novo. O app **sobrescreve** `city_block`, `ovitrap`, `liraa_item` e
+  `transmission_block` a cada recebimento, qualquer que seja a `version`: o api
+  reemite com a mesma `version` quando a mudança é de outra linha (contagem de
+  ovos da leitura, fechamento do levantamento, ciclo de UBV novo) ou quando a
+  entidade entra no escopo do aparelho por um domicílio ou perfil (Q29).
 - **Referência (v1.3.0).** `vector_control_domains` só com o gate utilizável (`products[].charge_size` é texto
   `"^[0-9]{1,8}\.[0-9]{2}$"`, numeric(10,2); "> 0" é do api; Q15);
   `collective_activity_domains.rules` na forma de

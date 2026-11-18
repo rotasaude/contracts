@@ -7,7 +7,7 @@ Vigilância ambiental de endemias (módulo 35a, ADR 0054). Compatível com o v1.
 - `session-response-v1.json`: `features.vector_control` (opcional).
 - `upload-request-v1.json`: `vector_inspection` na visita (`home_visit_body`) e `$defs` novos (`vector_inspection`, `deposit_group`, `deposit_count`, `vector_deposit`, `vector_measure`, `vector_sample`, `ovitrap_number`); itens `ovitrap_installation` e `ovitrap_collection` (`ovitrap_installation_body`, `ovitrap_collection_body`).
 - `upload-response-v1.json`: os dois tipos novos; `vector_inspection_id` (só no `accepted`/`duplicate` de `home_visit`); `<household>.vector` (`household_vector` ou `null`, opcional). Sem `ovitrap_id`: o `id` do resultado é a ovitrampa (CV-3).
-- `changes-response-v1.json`: `<household>.vector` (opcional) e os tipos de download `city_block`, `ovitrap`, `liraa_item` e `transmission_block`, cada um com `version`.
+- `changes-response-v1.json`: `<household>.vector` (opcional) e os tipos de download `city_block`, `ovitrap`, `liraa_item` e `transmission_block`, cada um com `version`. O app sobrescreve essas quatro entidades a cada recebimento, qualquer que seja a `version` (README, Q29).
 - `reference-response-v1.json`: `vector_control_domains` (opcional); `collective_activity_domains.rules` fechado nas sete chaves do api (a única resposta que aperta, Q3).
 - `domains-v1.json`: seção `vector_control` (listas, `limits`, `rules`) e 21 códigos novos em `errors.item`; `proof` não muda.
 - `domains-v1.json`: rótulo do grupo de depósito B é "B — Depósito móvel", como nas fontes oficiais (Manual LIRAa 2013, DN-2009, DN-2025; Q16(f)).
