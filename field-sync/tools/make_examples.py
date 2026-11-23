@@ -512,6 +512,51 @@ def resp_zoonoses_accepted():
                    dict(zdone(6, "leish_collection", cz(60)), label="LV-2026-AVUL-0007"))
 
 
+# ---------- 35b: download (animal, leish_survey) ----------
+
+ANIMAL_REQUIRED = ["id", "version", "household_id", "species", "name", "sex", "size", "coat", "breed", "birth_estimate_on",
+                   "status", "neutered", "tutor", "community", "last_rabies_vaccination_on", "collar_due_on", "has_microchip"]
+LEISH_REQUIRED = ["id", "version", "name", "kind", "household_ids", "starts_on", "ends_on"]
+
+
+def animal():
+    return {"id": ANIMAL, "version": 2, "household_id": HH, "species": "dog", "name": "Pipoca", "sex": "female",
+            "size": "medium", "coat": "Caramelo", "breed": "SRD", "birth_estimate_on": "2022-03-01", "status": "active",
+            "neutered": False, "tutor": {"patient_id": PAT, "display_name": "Joana Conceição"}, "community": False,
+            "last_rabies_vaccination_on": "2026-11-21", "collar_due_on": "2026-12-01", "has_microchip": True}
+
+
+def animal_community_body():
+    return dict(animal(), id=ANIMAL2, version=1, name=None, size=None, coat=None, breed=None, birth_estimate_on=None,
+                last_rabies_vaccination_on=None, collar_due_on=None, tutor=None, community=True, has_microchip=False)
+
+
+def leish_survey():
+    return {"id": LV_SURVEY, "version": 1, "name": "Inquérito LV Vila Nova 2026", "kind": "sample",
+            "household_ids": [HH, HH2], "starts_on": "2026-11-03", "ends_on": "2026-12-12"}
+
+
+def page_zoonoses():
+    return {"reset": False,
+            "items": [{"type": "household", "id": HH, "version": 3, "body": household()},
+                      {"type": "animal", "id": ANIMAL, "version": 2, "body": animal()},
+                      {"type": "animal", "id": ANIMAL2, "version": 1, "body": animal_community_body()},
+                      {"type": "leish_survey", "id": LV_SURVEY, "version": 1, "body": leish_survey()}],
+            "removals": [], "who_to_visit": None, "next_cursor": CURSOR, "has_more": True}
+
+
+def page_zoonoses_removals():
+    return {"reset": False, "items": [],
+            "removals": [{"type": "animal", "id": ANIMAL3, "reason": "out_of_scope"},
+                         {"type": "leish_survey", "id": LV_SURVEY, "reason": "out_of_scope"}],
+            "who_to_visit": who_to_visit(), "next_cursor": CURSOR, "has_more": False}
+
+
+def resp_stale_animal():
+    return results({"client_uuid": cz(11), "status": "stale_version", "type": "animal", "id": ANIMAL,
+                    "current_version": 3, "current": dict(animal(), version=3)})
+
+
 # ---------- formas do download (24a §2, json.rb) ----------
 
 def household():
@@ -1005,6 +1050,9 @@ SUITES = [
         "invalid-response-label-lowercase-hex.json": (results(dict(zdone(4, "leish_collection", LTEST), label="LV-2026-f1a2b3-0001")), "/results/0/label pattern"),
         "invalid-response-animal-accepted-without-version.json": (results(zdone(2, "animal", ANIMAL)), "/results/0 required"),
         "invalid-response-version-on-vaccination.json": (results(dict(zdone(3, "rabies_vaccination", VACC), version=1)), "/results/0/version schema"),
+        "upload-response-stale-animal.json": (resp_stale_animal(), "valid"),
+        "invalid-response-stale-animal-with-microchip.json": (variant(resp_stale_animal, ["results", 0, "current", "microchip"], "985112003456789"), "/results/0/current/microchip schema"),
+        "invalid-response-stale-vaccination.json": (variant(resp_stale_animal, ["results", 0, "type"], "rabies_vaccination"), "/results/0/type enum"),
     }),
     ("changes-response-v1.json", {
         "changes-first-page.json": (page_first(), "valid"),
@@ -1033,6 +1081,19 @@ SUITES = [
         "invalid-changes-city-block-number-with-space.json": (variant(page_vector, ["items", 1, "body", "number"], "12 A"), "/items/1/body/number pattern"),
         "invalid-changes-ovitrap-with-resident.json": (variant(page_vector, ["items", 2, "body", "resident_name"], "Maria Teste"), "/items/2/body/resident_name schema"),
         "invalid-changes-household-vector-risk-blue.json": (variant(page_vector, ["items", 0, "body", "vector", "risk_class"], "blue"), "/items/0/body/vector/risk_class enum"),
+        "changes-zoonoses-page.json": (page_zoonoses(), "valid"),
+        "changes-zoonoses-removals.json": (page_zoonoses_removals(), "valid"),
+        "invalid-changes-animal-with-microchip.json": (variant(page_zoonoses, ["items", 1, "body", "microchip"], "985112003456789"), "/items/1/body/microchip schema"),
+        "invalid-changes-animal-tutor-with-cpf.json": (variant(page_zoonoses, ["items", 1, "body", "tutor", "cpf"], "52998224725"), "/items/1/body/tutor/cpf schema"),
+        "invalid-changes-leish-survey-with-target-dogs.json": (variant(page_zoonoses, ["items", 3, "body", "target_dogs"], 180), "/items/3/body/target_dogs schema"),
+        "invalid-changes-animal-species-bird.json": (variant(page_zoonoses, ["items", 1, "body", "species"], "bird"), "/items/1/body/species enum"),
+        "invalid-changes-animal-without-item-version.json": (variant(page_zoonoses, ["items", 1, "version"], DELETE), "/items/1 required"),
+        "invalid-changes-leish-survey-without-item-version.json": (variant(page_zoonoses, ["items", 3, "version"], DELETE), "/items/3 required"),
+        "invalid-changes-leish-survey-no-households.json": (variant(page_zoonoses, ["items", 3, "body", "household_ids"], []), "/items/3/body/household_ids minItems"),
+        "invalid-changes-removal-animal-deceased.json": (variant(page_zoonoses_removals, ["removals", 0, "reason"], "deceased"), "/removals/0/reason enum"),
+        **{f"invalid-changes-animal-without-{k.replace('_', '-')}.json": (variant(page_zoonoses, ["items", 1, "body", k], DELETE), "/items/1/body required") for k in ANIMAL_REQUIRED},
+        **{f"invalid-changes-animal-tutor-without-{k.replace('_', '-')}.json": (variant(page_zoonoses, ["items", 1, "body", "tutor", k], DELETE), "/items/1/body/tutor required") for k in ["patient_id", "display_name"]},
+        **{f"invalid-changes-leish-survey-without-{k.replace('_', '-')}.json": (variant(page_zoonoses, ["items", 3, "body", k], DELETE), "/items/3/body required") for k in LEISH_REQUIRED},
     }),
     ("reference-response-v1.json", {
         "reference.json": (reference(), "valid"),
