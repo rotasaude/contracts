@@ -286,7 +286,7 @@ registrou e baixa o escopo do aparelho. Base `/field/v1` no host da cidade.
   (o 515140 escolhe entre os moradores que o tablet tem) ou `tutor_client_uuid`,
   que cita um item `patient` ou um `individual_registration` com `new_patient` do
   mesmo lote (24c; Q22, Q29); `community: true` = ninguém responde pelo animal.
-  `neutered` nunca vem (castração é do veterinário, §7). `birth_estimate_month`
+  o app nunca envia `neutered` (castração é do veterinário, §7; o download traz o valor). `birth_estimate_month`
   `"YYYY-MM"`: o api grava o dia 1, e o download traz `birth_estimate_on`.
   Recusas: `microchip_taken`, `registry_number_taken`, `animal_not_active`,
   `out_of_scope` e `tutor_not_found` (`tutor_client_uuid`).
