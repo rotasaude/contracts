@@ -24,6 +24,22 @@ def cu(n):
     return f"c0ffee{n:02d}-0000-4000-8000-{n:012d}"
 
 
+def cz(n):  # client_uuid do 35b (o cu(n) já usa 1–93)
+    return f"c0ffee{n:02d}-0000-4000-9000-{n:012d}"
+
+
+ANIMAL = "a7b8c9d0-e1f2-4a3b-8c4d-6e7f8a9b0c1d"
+ANIMAL2 = "b8c9d0e1-f2a3-4b4c-9d5e-7f8a9b0c1d2e"
+ANIMAL3 = "c9d0e1f2-a3b4-4c5d-8e6f-8a9b0c1d2e3f"
+CAMPAIGN = "d0e1f2a3-b4c5-4d6e-9f7a-9b0c1d2e3f4a"
+LV_SURVEY = "f1a2b3c4-d5e6-4f7a-8b8c-0d1e2f3a4b5c"
+VACCINE = "e1f2a3b4-c5d6-4e7f-8a9b-1c2d3e4f5a6b"
+COLLAR_PRODUCT = "f2a3b4c5-d6e7-4f8a-9b0c-2d3e4f5a6b7c"
+VACC = "0b1c2d3e-4f5a-4b6c-8d7e-3f4a5b6c7d8e"
+LTEST = "1c2d3e4f-5a6b-4c7d-9e8f-4a5b6c7d8e9f"
+COLLAR = "2d3e4f5a-6b7c-4d8e-8f9a-5b6c7d8e9f0a"
+
+
 TEAM = "3f1c2a4b-5d6e-4f70-8a9b-0c1d2e3f4a5b"
 MA1 = "6a7b8c9d-0e1f-4a2b-8c3d-4e5f6a7b8c9d"
 MA2 = "7b8c9d0e-1f2a-4b3c-9d4e-5f6a7b8c9d0e"
@@ -104,6 +120,13 @@ def session_agent():
     d["teams"][0]["micro_areas"] = [{"id": MA2, "code": "07", "name": "Jardim Esperança", "scope": "assigned"}]
     d["teams"][0]["out_of_area_allowed"] = False
     d["features"]["collective_activities"] = False
+    return d
+
+
+def session_zoonoses():
+    d = session_agent()
+    d["features"]["vector_control"] = True
+    d["features"]["zoonoses"] = True
     return d
 
 
@@ -382,6 +405,111 @@ def resp_vector_accepted():
     return results(dict(done(60, "home_visit", VISIT), vector_inspection_id=VINSP),
                    done(63, "ovitrap_installation", OVI), done(66, "ovitrap_collection", OVI),
                    done(60, "home_visit", VISIT, "duplicate"))
+
+
+# ---------- 35b: zoonoses (animal, vacinação antirrábica, coleta de leishmaniose, coleira) ----------
+
+def zitem(n, kind, body):
+    return {"client_uuid": cz(n), "type": kind, "body": body}
+
+
+def zdone(n, kind, ident, status="accepted"):
+    return {"client_uuid": cz(n), "status": status, "type": kind, "id": ident}
+
+
+def zr(n, kind, error, path=None):
+    r = {"client_uuid": cz(n), "status": "rejected", "type": kind, "error": error}
+    if path:
+        r["path"] = path
+    return r
+
+
+def animal_new():
+    return {"household_id": HH, "species": "dog", "sex": "female", "size": "medium", "name": "Pipoca", "coat": "Caramelo",
+            "breed": "SRD", "birth_estimate_month": "2022-03", "tutor_patient_id": PAT, "community": False,
+            "microchip": "985112003456789"}
+
+
+def animal_update():
+    return {"animal_id": ANIMAL2, "version": 2, "household_id": HH, "species": "cat", "sex": "male", "name": "Frajola",
+            "community": False, "status": "missing", "status_on": "2026-11-20"}
+
+
+def animal_community():
+    return {"household_id": HH2, "species": "dog", "sex": "unknown", "community": True}
+
+
+def vacc():
+    return {"animal_id": ANIMAL, "campaign_id": CAMPAIGN, "vaccinated_on": "2026-11-21", "vector_product_id": VACCINE,
+            "adverse_event": True, "adverse_note": "Inchaço no local da aplicação."}
+
+
+def leish():
+    return {"leish_survey_id": LV_SURVEY, "animal_id": ANIMAL, "collected_on": "2026-11-21", "dpp_result": "reactive",
+            "dpp_on": "2026-11-21"}
+
+
+def collar():
+    return {"animal_id": ANIMAL, "vector_product_id": COLLAR_PRODUCT, "placed_on": "2026-11-21"}
+
+
+def _swap(d, drop, **add):
+    d = dict(d)
+    for k in drop:
+        d.pop(k, None)
+    d.update(add)
+    return d
+
+
+def up_animal_new():
+    return up(zitem(10, "animal", animal_new()))
+
+
+def up_animal_update():
+    return up(zitem(11, "animal", animal_update()))
+
+
+def up_vacc():
+    return up(zitem(13, "rabies_vaccination", vacc()))
+
+
+def up_leish():
+    return up(zitem(14, "leish_collection", leish()))
+
+
+def up_collar():
+    return up(zitem(15, "collar", collar()))
+
+
+def upload_zoonoses_same_batch():  # §17, roteiro 9; tutor por Q29 (patient ou individual_registration com new_patient)
+    return up(zitem(1, "patient", {"new_patient": NEW_PATIENT}),
+              zitem(2, "animal", _swap(animal_new(), ["microchip", "tutor_patient_id"], tutor_client_uuid=cz(1))),
+              zitem(3, "rabies_vaccination", _swap(vacc(), ["animal_id", "adverse_note"], animal_client_uuid=cz(2), adverse_event=False)),
+              zitem(4, "leish_collection", _swap(leish(), ["animal_id"], animal_client_uuid=cz(2))),
+              zitem(5, "collar", _swap(collar(), ["animal_id"], animal_client_uuid=cz(2))))
+
+
+def resp_zoonoses_rejected():
+    an, rv, lc, co = "animal", "rabies_vaccination", "leish_collection", "collar"
+    rows = [(an, "microchip_taken", "microchip"), (an, "registry_number_taken", "registry_number"),
+            (an, "animal_not_active", "animal_id"), (an, "cbo_not_allowed", None), (an, "out_of_scope", "household_id"),
+            (an, "tutor_not_found", "tutor_client_uuid"),
+            (rv, "already_vaccinated_in_campaign", "animal_id"), (rv, "campaign_not_open", "campaign_id"),
+            (rv, "product_not_allowed", "vector_product_id"), (rv, "date_out_of_range", "vaccinated_on"),
+            (lc, "survey_not_open", "leish_survey_id"), (lc, "household_not_in_survey", "leish_survey_id"),
+            (lc, "animal_not_dog", "animal_id"), (lc, "cbo_not_allowed", None), (lc, "not_found", "animal_client_uuid"),
+            (co, "animal_not_dog", "animal_client_uuid"), (co, "feature_disabled", None)]
+    return results(*[zr(40 + i, k, e, p) for i, (k, e, p) in enumerate(rows)])
+
+
+def resp_zoonoses_accepted():
+    return results(dict(zdone(2, "animal", ANIMAL), version=1),
+                   zdone(3, "rabies_vaccination", VACC),
+                   dict(zdone(4, "leish_collection", LTEST), label="LV-2026-F1A2B3-0001"),
+                   zdone(5, "collar", COLLAR),
+                   dict(zdone(4, "leish_collection", LTEST, "duplicate"), label="LV-2026-F1A2B3-0001"),
+                   zdone(2, "animal", ANIMAL, "duplicate"),
+                   dict(zdone(6, "leish_collection", cz(60)), label="LV-2026-AVUL-0007"))
 
 
 # ---------- formas do download (24a §2, json.rb) ----------
@@ -702,6 +830,8 @@ SUITES = [
         "invalid-session-map-short-sha.json": (variant(session_acs, ["map", "sha256"], "ab"), "/map/sha256 pattern"),
         "session-endemic-agent.json": (variant(session_agent, ["features", "vector_control"], True), "valid"),
         "invalid-session-vector-control-string.json": (variant(session_agent, ["features", "vector_control"], "true"), "/features/vector_control boolean"),
+        "session-zoonoses-agent.json": (session_zoonoses(), "valid"),
+        "invalid-session-zoonoses-string.json": (variant(session_zoonoses, ["features", "zoonoses"], "true"), "/features/zoonoses boolean"),
     }),
     ("upload-request-v1.json", {
         "upload-home-visit-resident.json": (upload_hv(), "valid"),
@@ -784,6 +914,47 @@ SUITES = [
         "invalid-ovitrap-collection-two-ovitraps.json": (variant(upload_ovitrap_collection, B + ["ovitrap_client_uuid"], cu(64)), "/items/0/body oneOf"),
         "invalid-ovitrap-collection-condition-wet.json": (variant(upload_ovitrap_collection, B + ["condition"], "wet"), "/items/0/body/condition enum"),
         "invalid-ovitrap-collection-egg-count.json": (variant(upload_ovitrap_collection, B + ["egg_count"], 12), "/items/0/body/egg_count schema"),
+        "upload-animal-new.json": (up_animal_new(), "valid"),
+        "upload-animal-update.json": (up_animal_update(), "valid"),
+        "upload-animal-community.json": (up(zitem(12, "animal", animal_community())), "valid"),
+        "upload-zoonoses-same-batch.json": (upload_zoonoses_same_batch(), "valid"),
+        "upload-rabies-vaccination.json": (up_vacc(), "valid"),
+        "upload-leish-collection.json": (up_leish(), "valid"),
+        "upload-leish-collection-off-survey.json": (up(zitem(14, "leish_collection", _swap(leish(), ["leish_survey_id", "dpp_result", "dpp_on"]))), "valid"),
+        "upload-collar.json": (up_collar(), "valid"),
+        "invalid-animal-without-species.json": (variant(up_animal_new, B + ["species"], DELETE), "/items/0/body required"),
+        "invalid-animal-without-sex.json": (variant(up_animal_new, B + ["sex"], DELETE), "/items/0/body required"),
+        "invalid-animal-without-community.json": (variant(up_animal_new, B + ["community"], DELETE), "/items/0/body required"),
+        "invalid-rabies-vaccination-without-campaign-id.json": (variant(up_vacc, B + ["campaign_id"], DELETE), "/items/0/body required"),
+        "invalid-rabies-vaccination-without-vaccinated-on.json": (variant(up_vacc, B + ["vaccinated_on"], DELETE), "/items/0/body required"),
+        "invalid-rabies-vaccination-without-vector-product-id.json": (variant(up_vacc, B + ["vector_product_id"], DELETE), "/items/0/body required"),
+        "invalid-rabies-vaccination-without-adverse-event.json": (variant(up_vacc, B + ["adverse_event"], DELETE), "/items/0/body required"),
+        "invalid-leish-collection-without-collected-on.json": (variant(up_leish, B + ["collected_on"], DELETE), "/items/0/body required"),
+        "invalid-collar-without-vector-product-id.json": (variant(up_collar, B + ["vector_product_id"], DELETE), "/items/0/body required"),
+        "invalid-collar-without-placed-on.json": (variant(up_collar, B + ["placed_on"], DELETE), "/items/0/body required"),
+        "invalid-animal-neutered-in-body.json": (variant(up_animal_new, B + ["neutered"], True), "/items/0/body/neutered schema"),
+        "invalid-rabies-vaccination-modality-in-body.json": (variant(up_vacc, B + ["modality"], "house"), "/items/0/body/modality schema"),
+        "invalid-leish-collection-label-in-body.json": (variant(up_leish, B + ["label"], "LV-2026-F1A2B3-0001"), "/items/0/body/label schema"),
+        "invalid-collar-due-on-in-body.json": (variant(up_collar, B + ["due_on"], "2027-05-21"), "/items/0/body/due_on schema"),
+        "invalid-animal-two-households.json": (variant(up_animal_new, B + ["household_client_uuid"], cz(30)), "/items/0/body oneOf"),
+        "invalid-animal-without-household.json": (variant(up_animal_new, B + ["household_id"], DELETE), "/items/0/body required"),
+        "invalid-animal-two-tutors.json": (variant(up_animal_new, B + ["tutor_client_uuid"], cz(1)), "/items/0/body not"),
+        "invalid-animal-community-with-tutor.json": (variant(up_animal_new, B + ["community"], True), "/items/0/body/tutor_patient_id schema"),
+        "invalid-animal-microchip-on-update.json": (variant(up_animal_update, B + ["microchip"], "985112003456789"), "/items/0/body/microchip schema"),
+        "invalid-animal-microchip-14-digits.json": (variant(up_animal_new, B + ["microchip"], "98511200345678"), "/items/0/body/microchip pattern"),
+        "invalid-animal-status-on-create.json": (up(zitem(10, "animal", dict(animal_new(), status="deceased", status_on="2026-11-20"))), "/items/0/body/status schema"),
+        "invalid-animal-version-without-id.json": (variant(up_animal_update, B + ["animal_id"], DELETE), "/items/0/body/version dependentRequired"),
+        "invalid-animal-birth-month-13.json": (variant(up_animal_new, B + ["birth_estimate_month"], "2022-13"), "/items/0/body/birth_estimate_month pattern"),
+        "invalid-animal-name-61-chars.json": (variant(up_animal_new, B + ["name"], "P" * 61), "/items/0/body/name maxLength"),
+        "invalid-rabies-vaccination-two-animals.json": (variant(up_vacc, B + ["animal_client_uuid"], cz(2)), "/items/0/body oneOf"),
+        "invalid-rabies-vaccination-without-animal.json": (variant(up_vacc, B + ["animal_id"], DELETE), "/items/0/body required"),
+        "invalid-rabies-vaccination-note-short.json": (variant(up_vacc, B + ["adverse_note"], "Inchaço."), "/items/0/body/adverse_note minLength"),
+        "invalid-rabies-vaccination-note-without-event.json": (variant(up_vacc, B + ["adverse_event"], False), "/items/0/body/adverse_note schema"),
+        "invalid-leish-collection-without-animal.json": (variant(up_leish, B + ["animal_id"], DELETE), "/items/0/body required"),
+        "invalid-leish-collection-dpp-without-date.json": (variant(up_leish, B + ["dpp_on"], DELETE), "/items/0/body/dpp_result dependentRequired"),
+        "invalid-leish-collection-dpp-inconclusive.json": (variant(up_leish, B + ["dpp_result"], "inconclusive"), "/items/0/body/dpp_result enum"),
+        "invalid-collar-two-animals.json": (variant(up_collar, B + ["animal_client_uuid"], cz(2)), "/items/0/body oneOf"),
+        "invalid-collar-without-animal.json": (variant(up_collar, B + ["animal_id"], DELETE), "/items/0/body required"),
     }),
     ("upload-response-v1.json", {
         "upload-response-accepted.json": (resp_accepted(), "valid"),
@@ -827,6 +998,13 @@ SUITES = [
         "invalid-response-vector-inspection-id-on-patient.json": (results(dict(done(10, "patient", PAT2), vector_inspection_id=VINSP)), "/results/0/vector_inspection_id schema"),
         "invalid-response-vector-inspection-id-on-rejected.json": (variant(resp_vector_rejected, ["results", 0, "vector_inspection_id"], VINSP), "/results/0/vector_inspection_id schema"),
         "invalid-response-ovitrap-id.json": (results(dict(done(63, "ovitrap_installation", OVI), ovitrap_id=OVI)), "/results/0/ovitrap_id schema"),
+        "upload-response-zoonoses-accepted.json": (resp_zoonoses_accepted(), "valid"),
+        "upload-response-zoonoses-rejected.json": (resp_zoonoses_rejected(), "valid"),
+        "invalid-response-leish-collection-without-label.json": (results(zdone(4, "leish_collection", LTEST)), "/results/0 required"),
+        "invalid-response-label-on-collar.json": (results(dict(zdone(5, "collar", COLLAR), label="LV-2026-F1A2B3-0001")), "/results/0/label schema"),
+        "invalid-response-label-lowercase-hex.json": (results(dict(zdone(4, "leish_collection", LTEST), label="LV-2026-f1a2b3-0001")), "/results/0/label pattern"),
+        "invalid-response-animal-accepted-without-version.json": (results(zdone(2, "animal", ANIMAL)), "/results/0 required"),
+        "invalid-response-version-on-vaccination.json": (results(dict(zdone(3, "rabies_vaccination", VACC), version=1)), "/results/0/version schema"),
     }),
     ("changes-response-v1.json", {
         "changes-first-page.json": (page_first(), "valid"),
