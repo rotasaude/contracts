@@ -1,5 +1,18 @@
 # Changelog — field-sync
 
+## field-sync-v1.4.0 — (não publicada até a tag) — MINOR
+
+Centro de zoonoses (módulo 35b, ADR 0054). Compatível com o v1.3.0: nada do pedido v1.3.0 passa a ser recusado; o novo nas respostas é opcional ou só de tipo novo.
+
+- `session-response-v1.json`: `features.zoonoses` (opcional; `Zoonoses::Gate.field_usable?`).
+- `upload-request-v1.json`: itens `animal`, `rabies_vaccination`, `leish_collection` e `collar` (`animal_body`, `rabies_vaccination_body`, `leish_collection_body`, `collar_body`); animal por `animal_id` + `version` ou `household_id`/`household_client_uuid`, tutor por `tutor_patient_id` ou `tutor_client_uuid`, `birth_estimate_month`; vacina, coleta e coleira citam o animal por `animal_id` ou `animal_client_uuid`.
+- `upload-response-v1.json`: os quatro tipos novos; `<animal>` (`$defs/animal`) em `stale_version`; `version` obrigatória no `accepted` de `animal`; `label` (etiqueta da coleta de LV, obrigatória no `accepted`/`duplicate` de `leish_collection` e proibida nos outros).
+- `changes-response-v1.json`: tipos de download `animal` e `leish_survey`, cada um com `version`, e `removal` desses dois tipos. O app sobrescreve as duas entidades a cada recebimento, qualquer que seja a `version` (README, Q29).
+- `reference-response-v1.json`: `zoonoses_domains` (opcional; listas, `products`, `open_campaign` obrigatório e anulável, `parameters`, `limits`) e `$defs/date`.
+- `domains-v1.json`: seção `zoonoses` (listas, `limits`, `rules`) e dez códigos novos em `errors.item`; `proof` não muda.
+- `tools/check_domains.py`: confere `zoonoses` contra os esquemas (listas, limites, regras e `product_uses` disjunto do controle vetorial).
+- Exemplos: 265 (77 válidos, 188 inválidos).
+
 ## field-sync-v1.3.0 — 2026-11-18 — MINOR
 
 Vigilância ambiental de endemias (módulo 35a, ADR 0054). Compatível com o v1.2.0: nada do pedido v1.2.0 passa a ser recusado; o novo nas respostas é opcional.

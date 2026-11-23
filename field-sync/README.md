@@ -11,7 +11,7 @@ registrou e baixa o escopo do aparelho. Base `/field/v1` no host da cidade.
 | `upload-response-v1.json` | `rotasaude.field_sync.upload_response.v1` | `POST /field/v1/uploads` (resposta 200) |
 | `changes-response-v1.json` | `rotasaude.field_sync.changes_response.v1` | `GET /field/v1/changes` |
 | `reference-response-v1.json` | `rotasaude.field_sync.reference_response.v1` | `GET /field/v1/reference` (v1.2.0) |
-| `domains-v1.json` | `rotasaude.field_sync.domains.v1` | domínios e regras cruzadas da visita, da atividade e da vigilância ambiental (35a), em dado |
+| `domains-v1.json` | `rotasaude.field_sync.domains.v1` | domínios e regras cruzadas da visita, da atividade, da vigilância ambiental (35a) e do centro de zoonoses (35b), em dado |
 
 ## Regras
 
@@ -266,17 +266,80 @@ registrou e baixa o escopo do aparelho. Base `/field/v1` no host da cidade.
 - **`street_type` (v1.3.0).** É o código DNE de `string_domains.tipo_logradouro`
   (`"081"`), nunca o rótulo; o esquema aceita texto, e quem recusa é o api
   (`invalid_household`, `path` `address.street_type`; CV-11).
+- **Interruptor (v1.4.0).** `features.zoonoses` na sessão = `Zoonoses::Gate.field_usable?`
+  (ausente = false). Desligado: os itens voltam `rejected` `feature_disabled`, o
+  app esconde as telas e a fila espera (Q6 do 35a). O que foi gravado fica.
+- **Compatibilidade (v1.4.0, §11).** O api emite `animal`, `leish_survey` e
+  `zoonoses_domains` só com `field_usable?`; ligar ou desligar o interruptor
+  chega a todo aparelho da cidade como `reset: true`. O app do 35a ignora tipo e
+  `removal` desconhecidos no download e não valida a sessão nem a referência em
+  execução: ele convive com a cidade e só não mostra os animais. O app anterior
+  ao do 35a quebra, por isso **nenhum aparelho com app anterior ao do 35a pode
+  estar numa cidade com `zoonoses` ligado** (gate de go-live). O api aceita o
+  envio da v1.3.0 sem mudança.
+- **Animal (`animal`, v1.4.0, D4, D5).** Corpo inteiro na criação e na edição; a
+  edição leva `animal_id` + `version` (vencida → `stale_version` com o
+  `<animal>` atual, D3). `microchip` e `registry_number` só na criação: o app não
+  recebe o número (Q9) e não o reenvia. `status`/`status_on` só na edição, e quem
+  deixa `active` sai do download. Animal comunitário não tem tutor. O tutor é
+  opcional também com domicílio (tutor não identificado); é `tutor_patient_id`
+  (o 515140 escolhe entre os moradores que o tablet tem) ou `tutor_client_uuid`,
+  que cita um item `patient` ou um `individual_registration` com `new_patient` do
+  mesmo lote (24c; Q22, Q29); `community: true` = ninguém responde pelo animal.
+  `neutered` nunca vem (castração é do veterinário, §7). `birth_estimate_month`
+  `"YYYY-MM"`: o api grava o dia 1, e o download traz `birth_estimate_on`.
+  Recusas: `microchip_taken`, `registry_number_taken`, `animal_not_active`,
+  `out_of_scope` e `tutor_not_found` (`tutor_client_uuid`).
+- **Vacinação (`rabies_vaccination`, v1.4.0).** A modalidade é sempre `house`, e
+  a campanha é o `open_campaign` da referência (`campaign_not_open`). Uma dose
+  por animal e campanha (`already_vaccinated_in_campaign`): só o api barra,
+  porque o tablet não sabe a campanha da última dose (Q19). `adverse_note` só
+  com `adverse_event: true` (Q20). Data fora da janela → `date_out_of_range`;
+  produto sem `rabies_vaccine` → `product_not_allowed`. O `adverse_event` mostra
+  no app o lembrete do EATAV (§3). **A falta de estoque não é recusa**: o item
+  volta `accepted`.
+- **Coleta de LV (`leish_collection`, v1.4.0).** Só o CBO 515140
+  (`cbo_not_allowed`) e só cão (`animal_not_dog`). O inquérito precisa estar
+  `open` (`survey_not_open`) e cobrir o quarteirão do domicílio
+  (`household_not_in_survey`); sem `leish_survey_id`, a coleta é avulsa.
+  `dpp_result` e `dpp_on` vão juntos. A etiqueta é do api e volta em `label`,
+  obrigatória no `accepted` e no `duplicate` (Q21, formato em
+  `zoonoses.rules.leish_label`); até lá, o app mostra "Etiqueta depois de enviar".
+- **Coleira (`collar`, v1.4.0).** Só cão; o `due_on` é do api; a coleira ativa
+  anterior sai `replaced` na mesma transação (§6); a falta de estoque não é
+  recusa. As coleiras a trocar (`collar_due_on` em até 15 dias) têm lista própria
+  no app, fora de "Imóveis a visitar" (Q23).
+- **Referência do item (v1.4.0).** `animal_client_uuid` resolve pelo livro de
+  idempotência (falta → `not_found`). O `id` do resultado é o do animal, da
+  vacinação, do teste e da coleira. Os códigos de item novos são dez, em
+  `errors.item`: `microchip_taken`, `registry_number_taken`,
+  `already_vaccinated_in_campaign`, `campaign_not_open`, `survey_not_open`,
+  `animal_not_dog`, `animal_not_active`, `date_out_of_range`,
+  `household_not_in_survey` e `tutor_not_found`.
+- **Download (v1.4.0).** `animal` vem só pelo domicílio do escopo (sem
+  domicílio, não vai) e só `active`. `leish_survey` vem só `open`, com
+  `household_ids` = os domicílios do escopo nos quarteirões dele (Q21); a coleta
+  só aparece nesses domicílios. A saída das duas vem por `removal`
+  `out_of_scope` (Q21). O app **sobrescreve** `animal` e `leish_survey` a cada
+  recebimento, qualquer que seja a `version`, como na Q29: `last_rabies_vaccination_on`
+  e `collar_due_on` mudam sem `version` nova (D10). A fila local nunca é apagada.
+  Nunca o número do microchip, e o tutor só com id e nome.
+- **Referência (v1.4.0).** `zoonoses_domains` só com `field_usable?`.
+  `open_campaign` é `null` sem campanha aberta; abrir ou fechar a campanha muda
+  o `reference_version`, e o app baixa de novo (cache de 5 min do api).
+  `vector_control_domains.products` traz só produtos de controle vetorial: a
+  vacina e a coleira vêm só em `zoonoses_domains.products` (D1).
 
 ## Exemplos e verificação
 
-`examples/` tem 168 exemplos (61 válidos, 107 inválidos, um defeito por arquivo),
+`examples/` tem 265 exemplos (77 válidos, 188 inválidos, um defeito por arquivo),
 gerados por `tools/make_examples.py` e listados em `examples/manifest.json`
 (`{ suites: [ { schema, cases: [ { file, expect } ] } ] }`; `expect` é
 `valid` ou o erro `<data_pointer> <type>` do `json_schemer`). A partir da raiz
 do monorepo, com o compose de pé:
 
 ```bash
-contracts/field-sync/tools/check.sh                           # todas as suítes (168/168)
+contracts/field-sync/tools/check.sh                           # todas as suítes (265/265)
 contracts/field-sync/tools/check.sh upload-request-v1.json    # uma suíte
 python3 contracts/field-sync/tools/check_domains.py           # $defs iguais, enum = domains, erros conhecidos,
                                                               # regras-da-atividade e logradouro-em-codigo (v1.3.0)
@@ -289,5 +352,5 @@ O `api` copia os seis arquivos (os cinco esquemas e `domains-v1.json`) para
 `config/field_sync/` e prende o SHA-256 de cada um num spec (como `config/lab/lab-report-v1.json`); as respostas reais de
 `/field/v1/*` são validadas contra essas cópias. Mudou um esquema? Atualize os
 dois lugares no mesmo ciclo, com entrada no CHANGELOG. O app de campo (24c)
-consome os esquemas e `domains-v1.json` pela tag `field-sync-v1.3.0` e gera
+consome os esquemas e `domains-v1.json` pela tag `field-sync-v1.4.0` e gera
 deles os tipos TypeScript.
