@@ -863,6 +863,37 @@ def reference_vector():
     return doc
 
 
+def zoonoses_domains():
+    """As cinco listas e os limites vêm de domains-v1.json (uma fonte só); o resto é dado do exemplo."""
+    with open(os.path.join(os.path.dirname(HERE), "domains-v1.json"), encoding="utf-8") as f:
+        zo = json.load(f)["zoonoses"]
+    return {
+        **{k: [{"code": e["code"], "label": e["label"]} for e in zo[k]]
+           for k in ("species", "sexes", "sizes", "animal_statuses", "dpp_results")},
+        "products": [{"id": VACCINE, "code": "VAR", "name": "Vacina antirrábica animal", "use": "rabies_vaccine"},
+                     {"id": COLLAR_PRODUCT, "code": "CDT4", "name": "Coleira deltametrina 4%", "use": "collar"}],
+        "open_campaign": {"id": CAMPAIGN, "name": "Campanha antirrábica 2026", "starts_on": "2026-11-03", "ends_on": "2026-11-28"},
+        "parameters": {"collar_months": 6},
+        "limits": dict(zo["limits"])}
+
+
+def reference_zoonoses():
+    """reference() + zoonoses_domains, sem vector_control_domains: o 35b funciona sem o 35a (§1)."""
+    doc = reference()
+    doc["zoonoses_domains"] = zoonoses_domains()
+    return doc
+
+
+def reference_zoonoses_vector():
+    doc = reference_vector()
+    doc["zoonoses_domains"] = dict(zoonoses_domains(), open_campaign=None)
+    return doc
+
+
+def reference_vector_product_use_collar():
+    return variant(reference_vector, ["vector_control_domains", "products", 0, "uses"], ["collar"])
+
+
 SUITES = [
     ("session-response-v1.json", {
         "session-acs.json": (session_acs(), "valid"),
@@ -1107,6 +1138,14 @@ SUITES = [
         "reference-vector-control.json": (reference_vector(), "valid"),
         "invalid-reference-product-charge-size-number.json": (variant(reference_vector, ["vector_control_domains", "products", 0, "charge_size"], 1), "/vector_control_domains/products/0/charge_size string"),
         "invalid-reference-product-without-uses.json": (variant(reference_vector, ["vector_control_domains", "products", 0, "uses"], []), "/vector_control_domains/products/0/uses minItems"),
+        "reference-zoonoses.json": (reference_zoonoses(), "valid"),
+        "reference-zoonoses-vector-control.json": (reference_zoonoses_vector(), "valid"),
+        "invalid-reference-zoonoses-without-open-campaign.json": (variant(reference_zoonoses, ["zoonoses_domains", "open_campaign"], DELETE), "/zoonoses_domains required"),
+        "invalid-reference-zoonoses-product-use-focal.json": (variant(reference_zoonoses, ["zoonoses_domains", "products", 0, "use"], "focal"), "/zoonoses_domains/products/0/use enum"),
+        "invalid-reference-zoonoses-collar-months-13.json": (variant(reference_zoonoses, ["zoonoses_domains", "parameters", "collar_months"], 13), "/zoonoses_domains/parameters/collar_months maximum"),
+        "invalid-reference-zoonoses-campaign-with-goal.json": (variant(reference_zoonoses, ["zoonoses_domains", "open_campaign", "goal_dogs"], 1200), "/zoonoses_domains/open_campaign/goal_dogs schema"),
+        "invalid-reference-zoonoses-species-empty.json": (variant(reference_zoonoses, ["zoonoses_domains", "species"], []), "/zoonoses_domains/species minItems"),
+        "invalid-reference-vector-product-use-collar.json": (reference_vector_product_use_collar(), "/vector_control_domains/products/0/uses/0 enum"),
     }),
 ]
 

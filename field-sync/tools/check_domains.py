@@ -5,7 +5,7 @@
 2. Cada enum do pedido de envio é exatamente o domínio de domains-v1.json,
    e as faixas das medidas, os tamanhos máximos das listas e os limites da
    coordenada (location) são os de domains-v1.json; o mesmo vale para vector_control
-   (listas, limites e regras do controle vetorial, 35a).
+   (listas, limites e regras do controle vetorial, 35a); zoonoses (35b) idem.
 3. Todo error dos exemplos válidos de resposta está em errors.item.
 4. regras-da-atividade: collective_activity.rules tem as sete chaves da referência (REFERENCE_RULE_KEYS, as do api),
    by_type cobre os tipos de atividade com valores válidos, e o esquema da referência as exige.
@@ -138,6 +138,38 @@ def main():
             [[c for c in vc_rules["registrar_cbos"] if c not in hv["rules"]["registrar_cbos"]],
              sorted(k for k in vc_rules["derived_reasons"] if int(k) not in req["visit_reason"]["enum"]),
              sorted(t for v in vc_rules["activity_property_types"].values() for t in v if t not in req["property_type"]["enum"])],
+            [[], [], []]),
+    })
+    zo = dom["zoonoses"]
+    ab = req["animal_body"]["properties"]
+    an = chg["animal"]["properties"]
+    zd = s["reference-response-v1.json"]["$defs"]["zoonoses_domains"]["properties"]
+    zrules, zlim = zo["rules"], zo["limits"]
+    vacc_note = req["rabies_vaccination_body"]["properties"]["adverse_note"]
+    pairs.update({
+        "zoonoses.species": (codes(zo["species"]), sorted(ab["species"]["enum"])),
+        "zoonoses.species(changes)": (codes(zo["species"]), sorted(an["species"]["enum"])),
+        "zoonoses.sexes": (codes(zo["sexes"]), sorted(ab["sex"]["enum"])),
+        "zoonoses.sexes(changes)": (codes(zo["sexes"]), sorted(an["sex"]["enum"])),
+        "zoonoses.sizes": (codes(zo["sizes"]), sorted(ab["size"]["enum"])),
+        "zoonoses.sizes(changes)": (codes(zo["sizes"]), nn(an["size"]["enum"])),
+        "zoonoses.animal_statuses": (codes(zo["animal_statuses"]), sorted(ab["status"]["enum"])),
+        "zoonoses.animal_statuses(changes)": (codes(zo["animal_statuses"]), sorted(an["status"]["enum"])),
+        "zoonoses.dpp_results": (codes(zo["dpp_results"]), sorted(req["leish_collection_body"]["properties"]["dpp_result"]["enum"])),
+        "zoonoses.leish_survey_kinds": (codes(zo["leish_survey_kinds"]), sorted(chg["leish_survey"]["properties"]["kind"]["enum"])),
+        "zoonoses.product_uses": (codes(zo["product_uses"]), sorted(zd["products"]["items"]["properties"]["use"]["enum"])),
+        "zoonoses.product_uses(disjoint)": (
+            sorted(set(codes(zo["product_uses"])) & set(vcd["products"]["items"]["properties"]["uses"]["items"]["enum"])), []),
+        "zoonoses.limits": (
+            [zlim["name_max"], zlim["name_max"], zlim["coat_max"], zlim["coat_max"], zlim["breed_max"], zlim["breed_max"],
+             zlim["registry_number_max"], zlim["adverse_note_min"], zlim["adverse_note_max"], f"^[0-9]{{{zlim['microchip_digits']}}}$"],
+            [ab["name"]["maxLength"], an["name"]["maxLength"], ab["coat"]["maxLength"], an["coat"]["maxLength"],
+             ab["breed"]["maxLength"], an["breed"]["maxLength"], ab["registry_number"]["maxLength"],
+             vacc_note["minLength"], vacc_note["maxLength"], ab["microchip"]["pattern"]]),
+        "zoonoses.rules": (
+            [[c for c in zrules["registrar_cbos"] if c not in hv["rules"]["registrar_cbos"]],
+             [c for c in zrules["leish_collection_cbos"] if c not in zrules["registrar_cbos"]],
+             [t for t in zrules["dog_only"] if t not in req["item"]["properties"]["type"]["enum"]]],
             [[], [], []]),
     })
     diff = [k for k, (x, y) in pairs.items() if x != y]

@@ -1050,6 +1050,38 @@
         {
           "file": "invalid-reference-product-without-uses.json",
           "expect": "/vector_control_domains/products/0/uses minItems"
+        },
+        {
+          "file": "reference-zoonoses.json",
+          "expect": "valid"
+        },
+        {
+          "file": "reference-zoonoses-vector-control.json",
+          "expect": "valid"
+        },
+        {
+          "file": "invalid-reference-zoonoses-without-open-campaign.json",
+          "expect": "/zoonoses_domains required"
+        },
+        {
+          "file": "invalid-reference-zoonoses-product-use-focal.json",
+          "expect": "/zoonoses_domains/products/0/use enum"
+        },
+        {
+          "file": "invalid-reference-zoonoses-collar-months-13.json",
+          "expect": "/zoonoses_domains/parameters/collar_months maximum"
+        },
+        {
+          "file": "invalid-reference-zoonoses-campaign-with-goal.json",
+          "expect": "/zoonoses_domains/open_campaign/goal_dogs schema"
+        },
+        {
+          "file": "invalid-reference-zoonoses-species-empty.json",
+          "expect": "/zoonoses_domains/species minItems"
+        },
+        {
+          "file": "invalid-reference-vector-product-use-collar.json",
+          "expect": "/vector_control_domains/products/0/uses/0 enum"
         }
       ]
     }
