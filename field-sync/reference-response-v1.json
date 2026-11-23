@@ -264,13 +264,13 @@
           "type": "object", "additionalProperties": false,
           "required": ["name_max", "coat_max", "breed_max", "microchip_digits", "registry_number_max", "adverse_note_min", "adverse_note_max"],
           "properties": {
-          "name_max": { "type": "integer", "minimum": 1 },
-          "coat_max": { "type": "integer", "minimum": 1 },
-          "breed_max": { "type": "integer", "minimum": 1 },
-          "microchip_digits": { "type": "integer", "minimum": 1 },
-          "registry_number_max": { "type": "integer", "minimum": 1 },
-          "adverse_note_min": { "type": "integer", "minimum": 1 },
-          "adverse_note_max": { "type": "integer", "minimum": 1 }
+            "name_max": { "type": "integer", "minimum": 1 },
+            "coat_max": { "type": "integer", "minimum": 1 },
+            "breed_max": { "type": "integer", "minimum": 1 },
+            "microchip_digits": { "type": "integer", "minimum": 1 },
+            "registry_number_max": { "type": "integer", "minimum": 1 },
+            "adverse_note_min": { "type": "integer", "minimum": 1 },
+            "adverse_note_max": { "type": "integer", "minimum": 1 }
           }
         }
       }
