@@ -718,6 +718,10 @@
           "expect": "valid"
         },
         {
+          "file": "upload-response-leish-label-five-digits.json",
+          "expect": "valid"
+        },
+        {
           "file": "invalid-response-leish-collection-without-label.json",
           "expect": "/results/0 required"
         },
@@ -727,6 +731,10 @@
         },
         {
           "file": "invalid-response-label-lowercase-hex.json",
+          "expect": "/results/0/label pattern"
+        },
+        {
+          "file": "invalid-response-label-seven-digits.json",
           "expect": "/results/0/label pattern"
         },
         {

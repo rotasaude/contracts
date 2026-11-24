@@ -617,7 +617,7 @@
       "vaccination_modality": "house",
       "collar_due_window_days": 15,
       "adverse_note_requires_event": true,
-      "leish_label": "LV-<ano>-<6 primeiros hex do id do inquérito, maiúsculos>-<seq de 4 dígitos>; fora de inquérito, LV-<ano>-AVUL-<seq de 4 dígitos>",
+      "leish_label": "LV-<ano>-<6 primeiros hex do id do inquérito, maiúsculos>-<seq de 4 a 6 dígitos, com zeros à esquerda>; fora de inquérito, LV-<ano>-AVUL-<seq de 4 a 6 dígitos, com zeros à esquerda>",
       "microchip_on_create_only": true,
       "stock_shortfall_rejects": false
     }

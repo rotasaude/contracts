@@ -11,7 +11,8 @@ Centro de zoonoses (módulo 35b, ADR 0054). Compatível com o v1.3.0: nada do pe
 - `reference-response-v1.json`: `zoonoses_domains` (opcional; listas, `products`, `open_campaign` obrigatório e anulável, `parameters`, `limits`) e `$defs/date`.
 - `domains-v1.json`: seção `zoonoses` (listas, `limits`, `rules`) e dez códigos novos em `errors.item`; `proof` não muda.
 - `tools/check_domains.py`: confere `zoonoses` contra os esquemas (listas, limites, regras e `product_uses` disjunto do controle vetorial).
-- Exemplos: 265 (77 válidos, 188 inválidos).
+- `upload-response-v1.json`: a sequência da etiqueta de LV passa de exatamente 4 dígitos para 4 a 6 (zeros à esquerda, mínimo 4, sem reinício) (Q36).
+- Exemplos: 267 (78 válidos, 189 inválidos).
 
 ## field-sync-v1.3.0 — 2026-11-18 — MINOR
 

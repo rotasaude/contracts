@@ -332,14 +332,14 @@ registrou e baixa o escopo do aparelho. Base `/field/v1` no host da cidade.
 
 ## Exemplos e verificação
 
-`examples/` tem 265 exemplos (77 válidos, 188 inválidos, um defeito por arquivo),
+`examples/` tem 267 exemplos (78 válidos, 189 inválidos, um defeito por arquivo),
 gerados por `tools/make_examples.py` e listados em `examples/manifest.json`
 (`{ suites: [ { schema, cases: [ { file, expect } ] } ] }`; `expect` é
 `valid` ou o erro `<data_pointer> <type>` do `json_schemer`). A partir da raiz
 do monorepo, com o compose de pé:
 
 ```bash
-contracts/field-sync/tools/check.sh                           # todas as suítes (265/265)
+contracts/field-sync/tools/check.sh                           # todas as suítes (267/267)
 contracts/field-sync/tools/check.sh upload-request-v1.json    # uma suíte
 python3 contracts/field-sync/tools/check_domains.py           # $defs iguais, enum = domains, erros conhecidos,
                                                               # regras-da-atividade e logradouro-em-codigo (v1.3.0)

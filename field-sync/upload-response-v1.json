@@ -242,7 +242,7 @@
         "candidates": { "type": "array", "maxItems": 10, "items": { "$ref": "#/$defs/candidate" } },
         "confirmable": { "type": "boolean", "description": "Só em duplicate_participant (Q54; a mesma pessoa duas vezes na atividade coletiva; path participants[i], a segunda ocorrência; sem candidates). true = é só semelhança (dois new_patient com o mesmo nome e a mesma data de nascimento, sem documento igual): o app ou o painel pode reenviar com duplicates_reviewed: true naquele participante, para dizer que é outra pessoa. false = não há como liberar (mesmo patient_id, ou CPF ou CNS iguais). Obrigatório com duplicate_participant e proibido em qualquer outro erro." },
         "version": { "type": "integer", "minimum": 1, "description": "Versão que o registro ficou depois do item (24c, Q5): obrigatória no accepted de household, family (a versão do domicílio), individual_registration e animal (35b, D3); opcional no duplicate desses três (recibo anterior à coluna result_version não a tem); proibida nos outros tipos e em rejected e stale_version." },
-        "label": { "type": "string", "pattern": "^LV-[0-9]{4}-([0-9A-F]{6}|AVUL)-[0-9]{4}$", "description": "Etiqueta da coleta (35b §6, D2): só no accepted/duplicate de leish_collection, e obrigatória ali." },
+        "label": { "type": "string", "pattern": "^LV-[0-9]{4}-([0-9A-F]{6}|AVUL)-[0-9]{4,6}$", "description": "Etiqueta da coleta (35b §6, D2): só no accepted/duplicate de leish_collection, e obrigatória ali." },
         "current_version": { "type": "integer", "minimum": 1 },
         "current": { "type": "object" }
       },
