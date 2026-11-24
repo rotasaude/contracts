@@ -1,6 +1,6 @@
 # Changelog — field-sync
 
-## field-sync-v1.4.0 — (não publicada até a tag) — MINOR
+## field-sync-v1.4.0 — 2026-11-24 — MINOR
 
 Centro de zoonoses (módulo 35b, ADR 0054). Compatível com o v1.3.0: nada do pedido v1.3.0 passa a ser recusado; o novo nas respostas é opcional ou só de tipo novo.
 
